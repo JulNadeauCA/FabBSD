@@ -1,0 +1,58 @@
+.\"	$FabBSD$
+.\"	Public domain
+.\"
+.Dd $Mdocdate: March 26 2009 $
+.Dt PARTCLEAN 1
+.Os
+.Sh NAME
+.Nm partclean
+.Nd control the manipulator of a parts-cleaning station
+.Sh SYNOPSIS
+.Nm boltpattern
+.Op Fl w Ar wmin-wmax
+.Op Fl p Ar pickpos
+.Sh DESCRIPTION
+The
+.Nm
+program is designed to continuously control the manipulator for a chemical
+parts-cleaning station based on the following hardware:
+.Pp
+.Bl -bullet -compact
+.It
+A set of 3 motorized axis registered as
+.Xr servo 4
+devices.
+.It
+One pneumatic, sensing gripper registered as
+.Xr gripper 4 .
+.El
+.Pp
+The options are as follows:
+.Bl -tag -width Ds
+.It Fl p
+Home coordinates (see
+.Xr coordinates 7 )
+for picking up new parts.
+.It Fl w
+A range (min-max) specifying the minimum and maximum width of the part.
+The operation will not proceed unless the minimum width is sensed after the
+pickup action.
+.El
+.Pp
+.Sh ENVIRONMENT
+.Bl -tag -width UNITS
+.It Ev UNITS
+Set to
+.Sq metric
+or
+.Sq inch .
+Defaults to
+.Sq metric .
+.El
+.Sh SEE ALSO
+.Xr servo 4 ,
+.Xr gripper 4
+.Sh HISTORY
+The
+.Nm
+command first appeared in FabBSD 1.0.

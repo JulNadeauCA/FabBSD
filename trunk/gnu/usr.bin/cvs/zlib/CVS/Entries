@@ -1,0 +1,52 @@
+/.cvsignore/1.1.1.2/Fri Sep 28 22:45:41 2001//
+/ChangeLog/1.1.1.5/Fri Sep 28 22:45:40 2001//
+/FAQ/1.1.1.1/Fri Sep 28 22:45:40 2001//
+/INDEX/1.1.1.2/Fri Sep 28 22:45:40 2001//
+/Make_vms.com/1.1.1.2/Fri Sep 28 22:45:40 2001//
+/Makefile.b32/1.1.1.1/Fri Oct 18 03:35:03 1996//
+/Makefile.bor/1.1.1.1/Fri Oct 18 03:35:03 1996//
+/Makefile.dj2/1.1.1.1/Fri Oct 18 03:35:03 1996//
+/Makefile.in/1.1.1.5/Fri Sep 28 22:45:40 2001//
+/Makefile.msc/1.1.1.1/Fri Oct 18 03:35:03 1996//
+/Makefile.riscos/1.1.1.2/Fri Sep 28 22:45:40 2001//
+/Makefile.sas/1.1.1.1/Fri Oct 18 03:35:04 1996//
+/Makefile.tc/1.1.1.1/Fri Oct 18 03:35:04 1996//
+/Makefile.wat/1.1.1.1/Fri Oct 18 03:35:04 1996//
+/README/1.1.1.2/Fri Sep 28 22:45:40 2001//
+/adler32.c/1.1.1.2/Fri Sep 28 22:45:40 2001//
+/algorithm.txt/1.1.1.1/Fri Sep 28 22:45:40 2001//
+/compress.c/1.1.1.2/Fri Sep 28 22:45:40 2001//
+/configure/1.1.1.2/Fri Sep 28 22:45:40 2001//
+/crc32.c/1.1.1.2/Fri Sep 28 22:45:40 2001//
+/deflate.c/1.1.1.2/Fri Sep 28 22:45:40 2001//
+/deflate.h/1.1.1.2/Fri Sep 28 22:45:40 2001//
+/descrip.mms/1.1.1.1/Fri Oct 18 03:35:04 1996//
+/example.c/1.1.1.2/Fri Sep 28 22:45:40 2001//
+/gzio.c/1.2/Mon Dec  9 00:45:34 2002//
+/infblock.c/1.1.1.2/Fri Sep 28 22:45:40 2001//
+/infblock.h/1.1.1.2/Fri Sep 28 22:45:40 2001//
+/infcodes.c/1.1.1.2/Fri Sep 28 22:45:40 2001//
+/infcodes.h/1.1.1.2/Fri Sep 28 22:45:40 2001//
+/inffast.c/1.1.1.2/Fri Sep 28 22:45:40 2001//
+/inffast.h/1.1.1.2/Fri Sep 28 22:45:40 2001//
+/inffixed.h/1.1.1.1/Fri Sep 28 22:45:40 2001//
+/inflate.c/1.1.1.2/Fri Sep 28 22:45:40 2001//
+/inftrees.c/1.1.1.2/Fri Sep 28 22:45:40 2001//
+/inftrees.h/1.1.1.2/Fri Sep 28 22:45:40 2001//
+/infutil.c/1.1.1.2/Fri Sep 28 22:45:40 2001//
+/infutil.h/1.1.1.2/Fri Sep 28 22:45:40 2001//
+/maketree.c/1.1.1.1/Fri Sep 28 22:45:40 2001//
+/minigzip.c/1.1.1.2/Fri Sep 28 22:45:40 2001//
+/trees.c/1.1.1.2/Fri Sep 28 22:45:40 2001//
+/trees.h/1.1.1.1/Fri Sep 28 22:45:40 2001//
+/uncompr.c/1.1.1.2/Fri Sep 28 22:45:40 2001//
+/zconf.h/1.1.1.2/Fri Sep 28 22:45:40 2001//
+/zlib.3/1.1.1.1/Fri Sep 28 22:45:40 2001//
+/zlib.h/1.1.1.2/Fri Sep 28 22:45:40 2001//
+/zutil.c/1.1.1.2/Fri Sep 28 22:45:40 2001//
+/zutil.h/1.1.1.2/Fri Sep 28 22:45:40 2001//
+D/amiga////
+D/contrib////
+D/msdos////
+D/nt////
+D/os2////

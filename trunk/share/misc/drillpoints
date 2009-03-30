@@ -1,0 +1,26 @@
+# $FabBSD$
+#
+# The length of drill points can be computed using
+#	P = D*K
+# where:
+#	P = Drill point length
+#	D = Diameter of drill
+#	K = Constant
+#
+# This table lists the K values for most common drill point angles.
+#
+
+# Point angle (degs) : K constant
+
+60	0.866025404
+82	0.575184204
+90	0.500000000
+118	0.300430310
+120	0.288675135
+125	0.260283525
+130	0.233153829
+135	0.207106781
+140	0.181985117
+145	0.157649394
+150	0.133974596
+

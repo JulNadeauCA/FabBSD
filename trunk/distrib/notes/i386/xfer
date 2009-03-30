@@ -1,0 +1,43 @@
+dnl	$FabBSD: xfer,v 1.28 2007/08/02 17:33:12 david Exp $
+dnl	$OpenBSD: xfer,v 1.28 2007/08/02 17:33:12 david Exp $
+Installation is supported from several media types, including:
+
+	CD-ROM
+	FFS partitions (for upgrades only)
+	DOS (FAT) partitions (for upgrades only)
+	EXT2 partitions (for upgrades only)
+	Tape
+dnl	Remote NFS partition
+	FTP
+	HTTP
+
+If you can't (or don't want to) boot off a CD-ROM, you can use a floppy
+disk (1.44MB required).  Failing that, if your computer supports PXE, you
+can prepare a server to start the install across the network, but you will
+still need the install sets available on one of the above media types.
+
+FabBSDXferFloppyFromDOS
+
+FabBSDXferFloppyFromUNIX
+
+Creating a PXE network bootable setup using FabBSD or other Un*x-like system:
+
+	In order to start the install via PXE, you will need to set up a
+	DHCP server and a TFTP server.  The details of how to do this
+	vary considerably, depending on the network's host.  You should
+	refer to the relevant man pages or administrator's guide for the
+	host system.
+
+	The DHCP server should return "pxeboot" to MACHINE clients as the
+	network boot program.  Both pxeboot and the bsd.rd install kernel
+	should be copied to the TFTP server's root directory.
+
+
+FabBSDXferShortPrelude
+
+
+FabBSDXferBareTape(xbase xetc xfont xserv xshare)
+
+dnl FabBSDXferNFS
+dnl
+FabBSDXferFFS

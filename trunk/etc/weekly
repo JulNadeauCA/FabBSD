@@ -1,0 +1,18 @@
+#!/bin/sh -
+#
+#	$OpenBSD: weekly,v 1.19 2007/02/02 14:52:48 ajacoutot Exp $
+#
+umask 022
+
+PATH=/bin:/sbin:/usr/sbin:/usr/bin:/usr/libexec
+export PATH
+
+if [ -f /etc/weekly.local ]; then
+	echo ""
+	echo "Running weekly.local:"
+	. /etc/weekly.local
+fi
+
+echo ""
+echo "Rebuilding whatis databases:"
+makewhatis

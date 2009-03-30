@@ -1,0 +1,3 @@
+dnl	$FabBSD$
+dnl	$OpenBSD: upgrade,v 1.16 2003/02/15 21:22:08 miod Exp $
+FabBSDUpgrade({:-the CD-ROM, the miniroot, or the installation floppy-:})

@@ -1,0 +1,29 @@
+dnl	$FabBSD$
+dnl	$OpenBSD: contents,v 1.23 2008/08/06 20:42:56 miod Exp $
+TopPart
+
+FabBSDdistsets
+
+FabBSDbsd
+
+FabBSDrd
+
+FabBSDinstalliso
+
+FabBSDcd
+
+	ofwboot		The FabBSD/MACHINE secondary boot loader.
+dnl
+dnl	bsd.tbxi
+
+DistributionDescription(eleven)
+
+FabBSDbase(57119429,165373272,shared)
+
+FabBSDcomp(100327860,259553331,shared)
+
+FabBSDetc(650053,2033775)
+
+FabBSDman(7733079,27958951)
+
+FabBSDmisc(2935030,9911964)
