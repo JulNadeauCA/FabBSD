@@ -1,0 +1,178 @@
+dnl	$FabBSD$
+dnl	$OpenBSD: INSTALL,v 1.42 2008/08/05 22:53:51 miod Exp $
+include(INCLUDE/../m4.common)dnl
+INSTALLATION NOTES for FabBSD/MACHINE OSREV
+
+
+What is FabBSD?
+---------------
+
+FabBSD is an open-source, 4.4BSD-like operating system designed for
+numerical control of machinery and instrumentation. FabBSD can be used to
+control various types of equipment:
+
+	- Machine tools: CNC milling machines, lathes, routers, lasers
+	- Process control: Power supplies, heaters, chillers, valves, relays
+	- Measurement: Optical encoders, thickness gauges, tachometers,
+	  thermocouples
+
+Due to the real-time aspect of its kernel, FabBSD is designed for use on
+systems dedicated to machine control. Hardware requirements are minimal.
+For instance, in a typical computer-aided machining setup, FabBSD running
+on a 133MHz 486-class processor will control a set of 350kHz motor drives
+with ease, with or without software-based closed-loop control.
+
+FabBSD OSREV integrates a subset of the standard BSD system commands and
+utilities from OpenBSD. The distribution also includes Binutils, GCC, gdb,
+OpenSSH and Sudo. FabBSD adds programming interfaces such as cnc(3), a set
+of command-line utilities and the machctld(8) daemon.
+
+Because FabBSD is from Canada, the export of Cryptography pieces (such
+as OpenSSH and IPsec) to the world is not restricted.
+
+(NOTE: FabBSD can not be re-exported from the US once it has entered
+the US.  Because of this, take care NOT to get the distribution from
+an FTP server in the US if you are outside of Canada and the US.)
+
+A comprehensive list of the improvements brought by the OSREV release
+is available on the web at http://www.FabBSD.org/OSrev.html.
+dnl
+dnl MACHINE/whatis
+dnl A few descriptive words about the port to MACHINE (i.e. what kind
+dnl of hardware it runs on, without too much details - MACHINE/hardware
+dnl will take care of this).
+dnl Needs to start with a blank line if non empty.
+includeit(whatis)dnl
+
+
+Sources of FabBSD:
+------------------
+
+includeit(mirrors)dnl
+
+
+FabBSD OSREV Release Contents:
+------------------------------
+
+The FabBSD OSREV release is organized in the following way.  In the .../OSREV
+directory, for each of the architectures having an FabBSD OSREV binary
+distribution, there is a sub-directory.
+
+includeit(contents)
+
+
+FabBSD System Requirements and Supported Devices:
+-------------------------------------------------
+
+includeit(hardware)
+
+
+Getting the FabBSD System onto Useful Media:
+--------------------------------------------
+
+includeit(xfer)
+
+
+Preparing your System for FabBSD Installation:
+----------------------------------------------
+
+includeit(prep)
+
+
+Installing the FabBSD System:
+-----------------------------
+
+includeit(install)
+
+
+Upgrading a previously-installed FabBSD System:
+-----------------------------------------------
+
+includeit(upgrade)
+
+
+Getting source code for your FabBSD System:
+-------------------------------------------
+
+Now that your FabBSD system is up and running, you probably want to get
+access to source code so that you can recompile pieces of the system.
+
+A few methods are provided.  If you have an FabBSD CD-ROM, the source
+code is provided.  Otherwise, you can get the pieces over the Internet:
+using anonymous CVS, CTM, CVSync or FTP.  For more information, see
+
+	http://www.FabBSD.org/download.html
+
+
+Using online FabBSD documentation:
+----------------------------------
+
+Documentation is available if you first install the manual pages
+distribution set.  Traditionally, the UN*X "man pages" (documentation)
+are denoted by 'name(section)'.  Some examples of this are
+
+	intro(1),
+	man(1),
+	apropos(1),
+	passwd(1),
+	passwd(5) and
+	afterboot(8).
+
+The section numbers group the topics into several categories, but three
+are of primary interest: user commands are in section 1, file formats
+are in section 5, and administrative information is in section 8.
+
+The 'man' command is used to view the documentation on a topic, and is
+started by entering 'man [section] topic'.  The brackets [] around the
+section should not be entered, but rather indicate that the section is
+optional.  If you don't ask for a particular section, the topic with the
+least-numbered section name will be displayed.  For instance, after
+logging in, enter
+
+	man passwd
+
+to read the documentation for passwd(1).  To view the documentation for
+passwd(5), enter
+
+	man 5 passwd
+
+instead.
+
+If you are unsure of what man page you are looking for, enter
+
+	apropos subject-word
+
+where "subject-word" is your topic of interest; a list of possibly
+related man pages will be displayed.
+
+
+Adding third party software; ``packages'' and ``ports'':
+--------------------------------------------------------
+
+includeit(packages)
+
+
+Administrivia:
+--------------
+
+Information about the various OpenBSD mailing list and proper netiquette
+is available at
+
+	http://FabBSD.org/lists.html
+
+To report bugs, use the 'sendbug' command shipped with FabBSD, and fill
+in as much information about the problem as you can.  Good bug reports
+{:-include-:} lots of details.  Additionally, bug reports can be sent
+by mail to:
+
+	bugs@FabBSD.org
+
+Use of 'sendbug' is encouraged, however, because bugs reported with it
+are entered into the FabBSD bugs database, and thus can't slip through
+the cracks.
+
+As a favor, please avoid mailing huge documents or files to the
+mailing lists.  Instead, put the material you would have sent up
+for FTP somewhere, then mail the appropriate list about it, or, if
+you'd rather not do that, mail the list saying you'll send the data
+to those who want it.

@@ -1,0 +1,114 @@
+.\"
+.\" Copyright (c) 2009 Hypertriton, Inc. <http://hypertriton.com/>
+.\" All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 
+.\" THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
+.\" INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+.\" (INCLUDING BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+.\" SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+.\" STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+.\" IN ANY WAY OUT OF THE USE OF THIS SOFTWARE EVEN IF ADVISED OF THE
+.\" POSSIBILITY OF SUCH DAMAGE.
+.\"
+.Dd $Mdocdate: March 29 2009 $
+.Dt CNCMOVE 2
+.Os
+.Sh NAME
+.Nm cncmove
+.Nd coordinated motion of motorized axis
+.Sh SYNOPSIS
+.Fd #include <sys/cnc.h>
+.Ft int
+.Fn cncmove "const struct cnc_velocity *vel" "const cnc_vec_t *tgt"
+.Sh DESCRIPTION
+.Nm
+invokes the kernel's trajectory planner to perform coordinated motion (e.g.,
+of the registered
+.Xr servo 4
+devices), from its current position to
+.Fa tgt ,
+specified in absolute machine coordinates.
+The call returns only when the motion is complete.
+.Pp
+The
+.Fa vel
+argument specifies the velocity profile.
+.Ft cnc_velocity
+is defined as:
+.Bd -literal
+struct cnc_velocity {
+	u_long v0;		 /* min steps/s */
+	u_long F;		 /* max steps/s */
+	u_long Amax;		 /* max steps/ms^2 */
+	u_long Jmax;		 /* max steps/ms^3 */
+.Ed
+.Pp
+The
+.Va v0
+field specifies the initial velocity in steps/second.
+It can be set to zero.
+Too high a value can cause shock in the machine.
+.Va i_F
+specifies the nominal velocity in steps/second.
+The kernel may or may not reach this value depending on the length of motion
+and kinematic limits.
+.Va i_Amax
+is the limit on acceleration in steps/second^2 and
+.Va i_Jmax
+specifies the jerk limit in steps/second^3.
+.Sh RETURN VALUES
+If the motion is successful, a 0 value is returned.
+A return value of \-1 indicates an error, which is further specified in the global
+.Va errno .
+.Sh ERRORS
+The
+.Fn cncmove
+will fail if:
+.Bl -tag -width Er
+.It Bq Er ENXIO
+The trajectory planner has not been calibrated (i.e., the
+.Dv CNC_CALTIMINGS
+or
+.Dv CNC_SETTIMINGS
+ioctls have not been invoked).
+.It Bq Er EINVAL
+One of the specified parameters exceeds the kinematic limits of the machine
+(as set by the
+.Dv CNC_SETKINLIMITS
+ioctl).
+.It Bq Er EINTR
+Program has been interrupted by an
+.Xr estop 4
+event.
+.El
+.Sh SEE ALSO
+.Xr cnc 4
+.Rs
+.%A Daniela Constantinescu
+.%T "Smooth Time Optimal Trajectory Planning for Industrial Manipulators"
+.Re
+.Rs
+.%A Wei-Jen Chang
+.%T "Acceleration/Deceleration Planning with Jerk Limitation for Multi-Axis Motion Control"
+.Re
+.Rs
+.%A Sonja Macfarlane
+.%T "On-Line Smooth Trajectory Planning for Manipulators".
+.Re
+.Sh HISTORY
+The
+.Nm
+function appeared in FabBSD 1.0.

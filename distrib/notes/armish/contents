@@ -1,0 +1,23 @@
+dnl	$FabBSD$
+dnl	$OpenBSD: contents,v 1.4 2008/08/06 20:42:56 miod Exp $
+TopPart
+
+FabBSDdistsets
+
+FabBSDbsd
+
+FabBSDrd
+dnl not yet...
+dnl FabBSDcd
+
+DistributionDescription(eleven)
+
+FabBSDbase(50122467,144074855,shared)
+
+FabBSDcomp(76748376,221356917,shared)
+
+FabBSDetc(650340,2033850)
+
+FabBSDman(7734071,27958657)
+
+FabBSDmisc(2935121,9911964)

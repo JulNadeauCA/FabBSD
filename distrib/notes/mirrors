@@ -1,0 +1,13 @@
+dnl	$FabBSD$
+dnl	$OpenBSD: mirrors,v 1.69 2007/08/20 15:28:03 grunk Exp $
+This is a list of currently known FTP servers at the time of the OSREV release.
+For a more recent list, please refer to
+
+	http://www.FabBSD.org/ftp.html
+
+Main server in Quebec, Canada:
+    ftp://ftp.FabBSD.org/pub/FabBSD (Montreal)
+
+Additionally, the file ftp://ftp.FabBSD.org/pub/FabBSD/ftplist
+contains a list which is continually updated.  If you wish to become a
+distribution site for FabBSD, contact <vedge@hypertriton.com>.

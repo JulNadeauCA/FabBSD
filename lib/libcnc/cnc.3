@@ -1,0 +1,91 @@
+.\"	$FabBSD$
+.\"
+.\" Copyright (c) 2009 Hypertriton, Inc. <http://hypertriton.com/>
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.Dd $Mdocdate: May 31 2007 $
+.Dt CNC 3
+.Os
+.Sh NAME
+.Nm cnc
+.Nd computer-assisted machining (CAM) interface
+.Sh DESCRIPTION
+The
+.Nm
+library provides a simple interface to the numerical-assisted machine control
+functions of the FabBSD kernel.
+.Pp
+.Sh PROGRAM FORMATS
+FabBSD implements a native CNC program format, which can be expressed as text
+or binary data.
+The
+.Nm
+library handles the conversion of CNC programs between text and binary.
+FabBSD CNC programs may be either handcrafted, generated from the
+.Xr gcode 1
+command (which converts from RS-274 form),
+output by various utilities such as
+.Xr boltpattern 1 ,
+or remotely uploaded by graphical CAD applications via
+.Xr machctld 8 . 
+.Pp
+.Sh INTERFACE
+.nr nS 1
+.Ft void
+.Fn CNC_Init "void"
+.Pp
+.Ft void
+.Fn CNC_Destroy "void"
+.Pp
+.Ft "const char *"
+.Fn CNC_GetError "void"
+.Pp
+.Ft "int"
+.Fn CNC_ParseDistance "const char *s" "cnc_pos_t *v"
+.nr nS 0
+.Pp
+The
+.Fn CNC_Init
+function initializes the
+.Nm
+library, it must be invoked before any other function.
+.Fn CNC_Destroy
+releases all resources allocated by the library.
+.Pp
+The
+.Fn CNC_GetError
+routine retrieves the current error string.
+.Pp
+The
+.Fn CNC_ParseDistance
+function converts the given distance string.
+
+.Sh FILES
+.Bl -tag -width /dev/cnc -compact
+.It Pa /dev/cnc
+The kernel's machine control interface.
+.El
+.\" .Sh SEE ALSO
+.\" .Xr foo 3
+.Sh STANDARDS
+The cnc interface was first introduced in FabBSD 1.0.

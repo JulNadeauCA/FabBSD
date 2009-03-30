@@ -1,0 +1,20 @@
+#	$OpenBSD: crontab,v 1.15 2007/02/27 16:04:16 beck Exp $
+#
+# /var/cron/tabs/root - root's crontab
+#
+SHELL=/bin/sh
+PATH=/bin:/sbin:/usr/bin:/usr/sbin
+HOME=/var/log
+#
+#minute	hour	mday	month	wday	command
+#
+# rotate log files every hour, if necessary
+0	*	*	*	*	/usr/bin/newsyslog
+# send log file notifications, if necessary
+#1-59	*	*	*	*	/usr/bin/newsyslog -m
+#
+# do daily/weekly/monthly maintenance
+30	1	*	*	*	umask 077; /bin/sh /etc/daily 1>/var/log/daily.out 2>&1
+30	3	*	*	6	umask 077; /bin/sh /etc/weekly 1>/var/log/weekly.out 2>&1
+30	5	1	*	*	umask 077; /bin/sh /etc/monthly 1>/var/log/monthly.out 2>&1
+

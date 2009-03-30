@@ -1,0 +1,62 @@
+dnl	$FabBSD$
+dnl	$OpenBSD: install,v 1.6 2008/08/06 18:20:55 miod Exp $
+FabBSDInstallPrelude
+
+FabBSDInstallPart2
+
+FabBSDBootMsgs(,"wd0")
+
+	You will next be asked for your terminal type.  If you are
+	installing from a non-serial console, the default of "vt220"
+	is correct.  If you are installing from a serial console
+	you should choose the terminal type from amongst those listed.
+	(If your terminal type is xterm, just use vt220.)
+
+FabBSDInstallPart3
+
+	Next you will have to edit or create a disk label for the disk
+	FabBSD is being installed on.  If there are any existing
+	partitions defined (for any operating system), and a disk label
+	is not found, you will first be given an opportunity to run
+	fdisk and create an FabBSD partition.
+
+	If fdisk is being invoked on your behalf, it will start by
+	displaying the current partitions defined and then allow you
+	to modify this information, add new partitions and change
+	which partition to boot from by default.  If you make a mistake,
+	you will be allowed to repeat this procedure as necessary to
+	correct this.  Note that you should make FabBSD be the active
+	partition at least until the install has been completed.
+
+FabBSDInstallPart4({:- If you have Linux partitions
+	defined on the disk, these will usually show up as partition
+	'i', 'j' and so on.-:})
+
+	Note that all FabBSD partitions in the disk label must have an
+	offset that makes it start within the FabBSD part of the disk,
+	and a size that keeps it inside of that portion of the disk.  This
+	is within the bounds of the 'c' partition if the disk is not being
+	shared with other operating systems, and within the FabBSD fdisk
+	partition if the disk is being shared.
+
+FabBSDInstallPart5(wd0)
+
+FabBSDInstallNet({:-CD-ROM, -:},nofloppy)
+
+FabBSDFTPInstall
+
+FabBSDHTTPInstall
+
+FabBSDCDROMInstall
+
+FabBSDDISKInstall({:-"wdN" or -:},,{:-, Linux (ext2) or MS-DOS-:})
+
+FabBSDCommonFS
+
+FabBSDCommonURL
+
+fABBSDInstallWrapup
+
+FabBSDInstallWrapupPart2
+
+FabBSDCongratulations

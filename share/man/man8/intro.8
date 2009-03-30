@@ -1,0 +1,174 @@
+.\"	$OpenBSD: intro.8,v 1.16 2008/06/08 03:03:37 jdixon Exp $
+.\"	$NetBSD: intro.8,v 1.3 1994/11/30 19:36:24 jtc Exp $
+.\"
+.\" Copyright (c) 1983, 1991, 1993
+.\"	The Regents of the University of California.  All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. Neither the name of the University nor the names of its contributors
+.\"    may be used to endorse or promote products derived from this software
+.\"    without specific prior written permission.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.\"	@(#)intro.8	8.2 (Berkeley) 12/11/93
+.\"
+.Dd $Mdocdate: June 8 2008 $
+.Dt INTRO 8
+.Os
+.Sh NAME
+.Nm intro
+.Nd introduction to system maintenance and operation commands
+.Sh DESCRIPTION
+The manual pages in section 8 contain information related to
+system operation and maintenance.
+They describe commands concerning file systems,
+such as
+.Xr fsck 8 ,
+.Xr mount 8 ,
+and
+.Xr newfs 8 .
+.Pp
+There are pages which document the running of the system, such as
+.Xr afterboot 8 ,
+.Xr ifconfig 8 ,
+.Xr security 8 ,
+and the configuration files located in
+.Pa /etc .
+Procedures concerning system failure are documented in
+.Xr crash 8 .
+.Pp
+Section 8 pages also describe network services and daemons.
+The rest of this page discusses some of the main daemons
+available on the FabBSD system, and how to enable/disable them.
+.Pp
+System daemons are controlled by the script
+.Xr rc 8 ,
+which is in turn configured by
+.Xr rc.conf 8 .
+For example the CNC machine control daemon
+.Xr machctld 8
+is controlled by the following line from
+.Xr rc.conf 8 :
+.Bd -literal -offset indent
+.Dl machctld_flags=NO
+.Ed
+.Pp
+Thus it is not started by default.
+To enable or disable daemon processes,
+administrators should edit the file
+.Xr rc.conf.local 8 ,
+which overrides
+.Xr rc.conf 8 .
+So to enable
+.Xr machctld 8 ,
+the following line might be added to
+.Pa /etc/rc.conf.local :
+.Bd -literal -offset indent
+machctld_flags=""
+.Ed
+or
+.Bd -literal -offset indent -compact
+machctld_flags="-b localhost"
+.Ed
+.Pp
+As can be seen above,
+this method is also used to specify additional options.
+.Pp
+Below is a list of some of the daemons available.
+For further information, see
+.Xr rc 8
+and the individual pages for the utilities.
+.Ss Automounter daemon (amd)
+If using the
+.Xr amd 8
+package,
+go into the
+.Pa /etc/amd
+directory and set it up by
+renaming
+.Pa master.sample
+to
+.Pa master
+and editing it and creating other maps as needed.
+.Pp
+Relevant
+.Xr rc.conf 8
+variables:
+.Va amd ,
+.Va amd_dir ,
+and
+.Va amd_master .
+.Ss Clock synchronisation
+In order to make sure the system clock is correct,
+it may be synchronised with a number of external sources.
+The utility available is
+.Xr rdate 8 .
+.Pp
+Relevant
+.Xr rc.conf 8
+variables:
+.Va rdate_flags .
+.Ss Concatenated disks (ccd)
+If you are using
+.Xr ccd 4
+concatenated disks, edit
+.Pa /etc/ccd.conf .
+Use the
+.Ic ccdconfig -U
+command to unload and the
+.Ic ccdconfig -C
+command to create tables internal to the kernel for the concatenated disks.
+You then
+.Xr mount 8 ,
+.Xr umount 8 ,
+and edit
+.Pa /etc/fstab
+as needed.
+.Ss NFS server
+If this is an NFS server,
+edit
+.Pa /etc/exports .
+.Pp
+Relevant
+.Xr rc.conf 8
+variables:
+.Va nfs_server
+and
+.Va nfsd_flags .
+.Ss RPC-based network services
+Several services depend on the RPC portmapper,
+.Xr portmap 8 ,
+being running for proper operation.
+This includes NFS exports, among other services.
+.Pp
+Relevant
+.Xr rc.conf 8
+variables:
+.Va portmap .
+.Sh SEE ALSO
+.Xr afterboot 8 ,
+.Xr rc 8 ,
+.Xr rc.conf 8
+.Sh HISTORY
+The
+.Nm intro
+section manual page appeared in
+.Bx 4.2 .

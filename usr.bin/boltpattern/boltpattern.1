@@ -1,0 +1,60 @@
+.\"	$FabBSD$
+.\"	Public domain
+.\"
+.Dd $Mdocdate: March 26 2009 $
+.Dt BOLTPATTERN 1
+.Os
+.Sh NAME
+.Nm boltpattern
+.Nd generate toolpaths for machining circular pattern of holes
+.Sh SYNOPSIS
+.Nm boltpattern
+.Op Fl c Ar center
+.Op Fl r Ar radius
+.Op Fl n Ar num-holes
+.Op Fl d Ar depth
+.Op Fl t Ar tool
+.Sh DESCRIPTION
+The
+.Nm
+utility generates a CNC program for machining a circular pattern of holes.
+The specified number of holes will be drilled at the specified depth, with
+the specified tool.
+For producing counterbored or countersunk holes,
+.Nm
+is usually invoked multiple times with different tools and depth parameters.
+The options are as follows:
+.Bl -tag -width Ds
+.It Fl c
+Center of the pattern in standard
+.Xr coordinates 7
+format.
+.It Fl r
+Radius of the pattern.
+.It Fl n
+Total number of holes in pattern.
+.It Fl d
+Depth of holes (relative to tip of the tool).
+.It Fl t
+Name or number of tool to use (see
+.Xr tools 8 ) .
+.El
+.Pp
+.Sh ENVIRONMENT
+.Bl -tag -width UNITS
+.It Ev UNITS
+Set to
+.Sq metric
+or
+.Sq inch .
+Defaults to
+.Sq metric .
+.El
+.Sh SEE ALSO
+.Xr cnc 3 ,
+.Xr coordinates 7 ,
+.Xr tools 8
+.Sh HISTORY
+The
+.Nm
+command first appeared in FabBSD 1.0.

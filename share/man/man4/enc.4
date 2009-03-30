@@ -1,0 +1,38 @@
+.\"	$FabBSD$
+.\"	$OpenBSD: enc.4,v 1.26 2007/05/31 19:19:50 jmc Exp $
+.\"
+.\" Copyright (c) 2006 Jason McIntyre <jmc@openbsd.org>
+.\"
+.\" Permission to use, copy, modify, and distribute this software for any
+.\" purpose with or without fee is hereby granted, provided that the above
+.\" copyright notice and this permission notice appear in all copies.
+.\"
+.\" THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+.\" WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+.\" MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+.\" ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+.\" WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+.\" ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+.\" OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+.\"
+.Dd $Mdocdate: May 31 2007 $
+.Dt ENC 4
+.Os
+.Sh NAME
+.Nm enc
+.Nd encapsulating interface
+.Sh SYNOPSIS
+.Cd "pseudo-device enc 1"
+.Sh DESCRIPTION
+The
+.Nm
+interface is a virtual interface for
+.Xr ipsec 4
+traffic.
+Only one
+.Nm
+interface, enc0, is supported.
+.Sh SEE ALSO
+.Xr ipsec 4 ,
+.Xr ipsec.conf 5 ,
+.Xr tcpdump 8
