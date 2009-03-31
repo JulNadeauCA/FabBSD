@@ -1,0 +1,43 @@
+#
+# Centronics Standard Parallel Port (Printer-Side)
+#
+# Connector: 36-pin Centronics
+#
+
+1|STROBE
+2|Data0
+3|Data1
+4|Data2
+5|Data3
+6|Data4
+7|Data5
+8|Data6
+9|Data7
+10|ACK
+11|BUSY
+12|PE
+13|SELOUT
+14|AUTOFD
+15|SELIN
+16|Gnd(Signal)
+17|Gnd(Chassis)
+18|+5V(50mA max)
+19|Gnd(STROBE)
+20|Gnd(Data0)
+21|Gnd(Data1)
+22|Gnd(Data2)
+23|Gnd(Data3)
+24|Gnd(Data4)
+25|Gnd(Data5)
+26|Gnd(Data6)
+27|Gnd(Data7)
+28|Gnd(ACK)
+29|Gnd(BUSY)
+30|Gnd(RESET)
+31|RESET
+32|FAULT
+33|Gnd(signal)
+34|N/A
+35|+5V
+36|SLCT IN
+

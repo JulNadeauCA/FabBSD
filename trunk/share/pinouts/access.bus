@@ -1,0 +1,12 @@
+#
+# Access.Bus Pinout.
+#
+# Connector: 4-Pin Modular
+# Cable: 18 AWG, Shielded (host ground only), Max. 1000pF
+#
+
+1|Gnd (Blk/26AWG)
+2|SDA (Grn/28AWG)
+3|+5v (Red/26AWG)
+4|SCL (Wht/28AWG)
+

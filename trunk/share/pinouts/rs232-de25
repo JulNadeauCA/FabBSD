@@ -1,0 +1,18 @@
+#
+# RS-232 Pinout for DE25 (DB25) Connector.
+#
+
+1|Gnd(Shield)		14|SBA
+2|TxD			15|DB
+3|RxD			16|SBB
+4|RTS			17|DD
+5|CTS			18|N/A
+6|DSR			19|SCA
+7|Gnd			20|DTR
+8|CD			21|CG
+9|N/A			22|RI
+10|N/A			23|CH/CI
+11|N/A			24|DA
+12|SCF			25|N/A
+13|SCB
+

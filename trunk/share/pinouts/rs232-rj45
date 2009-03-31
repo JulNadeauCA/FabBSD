@@ -1,0 +1,13 @@
+#
+# RS-232 Pinout for RJ45 Connector.
+#
+
+1|RI
+2|DCD
+3|DTR
+4|Gnd
+5|RxD
+6|TxD
+7|CTS
+8|RTS
+

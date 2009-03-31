@@ -1,0 +1,28 @@
+#
+# 40-Pin IDE Connector Pinout
+#
+# Connector: 2x20 Position IDC with 0.1" Pitch
+# Cable: 30 AWG, Impedance 70-90 ohm
+#
+
+ 1|Reset	 2|Ground
+ 3|Data7	 4|Data8
+ 5|Data6	 6|Data9
+ 7|Data5	 8|Data10
+ 9|Data4	10|Data11
+11|Data3	12|Data12
+13|Data2	14|Data13
+15|Data1	16|Data14
+17|Data0	18|Data15
+19|Ground	20|Key
+21|DMARQ	22|Ground
+23|DIOW-	24|Ground
+25|DIOR-	26|Ground
+27|IORDY	28|CSEL
+29|DMARK-	30|Ground
+31|INTRQ	32|IOCS16-
+33|DA1		34|PDIAG-
+35|DA0		36|DA2
+37|CS1FX-	38|CS3FX-
+39|DASP-	40|Ground
+
