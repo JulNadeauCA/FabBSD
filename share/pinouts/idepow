@@ -1,0 +1,11 @@
+#
+# IDE Power Pinout
+#
+# Connector: 4-pin, 0.2" Pitch
+# Cable: 18 AWG
+#
+
+1|+12v (Yel)
+2|+12v Gnd (Blk)
+3|+5v Gnd (Blk)
+4|+5v (Red)

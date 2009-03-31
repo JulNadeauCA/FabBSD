@@ -1,0 +1,20 @@
+#
+# Centronics Standard Parallel Port (Host-Side)
+#
+# Connector: 25-pin D-sub
+#
+
+1|STROBE	14|AUTOFD
+2|Data0		15|ERROR
+3|Data1		16|INIT
+4|Data2		17|SELIN
+5|Data3		18|Gnd(STROBE)
+6|Data4		19|Gnd(Data1,Data2)
+7|Data5		20|Gnd(Data3,Data4)
+8|Data6		21|Gnd(Data5,Data6)
+9|Data7		22|Gnd(Data7,Data8)
+10|ACK		23|Gnd(BUSY,FAULT)
+11|BUSY		24|Gnd(PE,SEL,ACK)
+12|PE		25|Gnd(AUTOFD,SELIN,INIT)
+13|SEL
+

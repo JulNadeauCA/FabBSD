@@ -1,0 +1,10 @@
+#
+# RS-232 Pinout for DE9 (DB9) Connector.
+#
+
+1|CD		6|DSR
+2|RxD		7|RTS
+3|TxD		8|CTS
+4|DTR		9|RI
+5|Gnd
+
