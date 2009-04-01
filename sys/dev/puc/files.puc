@@ -1,3 +1,4 @@
+#	$FabBSD$
 #	$OpenBSD: files.puc,v 1.3 2008/05/21 18:49:47 kettenis Exp $
 #
 # Config file and device description for machine-independent PUC drivers.
@@ -7,3 +8,5 @@ attach	com at puc with com_puc
 file	dev/puc/com_puc.c		com_puc
 attach	lpt at puc with lpt_puc
 file	dev/puc/lpt_puc.c		lpt_puc
+attach	lptgpio at puc with lptgpio_puc
+file	dev/puc/lptgpio_puc.c		lptgpio_puc

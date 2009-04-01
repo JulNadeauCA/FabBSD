@@ -214,9 +214,13 @@ device	spkr
 attach	spkr at pcppi
 file	dev/isa/spkr.c			spkr	needs-flag
 
-# 8255A-based PC parallel ports
+# 8255A-based PC parallel ports (printer interface)
 attach	lpt at isa with lpt_isa
 file	dev/isa/lpt_isa.c		lpt_isa needs-flag
+
+# 8255A-based PC parallel ports (general purpose I/O interface)
+attach	lptgpio at isa with lptgpio_isa
+file	dev/isa/lptgpio_isa.c		lptgpio_isa needs-flag
 
 # Winbond LPC Super I/O
 device	wbsio {}

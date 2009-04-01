@@ -51,8 +51,10 @@
 #include <dev/sbus/sbusvar.h>
 #include <dev/sbus/asioreg.h>
 #include <dev/ic/lptvar.h>
+#include <dev/ic/lptgpiovar.h>
 #include "apio.h"
 #include "lpt.h"
+#include "lptgpio.h"
 
 struct apio_softc {
 	struct device		sc_dev;
@@ -228,4 +230,39 @@ lpt_apio_intr(void *vsc)
 	bus_space_read_1(sc->sc_lpt.sc_iot, sc->sc_clk_h, 0);
 	return (r);
 }
-#endif
+#endif /* NLPT_APIO > 0 */
+
+#if NLPTGPIO_APIO > 0
+
+int	lptgpio_apio_match(struct device *, void *, void *);
+void	lptgpio_apio_attach(struct device *, struct device *, void *);
+int	lptgpio_apio_intr(void *);
+
+struct lptgpio_apio_softc {
+	struct lptgpio_softc sc_lpt;
+	bus_space_handle_t sc_clk_h;
+};
+
+struct cfattach lptgpio_apio_ca = {
+	sizeof(struct lptgpio_apio_softc), lptgpio_apio_match, lptgpio_apio_attach
+};
+
+int
+lptgpio_apio_match(struct device *parent, void *match, void *aux)
+{
+	return (1);
+}
+
+void
+lptgpio_apio_attach(struct device *parent, struct device *self, void *aux)
+{
+	struct lptgpio_apio_softc *sc = (struct lptgpio_apio_softc *)self;
+	struct apio_attach_args *aaa = aux;
+
+	sc->sc_lpt.sc_iot = aaa->aaa_iot;
+	sc->sc_lpt.sc_ioh = aaa->aaa_ioh;
+	sc->sc_clk_h = aaa->aaa_clkh;
+
+	lptgpio_attach_common(&sc->sc_lpt);
+}
+#endif /* NLPTGPIO_APIO > 0 */
