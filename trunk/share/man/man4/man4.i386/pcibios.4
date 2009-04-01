@@ -40,17 +40,14 @@
 .\" .Cd "#option  PCIBIOS_IRQS_HINT=0x0a00 #IRQ 9,11"
 .\" .Cd "#option  PCIBIOS_INTR_FIXUP_FORCE"
 .Sh DESCRIPTION
-.Ox
-provides support for setting up PCI controllers, bridges, and devices
+FabBSD provides support for setting up PCI controllers, bridges, and devices
 using information extracted from the BIOS.
 .Pp
 Ideally, the boot firmware of a machine (a.k.a. BIOS) should set
 up all PCI devices; assigning them I/O and memory addresses and
 interrupts.
 Alas, this does not always happen, so there is some
-PC specific code that can do the initialization when
-.Ox
-boots.
+PC specific code that can do the initialization when FabBSD boots.
 .Pp
 Flags is a bit mask each bit of which specifies a fixup procedure to
 omit.
@@ -211,7 +208,7 @@ implementation
 .Nm
 in
 .Ox
-is a real device, where options control is done through the
+and FabBSD is a real device, where options control is done through the
 .Nm flags
 which are modifiable through the
 .Xr boot_config 8
