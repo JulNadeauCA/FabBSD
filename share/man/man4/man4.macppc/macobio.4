@@ -1,3 +1,4 @@
+.\"	$FabBSD$
 .\"	$OpenBSD: macobio.4,v 1.19 2008/05/04 21:06:13 jmc Exp $
 .\"
 .\" Copyright (c) 2003 Dale Rahn.
@@ -39,18 +40,11 @@ device serves as a bridge to many of the onboard devices; it
 supports the GC, Heathrow, Intrepid, K2, Keylargo, OHare, Paddington,
 Pangea, and Shasta modules.
 .Pp
-.Ox
-provides support for the following devices:
+FabBSD provides support for the following devices:
 .Pp
 .Bl -tag -width 16n -offset indent -compact
-.It Xr aoa 4
-Apple aoa audio device
-.It Xr awacs 4
-Apple awacs audio device
 .It Xr bm 4
 Apple BMAC Ethernet device
-.It Xr daca 4
-Apple daca audio device
 .It Xr esp 4
 NCR 53c94 on-board SCSI interface
 .It Xr macgpio 4
@@ -61,14 +55,8 @@ Am79C940 (MACE) on-board Ethernet device
 ATA33 HD controller
 .It Xr mesh 4
 Macintosh Enhanced SCSI Hardware
-.It Xr onyx 4
-Apple onyx audio device
 .It Xr openpic 4
 OpenPIC interrupt controller
-.It Xr snapper 4
-Apple snapper audio device
-.It Xr tumbler 4
-Apple tumbler audio device
 .It Xr wdc 4
 WD100x compatible hard disk controller driver
 .It Xr wi 4
