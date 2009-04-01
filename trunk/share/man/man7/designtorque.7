@@ -1,0 +1,108 @@
+.\"	$FabBSD$
+.\"
+.\" Copyright (c) 2009 Hypertriton, Inc. <http://hypertriton.com/>
+.\" All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 
+.\" THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
+.\" INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+.\" (INCLUDING BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+.\" SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+.\" STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+.\" IN ANY WAY OUT OF THE USE OF THIS SOFTWARE EVEN IF ADVISED OF THE
+.\" POSSIBILITY OF SUCH DAMAGE.
+.\"
+.Dd $Mdocdate: March 31 2009 $
+.Dt DESIGNTORQUE 7
+.Os
+.Sh NAME
+.Nm designtorque
+.Nd guidelines for computing design torque
+.Sh DESCRIPTION
+Follow these guidelines to compute the maximum design torque (in in-lbs),
+from a given horsepower and RPM.
+The design torque is used to select torque-limiting shaft couplings, or
+servo/stepper motors in motion control applications.
+The design torque
+.Va Tmax
+is computed as:
+.Bd -literal -offset left
+	Tmax = Tnom * (K1*K2*K3)
+.Ed
+.Pp
+The nominal torque
+.Va Tnom
+is computed as:
+.Bd -literal -offset left
+	Tnom = (HP * 63025) / RPM
+	Tnom = (kW * 9550) / RPM
+.Ed
+.Pp
+.Em K1
+is the application service factor:
+.Bl -tag -width "K1 = 1.0 - 1.4 "
+.It K1 = 1.0-1.4
+Small masses to accelerate, uniform operation.
+Pumps for non viscous fluids, light-duty generators, blowers, fans, conveyors.
+.It K1 = 1.4-1.8
+Medium masses to accelerate, uniform operation.
+Wood / sheet metal working tools, textile machines, mixers.
+.It K1 = 1.7-2.0
+Medium masses to accelerate, nonuniform operation.
+Pumps for viscous fluids, printing presses, generators, shredders, winding
+machines.
+.It K1 = 2.0-2.2
+Medium masses to accelerate, nonuniform operation and shocks.
+Compression pumps, propeller pumps, centrifuges, paper mills, cable cars,
+concrete mixers.
+.It K1 = 2.2-2.4
+Large masses to accelerate, nonuniform operation and shocks.
+Piston pumps, stamping and forging pressesshears, excavators, hammer mills.
+.It K1 = 2.3-2.8
+Very large masses to accelerate, irregular operation and shocks.
+Piston compressors and pumps, welding machines, brick presses, stone crushers.
+.El
+.Pp
+.Em K2
+specifies the service factor for duty cycle:
+.Pp
+.Bl -tag -compact -width "K2 = 1.15 "
+.It K2 = 1.0
+Under 8 hours/day.
+.It K2 = 1.1
+Between 8 and 16 hours/day.
+.It K2 = 1.15
+Between 16 hours/day and continuous.
+.El
+.Pp
+.Em K3
+specifies the service factor for start/stop cycles per hour:
+.Pp
+.Bl -tag -compact -width "K3 = 1.0 "
+.It K3 = 1.0
+Up to 10 cycles
+.It K3 = 1.5
+Between 10 and 40 cycles
+.It K3 = 2.0
+Between 40 and 125 cycles
+.It K3 = 2.5
+Between 125 and 250 per hour
+.El
+.\".Sh SEE ALSO
+.\".Xr drills 7
+.Sh HISTORY
+The
+.Nm
+manual page first appeared in FabBSD 1.0.
