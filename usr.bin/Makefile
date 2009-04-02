@@ -1,9 +1,9 @@
+#	$FabBSD$
 #	$OpenBSD: Makefile,v 1.109 2008/06/04 21:12:49 deraadt Exp $
 
 .include <bsd.own.mk>
 
-SUBDIR= apply apropos arch asa asn1_compile awk banner \
-	basename bc \
+SUBDIR= apply apropos arch asa asn1_compile awk banner basename bc \
 	cap_mkdb chpass cmp col colcrt colrm \
 	column comm compile_et compress cpp crontab ctags cut \
 	dc deroff diff diff3 dirname du encrypt env expand false file \
@@ -12,7 +12,8 @@ SUBDIR= apply apropos arch asa asn1_compile awk banner \
 	infocmp ipcrm ipcs \
 	join jot kdump ktrace lam last lastcomm less lex lndir \
 	lock logger login logname look lorder m4 make man mesg mg \
-	mkdep mklocale mktemp msgs modstat nc netstat \
+	mkdep mklocale mktemp msgs modstat \
+	motioncap nc netstat \
 	nfsstat nice nm nohup cvs pagesize passwd paste patch pctr \
 	pkg-config pkill \
 	pr printenv printf rcs \
