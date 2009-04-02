@@ -75,14 +75,15 @@ const struct lptgpio_lpt_pin {
 	{ 14,	LPTGPIO_STATUS,	 3, 0,	GPIO_PIN_INPUT },	/* nError */
 	{ 15,	LPTGPIO_CONTROL, 2, 0,	GPIO_PIN_OUTPUT },	/* nInitialize */
 	{ 16,	LPTGPIO_CONTROL, 3, 1,	GPIO_PIN_OUTPUT }	/* nSelect */
-}
+};
 
 void
-lptgpio_attach_common(struct device *parent, struct device *self, void *aux)
+lptgpio_attach_common(struct lptgpio_softc *sc)
 {
-	struct lptgpio_softc *sc = (void *)self;
 	struct gpiobus_attach_args gba;
 	int i;
+
+	printf("\n");
 
 	for (i = 0; i < LPTGPIO_NPINS; i++) {
 		sc->sc_gpio_pins[i].pin_num = i;
@@ -110,8 +111,7 @@ int
 lptgpio_pin_read(void *arg, int pin)
 {
 	struct lptgpio_softc *sc = arg;
-	u_int8_t mask;
-	int v;
+	u_int8_t mask, v;
 
 	if (pin < 0 || pin >= LPTGPIO_NPINS)
 		return (0);
@@ -121,25 +121,26 @@ lptgpio_pin_read(void *arg, int pin)
 	if (lptgpio_pins[pin].inverted) {
 		v = !v;
 	}
-	sc->sc_gpio_pins[i].pin_state = (v) ? GPIO_PIN_HIGH : GPIO_PIN_LOW;
-	return (sc->sc_gpio_pins[i].pin_state);
+	sc->sc_gpio_pins[pin].pin_state = (v) ? GPIO_PIN_HIGH : GPIO_PIN_LOW;
+	return (sc->sc_gpio_pins[pin].pin_state);
 }
 
 void
 lptgpio_pin_write(void *arg, int pin, int value)
 {
 	struct lptgpio_softc *sc = arg;
+	u_int8_t v;
 
 	if (pin < 0 || pin >= LPTGPIO_NPINS)
-		return (0);
+		return;
 	
 	v = bus_space_read_1(sc->sc_iot, sc->sc_ioh, lptgpio_pins[pin].reg);
 	if (value == GPIO_PIN_HIGH) {
 		v |= (0x01 << lptgpio_pins[pin].offset);
-		sc->sc_gpio_pins[i].pin_state = 1;
+		sc->sc_gpio_pins[pin].pin_state = 1;
 	} else {
 		v &= ~(0x01 << lptgpio_pins[pin].offset);
-		sc->sc_gpio_pins[i].pin_state = 0;
+		sc->sc_gpio_pins[pin].pin_state = 0;
 	}
 	bus_space_write_1(sc->sc_iot, sc->sc_ioh, lptgpio_pins[pin].reg, v);
 }
