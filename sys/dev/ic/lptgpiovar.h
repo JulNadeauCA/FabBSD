@@ -13,7 +13,7 @@ struct lptgpio_softc {
 	struct gpio_pin		sc_gpio_pins[LPTGPIO_NPINS];
 };
 
-void	lptgpio_attach_common(struct device *, struct device *, void *);
+void	lptgpio_attach_common(struct lptgpio_softc *);
 int	lptgpio_pin_read(void *, int);
 void	lptgpio_pin_write(void *, int, int);
 void	lptgpio_pin_ctl(void *, int, int);
