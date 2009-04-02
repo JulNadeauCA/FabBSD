@@ -25,56 +25,57 @@
 
 #include <cnc.h>
 #include <stdio.h>
+#include <unistd.h>
 
 cnc_vec_t C;
-cnc_pos_t radius;
-cnc_pos_t depth;
+cnc_dist_t radius;
+cnc_dist_t depth;
 int numHoles = 0;
+int tool = -1;
+
+static void
+printusage(void)
+{
+	extern char *__progname;
+	printf("Usage: %s [-c center] [-r radius] [-n num-holes] [-d depth] "
+	       "[-t tool]\n", __progname);
+	exit(1);
+}
 
 int
-main(int argc, char *argv)
+main(int argc, char *argv[])
 {
 	int ch, i, centerOk = 0, radiusOk = 0, depthOk = 0;
+
+	cnc_vec_zero(&C);
+	radius = 0;
+	depth = 0;
 
 	while ((ch = getopt(argc, argv, "c:r:n:d:t:?h")) != -1) {
 		switch (ch) {
 		case 'c':
-			if (CNC_ParseVector(optarg, &C) == -1) {
-				goto fail;
-			}
-			centerOk = 1;
+			cnc_vec_parse(&C, optarg);
 			break;
 		case 'r':
-			if (CNC_ParseDistance(optarg, &radius) == -1) {
-				goto fail;
-			}
-			radiusOk = 1;
+			cnc_dist_parse(&radius, optarg);
 			break;
 		case 'n':
 			numHoles = atoi(optarg);
 			break;
 		case 'd':
-			if (CNC_ParseDistance(optarg, &depth) == -1) {
-				goto fail;
-			}
-			depthOk = 1;
+			cnc_dist_parse(&depth, optarg);
 			break;
 		case 't':
-			if (CNC_ParseTool(optarg, &tool) == -1) {
-				goto fail;
-			}
+			tool = atoi(optarg);
 			break;
 		default:
-			printf("Usage: %s [-c center] [-r radius] [-n num-holes] [-d depth] [-t tool]\n", __progname);
-			return (1);
+			printusage();
 		}
 	}
-	if (!centerOk || !radiusOk || !depthOk) {
-		fprintf(stderr, "Missing center, radius or depth\n");
-		return (1);
-	}
+	if (radius == 0 || depth == 0)
+		errx(1, "radius or depth not specified");
 
-	printf("G00 %f.%f.%f\n", C.v[0], C.v[1], C.v[2]);
+	/* ... */
 
 	return (0);
 fail:

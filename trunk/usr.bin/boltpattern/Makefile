@@ -1,7 +1,7 @@
 #	$FabBSD$
 
 PROG=	boltpattern
-DPADD= ${LIBCNC}
-LDADD= -lcnc
+DPADD= ${LIBCNC} ${LIBM}
+LDADD= -lcnc -lm
 
 .include <bsd.prog.mk>
