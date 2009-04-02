@@ -34,7 +34,7 @@ static void
 printusage(void)
 {
 	printf("Usage: %s [-s startvel] [-f feedrate] [-a accellim] "
-	       "[-j jerklim] [position ...]\n", __progname);
+	       "[-j jerklim] [pos ...]\n", __progname);
 }
 
 int
@@ -51,16 +51,16 @@ main(int argc, char *argv[])
 	while ((ch = getopt(argc, argv, "s:f:a:j:?h")) != -1) {
 		switch (ch) {
 		case 's':
-			cnc_parse_velocity(&Vp.v0, optarg);
+			cnc_vel_parse(&Vp.v0, optarg);
 			break;
 		case 'F':
-			cnc_parse_velocity(&Vp.F, optarg);
+			cnc_vel_parse(&Vp.F, optarg);
 			break;
 		case 'A':
-			cnc_parse_velocity(&Vp.Amax, optarg);
+			cnc_vel_parse(&Vp.Amax, optarg);
 			break;
 		case 'J':
-			cnc_parse_velocity(&Vp.Jmax, optarg);
+			cnc_vel_parse(&Vp.Jmax, optarg);
 			break;
 		default:
 			printusage();
@@ -71,11 +71,11 @@ main(int argc, char *argv[])
 	argc -= optind;
 	for (i = 0; i < argc; i++) {
 		cnc_vec_t v;
-		if (cnc_vec_parse(&v, argv[i]) == -1 ||
-		    cncmove(&Vp, &v) == -1) {
-			fprintf(stderr, "%s: %s\n", __progname, cnc_get_error());
-			return (1);
-		}
+
+		if (cnc_vec_parse(&v, argv[i]) == -1)
+			errx(1, "parsing position: %s", cnc_get_error());
+		if (cncmove(&Vp, &v) != 0)
+			errx(1, "cncmove failed");
 	}
 	return (0);
 }
