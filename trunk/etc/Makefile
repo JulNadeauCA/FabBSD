@@ -75,7 +75,6 @@ distribution-etc-root-var: distrib-dirs
 	${INSTALL} -c -o root -g wheel -m 600 crontab ${DESTDIR}/var/cron/tabs/root
 	${INSTALL} -c -o root -g wheel -m 600 master.passwd ${DESTDIR}/etc
 	pwd_mkdb -p -d ${DESTDIR}/etc /etc/master.passwd
-	${INSTALL} -c -o root -g wheel -m 600 hostapd.conf ${DESTDIR}/etc
 	${INSTALL} -c -o root -g wheel -m 600 snmpd.conf ${DESTDIR}/etc
 	${INSTALL} -c -o ${BINOWN} -g ${BINGRP} -m 555 \
 	    etc.${MACHINE}/MAKEDEV ${DESTDIR}/dev
