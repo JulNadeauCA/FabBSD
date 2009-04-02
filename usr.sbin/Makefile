@@ -1,9 +1,10 @@
+#	$FabBSD
 #	$OpenBSD: Makefile,v 1.142 2008/06/15 04:44:30 sturm Exp $
 
 .include <bsd.own.mk>
 
 SUBDIR=	adduser amd apm apmd arp \
-	chroot config cron dev_mkdb \
+	chroot cncctl config cron dev_mkdb \
 	gpioctl hotplugd ifstated inetd iostat \
 	kgmon kvm_mkdb memconfig \
 	mtree openssl \
