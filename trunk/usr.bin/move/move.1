@@ -1,0 +1,65 @@
+.\"	$FabBSD$
+.\"	Public domain
+.\"
+.Dd $Mdocdate: April 1 2009 $
+.Dt MOVE 1
+.Os
+.Sh NAME
+.Nm move
+.Nd move machine axes
+.Sh SYNOPSIS
+.Nm move
+.Op Fl s Ar startvel
+.Op Fl f Ar feedrate
+.Op Fl a Ar accellim
+.Op Fl j Ar jerklim
+.Op Ar pos ...
+.Sh DESCRIPTION
+The
+.Nm
+command is the simplest interface to FabBSD's trajectory planner.
+It moves the registered machine axes (see
+.Xr servo 4 )
+from their current position to
+.Ar pos .
+If multiple
+.Ar pos
+are specified, the machine will move to each position successively.
+.Nm
+blocks and returns once the motions are complete.
+.Pp
+The options are as follows:
+.Bl -tag -width Ds
+.It Fl s
+Specify an initial, starting velocity in steps/s.
+Default is 0.
+.It Fl f
+Specify an optimal feed rate in steps/s.
+The trajectory planner may or may not achieve this feed rate (depending on the
+other parameters and travel distance).
+Default is machine-dependent.
+.It Fl a
+Specify the limit on acceleration in steps/s^2.
+Default is machine-dependent.
+.It Fl j
+Specify the limit on jerk in steps/s^3.
+Default is machine-dependent.
+.El
+.Sh ENVIRONMENT
+.Bl -tag -width UNITS
+.It Ev UNITS
+Set to
+.Sq metric
+or
+.Sq inch .
+Defaults to
+.Sq metric .
+.El
+.Sh SEE ALSO
+.Xr coordinates 7 ,
+.Xr servo 4 ,
+.Xr tools 8
+.Sh HISTORY
+The
+.Nm
+command first appeared in FabBSD 1.0.
