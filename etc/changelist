@@ -34,7 +34,6 @@
 /etc/ftpwelcome
 /etc/gettytab
 /etc/group
-/etc/hostapd.conf
 /etc/hosts
 /etc/hosts.allow
 /etc/hosts.deny
@@ -51,7 +50,6 @@
 /etc/monthly
 /etc/monthly.local
 /etc/motd
-/etc/mrouted.conf
 /etc/mtree/4.4BSD.dist
 /etc/mtree/BSD.local.dist
 /etc/mtree/BSD.x11.dist
@@ -63,10 +61,7 @@
 /etc/networks
 /etc/newsyslog.conf
 /etc/passwd
-/etc/pf.conf
-/etc/pf.os
 /etc/phones
-/etc/portal.conf
 /etc/printcap
 /etc/profile
 /etc/protocols
@@ -79,7 +74,6 @@
 /etc/remote
 /etc/resolv.conf
 /etc/resolv.conf.tail
-+/etc/rndc.key
 /etc/rpc
 /etc/security
 /etc/sensorsd.conf
