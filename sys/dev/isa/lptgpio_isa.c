@@ -28,10 +28,12 @@
 #include <sys/param.h>
 #include <sys/systm.h>
 #include <sys/device.h>
+#include <sys/gpio.h>
 
 #include <machine/bus.h>
-#include <machine/intr.h>
+#include <machine/cpufunc.h>
 
+#include <dev/gpio/gpiovar.h>
 #include <dev/isa/isavar.h>
 
 #include <dev/ic/lptgpiovar.h>
@@ -43,6 +45,25 @@ struct cfattach lptgpio_isa_ca = {
 	sizeof(struct lptgpio_softc), lptgpio_isa_probe, lptgpio_isa_attach
 };
 
+int
+lptgpio_isa_probe(struct device *parent, void *match, void *aux)
+{
+	struct isa_attach_args *ia = aux;
+	bus_space_tag_t iot;
+	bus_space_handle_t ioh;
+	bus_addr_t base;
+
+	ia->ia_iosize = 4;
+	iot = ia->ia_iot;
+	base = ia->ia_iobase;
+	if (bus_space_map(iot, base, ia->ia_iosize, 0, &ioh)) {
+		return (0);
+	}
+	ia->ia_msize = 0;
+	bus_space_unmap(iot, ioh, ia->ia_iosize);
+	return (1);
+}
+
 void
 lptgpio_isa_attach(struct device *parent, struct device *self, void *aux)
 {
@@ -50,9 +71,7 @@ lptgpio_isa_attach(struct device *parent, struct device *self, void *aux)
 	struct isa_attach_args *ia = aux;
 
 	sc->sc_iot = ia->ia_iot;
-
-	if (bus_space_map(sc->sc_iot, ia->ia_iobase, ia->ia_iosize, 0,
-	    &sc->sc_ioh))
+	if (bus_space_map(sc->sc_iot, ia->ia_iobase, 4, 0, &sc->sc_ioh))
 		panic("lptgpio_isa_attach: couldn't map I/O ports");
 
 	lptgpio_attach_common(sc);
