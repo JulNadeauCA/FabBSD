@@ -176,14 +176,14 @@ if [ -f /etc/ccd.conf ]; then
 fi
 
 # Configure raid devices.
-for dev in 0 1 2 3; do
-	if [ -f /etc/raid$dev.conf ]; then
-		raidctl -c /etc/raid$dev.conf raid$dev
-	fi
-done
+#for dev in 0 1 2 3; do
+#	if [ -f /etc/raid$dev.conf ]; then
+#		raidctl -c /etc/raid$dev.conf raid$dev
+#	fi
+#done
 
 # Check parity on raid devices.
-raidctl -P all
+#raidctl -P all
 
 swapctl -A -t blk
 
@@ -427,10 +427,6 @@ if [ X"${ifstated_flags}" != X"NO" ]; then
 	echo -n ' ifstated';		ifstated $ifstated_flags
 fi
 
-if [ X"${hostapd_flags}" != X"NO" ]; then
-	echo -n ' hostapd';		/usr/sbin/hostapd ${hostapd_flags};
-fi
-
 if [ X"${ftpd_flags}" != X"NO" ]; then
 	echo -n ' ftpd';		/usr/libexec/ftpd ${ftpd_flags}
 fi
@@ -471,6 +467,13 @@ echo -n ' cron';		cron
 ifconfig -g carp -carpdemote 128
 
 echo '.'
+
+if [ -e "/var/db/cnc.timings" ]; then
+	echo "restoring existing cnc timings."
+	cncctl -C
+else
+	echo "WARNING: cnc timings are not calibrated, see cncctl(8)."
+fi
 
 date
 
