@@ -4,6 +4,7 @@
 pseudo-device	cnc
 
 file	dev/cnc/cnc.c			cnc needs-flag
+file	dev/cnc/cnc_stubs.c
 file	dev/cnc/cnc_capture.c		cnc needs-flag
 file	dev/cnc/cnc_device.c		cnc needs-flag
 file	dev/cnc/cnc_math.c		cnc needs-flag

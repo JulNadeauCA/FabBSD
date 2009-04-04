@@ -14,8 +14,6 @@
 #include <sys/syscallargs.h>
 #include <sys/poll.h>
 #include <sys/event.h>
-#include <sys/cnc.h>
-#include "cnc.h"
 
 #define	s(type)	sizeof(type)
 
@@ -764,7 +762,6 @@ struct sysent sysent[] = {
 	    sys_fstatfs },			/* 308 = fstatfs */
 	{ 2, s(struct sys_fhstatfs_args), 0,
 	    sys_fhstatfs },			/* 309 = fhstatfs */
-#if NCNC > 0
 	{ 2, s(struct sys_cncmove_args), 0,
 	    sys_cncmove },			/* 310 = cncmove */
 	{ 1, s(struct sys_cncjog_args), 0,
@@ -783,25 +780,5 @@ struct sysent sysent[] = {
 	    sys_coolantctl },			/* 317 = coolantctl */
 	{ 0, 0, 0,
 	    sys_estop },			/* 318 = estop */
-#else
-	{ 0, 0, 0,
-	    sys_nosys },			/* 310 = unimplemented cncmove */
-	{ 0, 0, 0,
-	    sys_nosys },			/* 311 = unimplemented cncjog */
-	{ 0, 0, 0,
-	    sys_nosys },			/* 312 = unimplemented cncjogstep */
-	{ 0, 0, 0,
-	    sys_nosys },			/* 313 = unimplemented spinctl */
-	{ 0, 0, 0,
-	    sys_nosys },			/* 314 = unimplemented atcctl */
-	{ 0, 0, 0,
-	    sys_nosys },			/* 315 = unimplemented laserctl */
-	{ 0, 0, 0,
-	    sys_nosys },			/* 316 = unimplemented pickplacectl */
-	{ 0, 0, 0,
-	    sys_nosys },			/* 317 = unimplemented coolantctl */
-	{ 0, 0, 0,
-	    sys_nosys },			/* 318 = unimplemented estop */
-#endif
 };
 
