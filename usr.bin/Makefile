@@ -4,7 +4,7 @@
 .include <bsd.own.mk>
 
 SUBDIR= apply apropos arch asa asn1_compile awk banner basename bc \
-	cap_mkdb chpass cmp col colcrt colrm \
+	cap_mkdb cdio chpass cmp col colcrt colrm \
 	column comm compile_et compress cpp crontab ctags cut \
 	dc deroff diff diff3 dirname du encrypt env expand false file \
 	file2c find fmt fold fstat ftp gencat getcap \
