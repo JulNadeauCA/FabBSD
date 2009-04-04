@@ -1,3 +1,4 @@
+.\"	$FabBSD$
 .\"	$OpenBSD: apio.4,v 1.7 2007/05/31 19:19:56 jmc Exp $
 .\"
 .\" Copyright (c) 2002 Jason L. Wright (jason@thought.net)
@@ -33,19 +34,23 @@
 .Sh SYNOPSIS
 .Cd "apio* at sbus?"
 .Cd "lpt* at apio?"
+.Cd "lptgpio* at apio?"
+.Cd "gpio* at lptgpio?"
 .Sh DESCRIPTION
 The
 .Nm
 driver provides support for the Aurora Technologies
 .Tn pio1
 parallel port interface, which is basically an
-.Xr lpt 4
-port with
+.Xr lpt 4 /
+.Xr lptgpio 4
+with
 .Xr sbus 4
 glue logic.
 .Sh SEE ALSO
 .Xr intro 4 ,
 .Xr lpt 4 ,
+.Xr lptgpio 4 ,
 .Xr sbus 4
 .Sh HISTORY
 .Ox
@@ -61,3 +66,6 @@ Only revision
 .Tn 210sj
 is known to work.
 Minor work may be necessary for other revisions of this card.
+Support for
+.Xr lptgpio 4
+was introduced in FabBSD 1.0.

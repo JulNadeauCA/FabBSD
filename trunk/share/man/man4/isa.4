@@ -1,3 +1,4 @@
+.\"	$FabBSD$
 .\"	$OpenBSD: isa.4,v 1.61 2008/05/21 19:05:51 kettenis Exp $
 .\"	$NetBSD: isa.4,v 1.19 2000/03/18 16:54:37 augustss Exp $
 .\"
@@ -123,7 +124,9 @@ serial communications interface
 .It Xr cy 4
 Cyclades Cyclom-{4, 8, 16}Y asynchronous comms board device driver
 .It Xr lpt 4
-parallel port driver
+parallel port driver (for printers)
+.It Xr lptgpio 4
+parallel port driver (for general purpose I/O)
 .It Xr rtfps 4
 multiplexing serial communications interface
 .El

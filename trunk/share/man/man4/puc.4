@@ -1,3 +1,4 @@
+.\"	$FabBSD$
 .\"	$OpenBSD: puc.4,v 1.39 2008/05/21 19:05:51 kettenis Exp $
 .\"	$NetBSD: puc.4,v 1.7 1999/07/03 05:55:23 cgd Exp $
 .\"
@@ -40,8 +41,10 @@ communications card driver
 .Sh SYNOPSIS
 .Cd "puc* at pci?"
 .Cd "puc* at cardbus?"
-.Cd "lpt* at puc?"
 .Cd "com* at puc?"
+.Cd "lpt* at puc?"
+.Cd "lptgpio* at puc?"
+.Cd "gpio* at lptgpio?"
 .Sh DESCRIPTION
 The
 .Nm
@@ -149,6 +152,7 @@ numbered starting from 1) those described in the documentation.
 .Xr com 4 ,
 .Xr intro 4 ,
 .Xr lpt 4 ,
+.Xr lptgpio 4 ,
 .Xr pci 4
 .Sh HISTORY
 The
