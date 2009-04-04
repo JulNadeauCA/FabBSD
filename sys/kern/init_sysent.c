@@ -767,7 +767,7 @@ struct sysent sysent[] = {
 	    sys_cncmove },			/* 310 = cncmove */
 	{ 1, s(struct sys_cncjog_args), 0,
 	    sys_cncjog },			/* 311 = cncjog */
-	{ 1, s(struct sys_cncjogstep_args), 0,
+	{ 0, 0, 0,
 	    sys_cncjogstep },			/* 312 = cncjogstep */
 	{ 3, s(struct sys_spinctl_args), 0,
 	    sys_spinctl },			/* 313 = spinctl */
