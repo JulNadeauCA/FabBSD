@@ -1,29 +1,16 @@
 #	$FabBSD$
 
-LIB=	kvm
-WANTLINT=
-CFLAGS+=-DLIBC_SCCS
+LIB=	cnc
 
-# Try most specific name first.
-.if	exists(kvm_${MACHINE}.c)
-SRCS=	kvm_${MACHINE}.c
-.else
-# Less specific name (i.e. m68k)
-CFLAGS+=-D${MACHINE}
-SRCS=	kvm_${MACHINE_ARCH}.c
+SRCS=	cnc.c cnc_distance.c cnc_vector.c cnc_velocity.c
+
+.if	exists(cnc_${MACHINE}.c)
+SRCS+=	cnc_${MACHINE}.c
 .endif
 
-SRCS+=	kvm.c kvm_file.c kvm_getloadavg.c kvm_proc.c
-
-MAN=	kvm.3 kvm_dump.3 kvm_geterr.3 kvm_getfiles.3 kvm_getloadavg.3 \
-	kvm_getprocs.3 kvm_nlist.3 kvm_open.3 kvm_read.3
-
-MLINKS+=kvm_getprocs.3 kvm_getargv.3 kvm_getprocs.3 kvm_getenvv.3
-MLINKS+=kvm_getprocs.3 kvm_getproc2.3
-MLINKS+=kvm_getprocs.3 kvm_getargv2.3 kvm_getprocs.3 kvm_getenvv2.3
-MLINKS+=kvm_open.3 kvm_openfiles.3 kvm_open.3 kvm_close.3
-MLINKS+=kvm_read.3 kvm_write.3
-MLINKS+=kvm_dump.3 kvm_dump_mkheader.3 kvm_dump.3 kvm_dump_wrtheader.3
-MLINKS+=kvm_dump.3 kvm_dump_inval.3
+MAN=	cnc.3 cnc_dist_parse.3 cnc_get_error.3 cnc_vel_parse.3 \
+	cnc_set_error.3 cnc_vec_add.3 cnc_vec_compare.3 cnc_vec_distance.3 \
+	cnc_vec_dotprod.3 cnc_vec_length.3 cnc_vec_parse.3 cnc_vec_print.3 \
+	cnc_vec_sub.3 cnc_vec_zero.3
 
 .include <bsd.lib.mk>
