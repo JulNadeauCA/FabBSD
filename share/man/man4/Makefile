@@ -29,7 +29,7 @@ MAN=	aac.4 acphy.4 \
 	isa.4 isagpio.4 isapnp.4 isp.4 it.4 iwi.4 iwn.4 ix.4 ixgb.4 \
 	jmb.4 \
 	kate.4 km.4 ksyms.4 kue.4 lc.4 lge.4 lii.4 lkm.4 lm.4 \
-	lmenv.4 lmn.4 lmtemp.4 lo.4 lofn.4 lpt.4 lxtphy.4 luphy.4 \
+	lmenv.4 lmn.4 lmtemp.4 lo.4 lofn.4 lpt.4 lptgpio.4 lxtphy.4 luphy.4 \
 	mainbus.4 malo.4 maxds.4 maxtmp.4 mbg.4 mii.4 mfi.4 \
 	moscom.4 mpi.4 msk.4 msts.4 mtd.4 mtdphy.4 \
 	mtio.4 myx.4 ne.4 netintro.4 nfe.4 nge.4 nmea.4 noct.4 nofn.4 \

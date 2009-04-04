@@ -1,3 +1,4 @@
+.\"	$FabBSD$
 .\"	$OpenBSD: lpt.4,v 1.7 2007/06/20 17:44:07 kettenis Exp $
 .\"
 .\" Copyright (c) 1993 Christopher G. Demetriou
@@ -32,43 +33,25 @@
 .Dt LPT 4
 .Os
 .Sh NAME
-.Nm lpt
-.Nd parallel port driver
+.Nm lptgpio
+.Nd parallel port general purpose I/O driver
 .Sh SYNOPSIS
-.Cd "# alpha/i386"
-.Cd "lpt0 at isa? port 0x378 irq 7"
-.Cd "lpt1 at isa? port 0x278"
-.Cd "lpt2 at isa? port 0x3bc"
-.Pp
-.Cd "# hppa"
-.Cd "lpt0 at gsc? irq 7"
-.Cd "lpt0 at ssio?"
+.Cd "# alpha, amd64, i386"
+.Cd "lptgpio0 at isa? port 0x378 irq 7"
+.Cd "lptgpio1 at isa? port 0x278"
+.Cd "lptgpio2 at isa? port 0x3bc"
+.Cd "lptgpio3 at puc?"
+.Cd "gpio* at lptgpio?"
 .Pp
 .Cd "# sparc64"
-.Cd "lpt* at apio?"
-.Cd "lpt* at ebus?"
+.Cd "lptgpio* at apio?"
+.Cd "lptgpio* at ebus?"
+.Cd "gpio* at lptgpio?"
 .Sh DESCRIPTION
-This driver provides access to parallel ports.
-.Pp
-The highest bit in the minor (bit 7, or add 128) number selects
-whether to do polling or wait for interrupts.
-If no IRQ is specified in the kernel configuration, or the IRQ specified is
-not available at attach time, only the polling device may be used.
-.Pp
-The next lower bit (bit 6, or add 64) indicates the driver should
-avoid initializing the printer.
-.Pp
-The next lower bit (bit 5, or add 32) requests that the driver do
-automatic LF generation when printing CRs.
-.Sh FILES
-.Bl -tag -width /dev/lpt0 -compact
-.It Pa /dev/lpt0
-first interrupt-driven parallel port device
-.It Pa /dev/lpa0
-first polled parallel port device
-.El
+This driver provides
+.Xr gpio 4
+access to parallel ports.
 .Sh SEE ALSO
 .Xr intro 4 ,
 .Xr isa 4 ,
-.Xr lptgpio 4 ,
-.Xr ulpt 4
+.Xr gpio 4
