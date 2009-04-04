@@ -83,7 +83,7 @@ cnc_quintic_init(struct cnc_quintic_profile *q, cnc_real_t L, cnc_real_t v0,
 			 */
 			printf("cnc: F is unachievable, but Amax is (#1.2)\n");
 			q->Ts = CNC_PI_2*(Amax/Jmax);
-			q->Ta = ( (-CNC_PI*AmaxP2 + cnc_sqrt(CNC_PI_P2*AmaxP4 + 16.0*Amax*JmaxP2*L) ) /
+			q->Ta = ( (-CNC_PI*AmaxP2 + sqrt(CNC_PI_P2*AmaxP4 + 16.0*Amax*JmaxP2*L) ) /
 			        (4.0*Jmax*Amax) ) + q->Ts;
 			q->To = q->Ta;
 		} else if (L <= y) {
@@ -91,12 +91,12 @@ cnc_quintic_init(struct cnc_quintic_profile *q, cnc_real_t L, cnc_real_t v0,
 			 * Neither F nor Amax are achievable.
 			 */
 			printf("cnc: neither F nor Amax are achievable (#1.3)\n");
-			q->Ts = cnc_cbrt( (CNC_PI*L)/(4.0*Jmax) );
+			q->Ts = cbrt( (CNC_PI*L)/(4.0*Jmax) );
 			q->Ta = 2.0*q->Ts;
 			q->To = q->Ta;
 		}
 	} else if (F < CNC_PI_2*(AmaxP2/Jmax) ) {
-		x = cnc_sqrt( (2.0*CNC_PI*F_P3)/Jmax );
+		x = sqrt( (2.0*CNC_PI*F_P3)/Jmax );
 		/*
 		 * Feedrate F is achievable without using maximum
 		 * acceleration.
@@ -106,7 +106,7 @@ cnc_quintic_init(struct cnc_quintic_profile *q, cnc_real_t L, cnc_real_t v0,
 			 * F is achievable, Amax is unachievable.
 			 */
 			printf("cnc: F is achievable, but Amax is not (#2.1)\n");
-			q->Ts = cnc_sqrt( (CNC_PI*F)/(2.0*Jmax) );
+			q->Ts = sqrt( (CNC_PI*F)/(2.0*Jmax) );
 			q->Ta = 2.0*q->Ts;
 			q->To = L/F;
 		} else if (L < x) {
@@ -114,7 +114,7 @@ cnc_quintic_init(struct cnc_quintic_profile *q, cnc_real_t L, cnc_real_t v0,
 			 * Neither F nor Amax are achievable.
 			 */
 			printf("cnc: neither F nor Amax are achievable (#2.2)\n");
-			q->Ts = cnc_cbrt( (CNC_PI*L)/(4.0*Jmax) );
+			q->Ts = cbrt( (CNC_PI*L)/(4.0*Jmax) );
 			q->Ta = 2.0*q->Ts;
 			q->To = q->Ta;
 		} else {
@@ -126,7 +126,7 @@ cnc_quintic_init(struct cnc_quintic_profile *q, cnc_real_t L, cnc_real_t v0,
 	x = CNC_PI/(2.0*q->Ts);
 	q->Aref = L/((q->Ta - q->Ts)*q->To);
 	q->v0 = v0;
-	q->v1 = (q->Aref/2.0)*(q->Ts - cnc_sin(2.0*x*q->Ts)/(2.0*x) );
+	q->v1 = (q->Aref/2.0)*(q->Ts - sin(2.0*x*q->Ts)/(2.0*x) );
 	q->v2 = q->Aref*(q->Ta - 2.0*q->Ts) + q->v1;
 	return (0);
 }
@@ -147,22 +147,22 @@ cnc_quintic_step(const struct cnc_quintic_profile *q, cnc_real_t t)
 	t6 = q->To + q->Ta - q->Ts;
 
 	if (t <= q->Ts) {
-		v += (q->Aref/2.0)*( t - cnc_sin(2.0*k*t)/(2.0*k) );
+		v += (q->Aref/2.0)*( t - sin(2.0*k*t)/(2.0*k) );
 	} else if (t <= (q->Ta - q->Ts)) {
 		v += q->Aref*(t - q->Ts) + q->v1;
 	} else if (t <= q->Ta) {
-		v += (q->Aref/2.0)*( (t-t2) + cnc_sin(2.0*k*(t-t2))/(2.0*k) ) +
+		v += (q->Aref/2.0)*( (t-t2) + sin(2.0*k*(t-t2))/(2.0*k) ) +
 		     q->v2;
 	} else if (t <= q->To) {
 		v += (q->v1 + q->v2);
 	} else if (t <= t5) {
 		v += (q->v1 + q->v2);
 		v += -(q->Aref/2.0)*( (t - q->To) -
-		                       cnc_sin(2.0*k*(t - q->To))/(2.0*k) );
+		                       sin(2.0*k*(t - q->To))/(2.0*k) );
 	} else if (t <= t6) {
 		v += -q->Aref*(t-t5) + q->v2;
 	} else {
-		v += -(q->Aref/2.0)*( (t-t6) + cnc_sin(2.0*k*(t-t6))/(2.0*k) ) +
+		v += -(q->Aref/2.0)*( (t-t6) + sin(2.0*k*(t-t6))/(2.0*k) ) +
 		     q->v1;
 	}
 	if (v < 10.0) {
