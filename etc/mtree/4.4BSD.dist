@@ -2191,6 +2191,11 @@ nls
 # ./usr/share/nls
 ..
 
+# ./usr/share/pinouts
+pinouts
+# ./usr/share/pinouts
+..
+
 # ./usr/share/tabset
 tabset
 # ./usr/share/tabset
