@@ -130,6 +130,7 @@ ubsec*	at pci?			# Broadcom 580[125]/582[012]
 puc*	at pci?			# PCI "universal" comm device
 com*	at puc?
 #lpt*	at puc?
+#lptgpio* at puc?
 
 # USB Controllers
 ohci*	at pci?			# Open Host Controller
@@ -243,6 +244,7 @@ wskbd*	at pckbd?			#   generic keyboard layer
 # parallel ports
 bpp*	at sbus?
 lpt*	at ebus?
+#lptgpio* at ebus?
 
 bbc*	at ebus?
 led*	at ebus?
@@ -421,6 +423,7 @@ asio*		at sbus?		# Aurora 210SJ
 com*		at asio?
 apio*		at sbus?		# Aurora 210SJ
 lpt*		at apio?
+#lptgpio*	at apio?
 
 stp*		at sbus?		# STP4020
 pcmcia*		at stp?

@@ -53,6 +53,8 @@ option		INET6		# IPv6 (needs INET)
 #option		KEY		# PF_KEY (implied by IPSEC)
 #option		NETATALK	# AppleTalk
 
+#option		MOTIONCAPTURE	# cnc(4) motion control signal capture
+
 #pseudo-device	enc	1	# option IPSEC needs the encapsulation interface
 #pseudo-device	strip	1	# Starmode Radio IP interface
 
@@ -62,7 +64,7 @@ pseudo-device	msts	1	# MSTS line discipline
 pseudo-device	vnd	4	# paging to files
 pseudo-device	ccd	4	# concatenated disk devices
 pseudo-device	ksyms	1	# kernel symbols device
-#pseudo-device	cnc	1	# motion control for machinery and robots
+pseudo-device	cnc	1	# machine control interface
 
 # clonable devices
 pseudo-device	carp		# CARP protocol support

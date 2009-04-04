@@ -288,11 +288,16 @@ file	dev/ic/pcf8584.c		pcfiic
 device	cy: tty
 file	dev/ic/cy.c			cy & (cy_isa | cy_pci)	needs-flag
 
-# PC parallel ports (IEEE 1284)
+# PC parallel ports (IEEE 1284) - printers
 device	lpt
 file	dev/ic/lpt.c			lpt & (lpt_isa | lpt_localbus |
 					       lpt_gsc | lpt_puc | lpt_apio |
 					       lpt_ebus) needs-flag
+
+# PC parallel ports - general purpose I/O
+device	lptgpio: gpiobus
+file	dev/ic/lptgpio.c		lptgpio & (lptgpio_isa | lpt_puc |
+					           lpt_apio | lpt_ebus) needs-flag
 
 # STI (hp graphics)
 device	sti: wsemuldisplaydev
@@ -812,3 +817,42 @@ file lib/libkern/arch/${MACHINE_ARCH}/skpc.S | lib/libkern/skpc.c
 file lib/libkern/arch/${MACHINE_ARCH}/htonl.S | lib/libkern/htonl.c
 file lib/libkern/arch/${MACHINE_ARCH}/htons.S | lib/libkern/htons.c
 file lib/libkern/arch/${MACHINE_ARCH}/strncasecmp.S | lib/libkern/strncasecmp.c
+
+file lib/libkern/arch/${MACHINE_ARCH}/k_sin.S | lib/libkern/k_sin.c
+file lib/libkern/arch/${MACHINE_ARCH}/k_sinf.S | lib/libkern/k_sinf.c
+file lib/libkern/arch/${MACHINE_ARCH}/k_cos.S | lib/libkern/k_cos.c
+file lib/libkern/arch/${MACHINE_ARCH}/k_cosf.S | lib/libkern/k_cosf.c
+file lib/libkern/arch/${MACHINE_ARCH}/k_tan.S | lib/libkern/k_tan.c
+file lib/libkern/arch/${MACHINE_ARCH}/k_tanf.S | lib/libkern/k_tanf.c
+file lib/libkern/arch/${MACHINE_ARCH}/k_rem_pio2.S | lib/libkern/k_rem_pio2.c
+file lib/libkern/arch/${MACHINE_ARCH}/k_rem_pio2f.S | lib/libkern/k_rem_pio2f.c
+
+file lib/libkern/arch/${MACHINE_ARCH}/e_log.S | lib/libkern/e_log.c
+file lib/libkern/arch/${MACHINE_ARCH}/e_logf.S | lib/libkern/e_logf.c
+file lib/libkern/arch/${MACHINE_ARCH}/e_log10.S | lib/libkern/e_log10.c
+file lib/libkern/arch/${MACHINE_ARCH}/e_log10f.S | lib/libkern/e_log10f.c
+file lib/libkern/arch/${MACHINE_ARCH}/e_sqrt.S | lib/libkern/e_sqrt.c
+file lib/libkern/arch/${MACHINE_ARCH}/e_sqrtf.S | lib/libkern/e_sqrtf.c
+file lib/libkern/arch/${MACHINE_ARCH}/e_rem_pio2.S | lib/libkern/e_rem_pio2.c
+file lib/libkern/arch/${MACHINE_ARCH}/e_rem_pio2f.S | lib/libkern/e_rem_pio2f.c
+
+file lib/libkern/arch/${MACHINE_ARCH}/s_ceil.S | lib/libkern/s_ceil.c
+file lib/libkern/arch/${MACHINE_ARCH}/s_ceilf.S | lib/libkern/s_ceilf.c
+file lib/libkern/arch/${MACHINE_ARCH}/s_floor.S | lib/libkern/s_floor.c
+file lib/libkern/arch/${MACHINE_ARCH}/s_floorf.S | lib/libkern/s_floorf.c
+file lib/libkern/arch/${MACHINE_ARCH}/s_copysign.S | lib/libkern/s_copysign.c
+file lib/libkern/arch/${MACHINE_ARCH}/s_copysignf.S | lib/libkern/s_copysignf.c
+file lib/libkern/arch/${MACHINE_ARCH}/s_modf.S | lib/libkern/s_modf.c
+file lib/libkern/arch/${MACHINE_ARCH}/s_fabs.S | lib/libkern/s_fabs.c
+file lib/libkern/arch/${MACHINE_ARCH}/s_fabsf.S | lib/libkern/s_fabsf.c
+file lib/libkern/arch/${MACHINE_ARCH}/s_sin.S | lib/libkern/s_sin.c
+file lib/libkern/arch/${MACHINE_ARCH}/s_sinf.S | lib/libkern/s_sinf.c
+file lib/libkern/arch/${MACHINE_ARCH}/s_cos.S | lib/libkern/s_cos.c
+file lib/libkern/arch/${MACHINE_ARCH}/s_cosf.S | lib/libkern/s_cosf.c
+file lib/libkern/arch/${MACHINE_ARCH}/s_tan.S | lib/libkern/s_tan.c
+file lib/libkern/arch/${MACHINE_ARCH}/s_tanf.S | lib/libkern/s_tanf.c
+file lib/libkern/arch/${MACHINE_ARCH}/s_cbrt.S | lib/libkern/s_cbrt.c
+file lib/libkern/arch/${MACHINE_ARCH}/s_cbrtf.S | lib/libkern/s_cbrtf.c
+file lib/libkern/arch/${MACHINE_ARCH}/s_scalbn.S | lib/libkern/s_scalbn.c
+file lib/libkern/arch/${MACHINE_ARCH}/s_scalbnf.S | lib/libkern/s_scalbnf.c
+
