@@ -1,3 +1,4 @@
+#	$FabBSD$
 #	$OpenBSD: list,v 1.21 2007/07/11 01:50:40 deraadt Exp $
 
 SRCDIRS distrib/special
