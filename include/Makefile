@@ -10,7 +10,7 @@
 
 # Missing: mp.h
 FILES=	a.out.h ar.h assert.h bitstring.h blf.h bm.h bsd_auth.h cast.h \
-	cpio.h ctype.h curses.h db.h dbm.h des.h dirent.h disktab.h \
+	cnc.h cpio.h ctype.h curses.h db.h dbm.h des.h dirent.h disktab.h \
 	dlfcn.h elf_abi.h err.h errno.h fnmatch.h fstab.h fts.h ftw.h getopt.h \
 	glob.h grp.h ifaddrs.h inttypes.h iso646.h kvm.h langinfo.h \
 	libgen.h limits.h locale.h login_cap.h malloc.h math.h md4.h \
@@ -33,7 +33,7 @@ LFILES=	fcntl.h syslog.h termios.h stdarg.h stdint.h varargs.h
 
 DIRS=	arpa protocols rpc rpcsvc
 LDIRS=	crypto ddb dev isofs miscfs net netatalk netinet netinet6 \
-	netnatm net80211 netbt nfs scsi sys ufs uvm
+	net80211 netbt nfs scsi sys ufs uvm
 
 # Directories with an includes target
 RDIRS=	../lib/libpthread ../lib/libcompat ../lib/libcurses \
