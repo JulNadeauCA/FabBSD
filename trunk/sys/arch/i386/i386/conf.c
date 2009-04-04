@@ -121,10 +121,6 @@ cdev_decl(wd);
 cdev_decl(com);
 cdev_decl(fd);
 #include "ch.h"
-#if 0
-#include "pcmcia.h"
-cdev_decl(pcmcia);
-#endif
 #include "spkr.h"
 cdev_decl(spkr);
 #include "cy.h"
@@ -208,9 +204,9 @@ struct cdevsw	cdevsw[] =
 	cdev_lkm_dummy(),			/* 32 */
 	cdev_lkm_dummy(),			/* 33 */
 	cdev_lkm_dummy(),			/* 34 */
-	cdev_notdef(),				/* 35: Microsoft mouse */
-	cdev_notdef(),				/* 36: Logitech mouse */
-	cdev_notdef(),				/* 37: Extended PS/2 mouse */
+	cdev_notdef(),				/* 35 */
+	cdev_notdef(),				/* 36 */
+	cdev_notdef(),				/* 37 */
 	cdev_tty_init(NCY,cy),			/* 38: Cyclom serial port */
 	cdev_disk_init(NMCD,mcd),		/* 39: Mitsumi CD-ROM */
 	cdev_tun_init(NTUN,tun),		/* 40: network tunnel */
@@ -240,7 +236,7 @@ struct cdevsw	cdevsw[] =
 	cdev_notdef(),				/* 64 */
 	cdev_notdef(),				/* 65 */
 	cdev_tty_init(NUCOM,ucom),		/* 66: USB tty */
-	cdev_mouse_init(NWSKBD, wskbd),		/* 67: keyboards */
+	cdev_notdef(),				/* 67 */
 	cdev_notdef(),				/* 68 */
 	cdev_notdef(),				/* 69 */
 	cdev_crypto_init(NCRYPTO,crypto),	/* 70: /dev/crypto */
@@ -262,7 +258,7 @@ struct cdevsw	cdevsw[] =
 	cdev_hotplug_init(NHOTPLUG,hotplug),	/* 82: devices hot plugging */
 	cdev_gpio_init(NGPIO,gpio),		/* 83: GPIO interface */
 	cdev_nvram_init(NNVRAM,nvram),		/* 84: NVRAM interface */
-	cdev_notdef(),				/* 85: ACPI (deprecated) */
+	cdev_notdef(),				/* 85 */
 	cdev_bthub_init(NBTHUB,bthub),		/* 86: bthub */
 	cdev_agp_init(NAGP,agp),		/* 87: agp */
 	cdev_notdef(),				/* 88 */

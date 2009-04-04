@@ -41,6 +41,7 @@ com0		at obio? addr 0xfe800000 xint 3
 puc*	at pci?			# PCI "universal" communication device
 com*	at puc?
 lpt*	at puc?
+#lptgpio* at puc?
 
 # i80321 I/O Processor peripheral support
 iopxs0	at mainbus?
