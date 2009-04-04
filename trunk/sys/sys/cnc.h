@@ -19,6 +19,11 @@
 /* Allowed position error (steps) */
 #define CNC_POS_ERROR		1e-6
 
+/* Math constants */
+#define	CNC_PI		3.14159265358979323846	/* pi */
+#define	CNC_PI_2	1.57079632679489661923	/* pi/2 */
+#define	CNC_PI_P2	(CNC_PI*CNC_PI)		/* pi^2 */
+
 enum cnc_axis {
 	CNC_X = 0,
 	CNC_Y = 1,
@@ -35,10 +40,13 @@ enum cnc_axis {
 	CNC_AXIS_LAST
 };
 
+typedef float cnc_real_t;
 typedef uint64_t cnc_step_t;
 typedef int64_t cnc_pos_t;
 typedef int64_t cnc_time_t;
 typedef int64_t cnc_utime_t;
+typedef cnc_pos_t cnc_dist_t;
+typedef u_long cnc_vel_t;
 
 /* Position vector */
 typedef struct cnc_vector {
@@ -47,10 +55,10 @@ typedef struct cnc_vector {
 
 /* Velocity parameters - arguments to cncmove(2) */
 struct cnc_velocity {
-	u_long v0;		 /* min steps/s */
-	u_long F;		 /* max steps/s */
-	u_long Amax;		 /* max steps/ms^2 */
-	u_long Jmax;		 /* max steps/ms^3 */
+	cnc_vel_t v0;		 /* min steps/s */
+	cnc_vel_t F;		 /* max steps/s */
+	cnc_vel_t Amax;		 /* max steps/ms^2 */
+	cnc_vel_t Jmax;		 /* max steps/ms^3 */
 };
 
 /* Spindle control - arguments to spinctl(2) */
@@ -136,6 +144,12 @@ struct cnc_device_info {
 	int nmpgs;		/* mpg(4) devices */
 };
 
+/* For CNC_GETSTATS */
+struct cnc_stats {
+	cnc_vel_t peak_velocity;	/* maximum velocity reached (steps/s) */
+	int estops;			/* emergency stop events */
+};
+
 #define CNC_GETPOS		_IOR('C', 0, struct cnc_vector)
 #define CNC_SETPOS		_IOWR('C', 1, struct cnc_vector)
 #define CNC_GETDEVICEINFO	_IOR('C', 2, struct cnc_device_info)
@@ -144,6 +158,9 @@ struct cnc_device_info {
 #define CNC_GETTIMINGS		_IOR('C', 5, struct cnc_timings)
 #define CNC_SETTIMINGS		_IOWR('C', 6, struct cnc_timings)
 #define CNC_CALTIMINGS		_IOWR('C', 7, struct cnc_timings)
+#define CNC_SETCAPTUREMODE	_IOWR('C', 8, int)
+#define CNC_GETSTATS		_IOR('C', 9, struct cnc_stats)
+#define CNC_CLRSTATS		_IO('C', 10)
 
 #if !defined(_KERNEL)
 
