@@ -1595,6 +1595,7 @@ setty(void)
 			       printer, *argv);
 		}
 	} else {
+#if 0
 		if (FC) {
 			sttyclearflags(&i.t, FC);
 			i.set = 1;
@@ -1611,6 +1612,7 @@ setty(void)
 			sttysetlflags(&i.t, XS);
 			i.set = 1;
 		}
+#endif
 	}
 
 	if (i.set && tcsetattr(i.fd, TCSANOW, &i.t) < 0) {

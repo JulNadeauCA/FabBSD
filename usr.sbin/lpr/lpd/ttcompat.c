@@ -44,7 +44,6 @@ static const char rcsid[] = "$OpenBSD: ttcompat.c,v 1.6 2003/06/02 23:36:53 mill
 #include <sys/types.h>
 
 #include <unistd.h>
-#include <sys/ioctl_compat.h>
 #include <termios.h>
 #include <syslog.h>
 #include <fcntl.h>
