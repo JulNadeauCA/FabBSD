@@ -53,37 +53,23 @@ for information on how to configure and build kernels.
 options are passed to the compile process as
 .Fl D
 flags to the C compiler.
-.Sh COMPATIBILITY OPTIONS
+.Sh CNC INTERFACE OPTIONS
 .Bl -ohang
-.It Cd option COMPAT_43
-Use of this option is discouraged.
-It enables compatibility with
-.Bx 4.3 .
-It adds an old syscall for
-.Fn lseek
-as well as ioctls for
-.Dv TIOCGETP
-and
-.Dv TIOCSETP .
-The return values for the
-.Xr getpid 2 ,
-.Xr getgid 2 ,
-and
-.Xr getuid 2
-system calls are modified as well, to return the parent's PID and UID as well
-as the current process's.
-It also enables the deprecated
-.Dv NTTYDISC
-terminal line discipline.
-It provides backwards compatibility with the
-.Dq old
-SIOC[GS]IF{ADDR,DSTADDR,BRDADDR,NETMASK} interface ioctls, including
-binary compatibility for code written before the introduction of the
-.Li sa_len
-field in sockaddrs.
-It also enables support for some older pre
-.Bx 4.4
-socket calls.
+.It Cd option CNC_NAXES= Ns Ar integer
+Define the maximum number of motorized axes (e.g.,
+.Xr servo 4
+devices) that will be supported by the kernel.
+The default value is 6.
+.It Cd option MOTIONCAPTURE
+Allow low-level motion control signals (e.g., step and direction signals) to
+be captured as a value-change dump (VCD) by the
+.Xr motioncap 1
+utility.
+This is useful for simulation since the VCD data can be later fed to
+a simulator (note that attached
+.Xr servo 4
+devices should be disabled prior to running
+.Xr motioncap 1 ) .
 .El
 .Sh DEBUGGING OPTIONS
 .Bl -ohang
@@ -111,10 +97,6 @@ flag causes the kernel to be compiled with support for profiling.
 The
 .Cm option GPROF
 is required for the kernel compile to succeed.
-.It Cd option ACCOUNTING
-Adds support for the
-.Xr acct 2
-system call.
 .It Cd option DDB
 Compiles in a kernel debugger for diagnosing kernel problems.
 See
@@ -174,11 +156,6 @@ Adds hooks for the process tracing facility, allowing a process to
 control and observe another process.
 See
 .Xr ptrace 2
-for details.
-.It Cd option RAIDDEBUG
-Be verbose on what RAIDframe does.
-See
-.Xr raid 4
 for details.
 .It Cd option SMALL_KERNEL
 Removes some features and some optimizations from the kernel to reduce the
@@ -273,13 +250,6 @@ for details.
 Includes code for the UDF file systems typically found on DVD discs.
 See
 .Xr mount_udf 8
-for details.
-.It Cd option XFS
-Includes the kernel support for the AFS-compatible Arla filesystem.
-Since the xfs interface is simple and generic it can be used for other
-filesystems as well.
-See
-.Xr mount_xfs 8
 for details.
 .El
 .Sh FILE SYSTEM OPTIONS
@@ -427,14 +397,6 @@ Makes the boot process more verbose for PCI peripherals
 (vendor names and other information is printed, etc.).
 .It Cd option PCMCIAVERBOSE
 Makes the boot process more verbose for PCMCIA peripherals.
-.It Cd option RAID_AUTOCONFIG
-Adds support for auto-configuring the RAIDframe devices during the kernel
-initialization.
-See
-.Xr raid 4
-and
-.Xr raidctl 8
-for details.
 .It Cd option USER_LDT
 Enable userland manipulation of per-process
 Local Descriptor Table (LDT) entries;
@@ -451,10 +413,6 @@ Enables the user level access to the PCI bus configuration space
 through ioctls on the
 .Pa /dev/pci
 device.
-It's used by the
-.Xr Xorg 1
-server on some architectures.
-See
 .Xr pci 4
 for details.
 .It Cd option UVM_SWAP_ENCRYPT
