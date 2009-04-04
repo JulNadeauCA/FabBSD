@@ -32,60 +32,53 @@
 .Sh DESCRIPTION
 The
 .Nm
-library provides a simple interface to the numerical-assisted machine control
-functions of the FabBSD kernel.
-.Pp
-.Sh PROGRAM FORMATS
-FabBSD implements a native CNC program format, which can be expressed as text
-or binary data.
-The
-.Nm
-library handles the conversion of CNC programs between text and binary.
-FabBSD CNC programs may be either handcrafted, generated from the
-.Xr gcode 1
-command (which converts from RS-274 form),
-output by various utilities such as
-.Xr boltpattern 1 ,
-or remotely uploaded by graphical CAD applications via
-.Xr machctld 8 . 
-.Pp
-.Sh INTERFACE
-.nr nS 1
-.Ft void
-.Fn CNC_Init "void"
-.Pp
-.Ft void
-.Fn CNC_Destroy "void"
-.Pp
-.Ft "const char *"
-.Fn CNC_GetError "void"
-.Pp
-.Ft "int"
-.Fn CNC_ParseDistance "const char *s" "cnc_pos_t *v"
-.nr nS 0
+library provides a number of utility routines specific to FabBSD's
+.Xr cnc 4
+interface.
 .Pp
 The
-.Fn CNC_Init
-function initializes the
-.Nm
-library, it must be invoked before any other function.
-.Fn CNC_Destroy
-releases all resources allocated by the library.
+.Fn cnc_vec_*
+routines are useful when working with vectors in
+.Ft cnc_vec_t
+format.
+The size of
+.Ft cnc_vec_t
+is
+.Dv CNC_NAXES ,
+which may or may not match the setting in
+.Xr options 4 .
 .Pp
-The
-.Fn CNC_GetError
-routine retrieves the current error string.
-.Pp
-The
-.Fn CNC_ParseDistance
-function converts the given distance string.
-
+Note that the major
+.Xr cnc 4
+related operations are implemented as system calls and part of the C library.
+They are documented in the section 2 of the manual.
 .Sh FILES
 .Bl -tag -width /dev/cnc -compact
 .It Pa /dev/cnc
-The kernel's machine control interface.
+interface to CNC hardware
 .El
-.\" .Sh SEE ALSO
-.\" .Xr foo 3
+.Sh SEE ALSO
+.Xr cncmove 2 ,
+.Xr cncjog 2 ,
+.Xr cncjogstep 2 ,
+.Xr spinctl 2 ,
+.Xr atactl 2 ,
+.Xr laserctl 2 ,
+.Xr pickplacectl 2 ,
+.Xr coolantctl 2 ,
+.Xr estop 2 ,
+.Xr cnc 3 ,
+.Xr cnc_get_error 3 ,
+.Xr cnc_set_error 3 ,
+.Xr cnc_vec_add 3 ,
+.Xr cnc_vec_compare 3 ,
+.Xr cnc_vec_distance 3 ,
+.Xr cnc_vec_dotprod 3 ,
+.Xr cnc_vec_length 3 ,
+.Xr cnc_vec_parse 3 ,
+.Xr cnc_vec_print 3 ,
+.Xr cnc_vec_sub 3 ,
+.Xr cnc_vec_zero 3 ,
+.Xr cnc_vel_parse 3
 .Sh STANDARDS
-The cnc interface was first introduced in FabBSD 1.0.
+The cnc interface was introduced in FabBSD 1.0.

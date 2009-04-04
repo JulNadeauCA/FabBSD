@@ -24,32 +24,31 @@
  * USE OF THIS SOFTWARE EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <sys/limits.h>
+
+#include <cnc.h>
 #include <string.h>
 #include <errno.h>
-#include <stdio.h>
-#include <stdarg.h>
-#include <unistd.h>
 
-#include "pathnames.h"
-
-char *cnc_error_msg;
-
-const char *
-cnc_get_error(void)
+/*
+ * Parse a string representing velocity, acceleration or jerk (given in
+ * steps/s, steps/s^2 or steps/s^3 respectively).
+ * TODO conversions
+ */
+int
+cnc_vel_parse(cnc_vel_t *vel, const char *s)
 {
-	return ((const char *)cnc_error_msg);
-}
+	char *ep;
 
-void
-cnc_set_error(const char *fmt, ...)
-{
-	va_list args;
-	char *buf;
-	
-	va_start(args, fmt);
-	if (vasprintf(&buf, fmt, args) != -1) {
-		free(cnc_error_msg);
-		cnc_error_msg = buf;
+	errno = 0;
+	*vel = (cnc_vel_t)strtoul(s, &ep, 10);
+	if (s[0] == '\0' || *ep != '\0') {
+		cnc_set_error("No numerical velocity value");
+		return (-1);
 	}
-	va_end(args);
+	if (errno == ERANGE || *vel == ULONG_MAX) {
+		cnc_set_error("Velocity value out of range");
+		return (-1);
+	}
+	return (0);
 }
