@@ -1,3 +1,4 @@
+#  $FabBSD$
 #  $NetBSD: Makefile,v 1.28 1995/11/20 22:06:19 jtc Exp $
 #  $OpenBSD: Makefile,v 1.53 2008/07/30 08:02:34 jmc Exp $
 #
@@ -74,20 +75,6 @@ ARCH_SRCS = e_acos.S e_asin.S e_atan2.S e_exp.S e_fmod.S e_log.S e_log10.S \
 	    s_ilogb.S s_ilogbf.S s_log1p.S s_log1pf.S s_logb.S s_logbf.S \
 	    s_rint.S s_rintf.S s_scalbn.S s_scalbnf.S s_significand.S \
 	    s_significandf.S s_sin.S s_sinf.S s_tan.S s_tanf.S
-.elif (${MACHINE_ARCH} == "m68k")
-.PATH:	${.CURDIR}/arch/mc68881
-ARCH_SRCS = e_acos.S e_asin.S e_atanh.S e_cosh.S e_exp.S e_log.S e_log10.S \
-	    e_remainder.S e_scalb.S e_sinh.S e_sqrt.S s_atan.S s_ceil.S \
-	    s_copysign.S s_cos.S s_expm1.S s_finite.S s_floor.S s_log1p.S \
-	    s_logb.S s_rint.S s_scalbn.S s_sin.S s_tan.S s_tanh.S
-.elif (${MACHINE_ARCH} == "hppa")
-.PATH:	${.CURDIR}/arch/hppa
-ARCH_SRCS = e_sqrt.c e_sqrtf.c e_remainder.c e_remainderf.c \
-	    s_ceil.c s_ceilf.c s_floor.c s_floorf.c s_rint.c s_rintf.c
-.elif (${MACHINE_ARCH} == "vax")
-.PATH:	${.CURDIR}/arch/vax
-NOIEEE_ARCH=n_infnan.S n_argred.S n_sqrt.S
-ARCH_SRCS = n_atan2.S n_cabs.S n_cbrt.S n_sincos.S n_tan.S n_support.S 
 .endif
 
 .PATH:	${.CURDIR}/man
@@ -138,7 +125,6 @@ NOIEEE_SRCS = n_asincos.c n_acosh.c n_asinh.c n_atan.c n_atanh.c n_cosh.c \
 	n_log__L.c n_pow.c n_sinh.c n_tanh.c n_atan2.c n_cabs.c n_cbrt.c \
 	n_sqrt.c n_sincos.c n_tan.c n_argred.c n_support.c n_infnan.c \
 	n_round.c
-
 
 # OpenBSD's C library supplies these functions:
 #COMMON_SRCS+=	s_fabs.c s_frexp.c s_isinf.c s_isinff.c s_isnan.c s_isnanf.c \
