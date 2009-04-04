@@ -1,3 +1,4 @@
+/*	$FabBSD$	*/
 /*	$OpenBSD: grep.c,v 1.39 2007/09/02 15:19:32 deraadt Exp $	*/
 
 /*-
@@ -52,6 +53,8 @@ int	 patterns, pattern_sz;
 char   **pattern;
 regex_t	*r_pattern;
 fastgrep_t *fg_pattern;
+int      direxcludes = 0;
+char   **direxclude = NULL;
 
 /* For regex errors  */
 char	 re_error[RE_ERROR_BUF + 1];
@@ -120,9 +123,9 @@ usage(void)
 }
 
 #ifdef NOZ
-static char *optstr = "0123456789A:B:CEFGHILPSRUVabce:f:hilnoqrsuvwxy";
+static char *optstr = "0123456789A:B:CEFGHILN:PSRUVabce:f:hilnoqrsuvwxy";
 #else
-static char *optstr = "0123456789A:B:CEFGHILPSRUVZabce:f:hilnoqrsuvwxy";
+static char *optstr = "0123456789A:B:CEFGHILN:PSRUVZabce:f:hilnoqrsuvwxy";
 #endif
 
 struct option long_options[] =
@@ -149,6 +152,7 @@ struct option long_options[] =
 	{"ignore-case",		no_argument,		NULL, 'i'},
 	{"files-without-match",	no_argument,		NULL, 'L'},
 	{"files-with-matches",	no_argument,		NULL, 'l'},
+	{"exclude",		required_argument,	NULL, 'N'},
 	{"line-number",		no_argument,		NULL, 'n'},
 	{"quiet",		no_argument,		NULL, 'q'},
 	{"silent",		no_argument,		NULL, 'q'},
@@ -326,6 +330,16 @@ main(int argc, char *argv[])
 		case 'L':
 			lflag = 0;
 			Lflag = qflag = 1;
+			break;
+		case 'N':
+			if ((direxclude = realloc(direxclude,
+			    (direxcludes+1)*sizeof(char *))) == NULL) {
+				err(1, NULL);
+			}
+			if ((direxclude[direxcludes++] = strdup(optarg))
+			    == NULL) {
+				err(1, NULL);
+			}
 			break;
 		case 'P':
 			Pflag++;
