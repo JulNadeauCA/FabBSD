@@ -1,3 +1,4 @@
+/*	$FabBSD$	*/
 /*	$OpenBSD: util.c,v 1.36 2007/10/02 17:59:18 otto Exp $	*/
 
 /*-
@@ -58,6 +59,7 @@ grep_tree(char **argv)
 	FTS	*fts;
 	FTSENT	*p;
 	int	c, fts_flags;
+	int     i;
 
 	c = fts_flags = 0;
 
@@ -73,6 +75,13 @@ grep_tree(char **argv)
 	if (!(fts = fts_open(argv, fts_flags, NULL)))
 		err(2, NULL);
 	while ((p = fts_read(fts)) != NULL) {
+		for (i = 0; i < direxcludes; i++) {
+			if (strcmp(p->fts_name, direxclude[i]) == 0)
+				break;
+		}
+		if (i < direxcludes) {
+			fts_set(fts, p, FTS_SKIP);
+		}
 		switch (p->fts_info) {
 		case FTS_DNR:
 			break;

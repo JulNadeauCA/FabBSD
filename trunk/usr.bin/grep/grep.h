@@ -1,3 +1,4 @@
+/*	$FabBSD$	*/
 /*	$OpenBSD: grep.h,v 1.14 2007/09/02 15:19:32 deraadt Exp $	*/
 
 /*-
@@ -73,6 +74,8 @@ extern int	 first, matchall, patterns, tail;
 extern char    **pattern;
 extern fastgrep_t *fg_pattern;
 extern regex_t	*r_pattern;
+extern int       direxcludes;
+extern char    **direxclude;
 
 /* For regex errors  */
 #define RE_ERROR_BUF 512
