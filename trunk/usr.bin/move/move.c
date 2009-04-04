@@ -29,11 +29,12 @@
 #include <unistd.h>
 
 extern char *__progname;
+int verbose = 0;
 
 static void
 printusage(void)
 {
-	printf("Usage: %s [-s startvel] [-f feedrate] [-a accellim] "
+	printf("Usage: %s [-v] [-s startvel] [-f feedrate] [-a accellim] "
 	       "[-j jerklim] [pos ...]\n", __progname);
 }
 
@@ -48,7 +49,7 @@ main(int argc, char *argv[])
 	Vp.Amax = 10;
 	Vp.Jmax = 10;
 
-	while ((ch = getopt(argc, argv, "s:f:a:j:?h")) != -1) {
+	while ((ch = getopt(argc, argv, "s:f:a:j:?hv")) != -1) {
 		switch (ch) {
 		case 's':
 			cnc_vel_parse(&Vp.v0, optarg);
@@ -62,6 +63,9 @@ main(int argc, char *argv[])
 		case 'J':
 			cnc_vel_parse(&Vp.Jmax, optarg);
 			break;
+		case 'v':
+			verbose = 1;
+			break;
 		default:
 			printusage();
 			return (1);
@@ -74,8 +78,16 @@ main(int argc, char *argv[])
 
 		if (cnc_vec_parse(&v, argv[i]) == -1)
 			errx(1, "parsing position: %s", cnc_get_error());
-		if (cncmove(&Vp, &v) != 0)
+		if (verbose) {
+			char vs[32];
+			cnc_vec_print(&v, vs, sizeof(vs));
+			printf("moving to %s...", vs);
+		}
+		if (cncmove(&Vp, &v) != 0) {
 			errx(1, "cncmove failed");
+		}
+		if (verbose)
+			printf("\n");
 	}
 	return (0);
 }
