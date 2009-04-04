@@ -1,3 +1,4 @@
+#	$FabBSD$
 #	$OpenBSD: Makefile.inc,v 1.85 2008/03/22 19:18:42 otto Exp $
 #	$NetBSD: Makefile.inc,v 1.35 1995/10/16 23:49:07 jtc Exp $
 #	@(#)Makefile.inc	8.1 (Berkeley) 6/17/93
@@ -37,6 +38,7 @@ ASM=	accept.o access.o adjfreq.o adjtime.o bind.o chdir.o chflags.o \
 	chmod.o \
 	chown.o chroot.o clock_gettime.o clock_settime.o clock_getres.o \
 	close.o closefrom.o \
+	cncmove.o cncjog.o cncjogstep.o \
 	connect.o dup.o dup2.o execve.o fchdir.o \
 	fchflags.o fchmod.o fchown.o fcntl.o fhopen.o fhstat.o fhstatfs.o \
 	flock.o fpathconf.o fstat.o \
@@ -48,7 +50,7 @@ ASM=	accept.o access.o adjfreq.o adjtime.o bind.o chdir.o chflags.o \
 	getrlimit.o getrusage.o getsid.o \
 	getsockname.o getsockopt.o gettimeofday.o getuid.o issetugid.o \
 	ioctl.o kill.o kevent.o kqueue.o \
-	ktrace.o lchown.o lfs_bmapv.o lfs_markv.o lfs_segclean.o lfs_segwait.o \
+	ktrace.o lchown.o \
 	link.o listen.o lstat.o madvise.o mincore.o minherit.o mkdir.o \
 	mkfifo.o mknod.o mlock.o mlockall.o \
 	mount.o mprotect.o msgctl.o msgget.o msgrcv.o msgsnd.o msync.o \
@@ -213,8 +215,7 @@ LintSysPseudoNoerr.c: ${LIBCSRCDIR}/sys/makelintstub.sh \
 MAN+=	accept.2 access.2 adjfreq.2 adjtime.2 bind.2 brk.2 chdir.2 \
 	chflags.2 \
 	chmod.2 chown.2 chroot.2 clock_gettime.2 close.2 closefrom.2 \
-	cncmove.2 cncjog.2 spinctl.2 atcctl.2 laserctl.2 pickplacectl.2 \
-	coolantctl.2 estop.2 cnchome.2 \
+	cncmove.2 \
 	connect.2 dup.2 execve.2 _exit.2 fcntl.2 fhopen.2 \
 	flock.2 fork.2 fsync.2 getdirentries.2 \
 	getfh.2 getfsstat.2 getgid.2 getgroups.2 getitimer.2 getlogin.2 \
