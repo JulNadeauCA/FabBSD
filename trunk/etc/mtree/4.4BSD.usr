@@ -1569,6 +1569,13 @@ mk              type=dir uname=root gname=wheel mode=0755
 ..
 
 
+# ./share/pinouts
+/set type=file gname=bin uname=root mode=0444
+pinouts         type=dir uname=root gname=wheel mode=0755
+# ./share/pinouts
+..
+
+
 # ./share/skel
 /set type=file gname=bin uname=root mode=0444
 skel            type=dir uname=root gname=wheel mode=0755
