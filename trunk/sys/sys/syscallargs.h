@@ -924,10 +924,6 @@ struct sys_cncjog_args {
 	syscallarg(const struct cnc_velocity *) vel;
 };
 
-struct sys_cncjogstep_args {
-	syscallarg(const struct cnc_velocity *) vel;
-};
-
 struct sys_spinctl_args {
 	syscallarg(int) spindle;
 	syscallarg(int) op;

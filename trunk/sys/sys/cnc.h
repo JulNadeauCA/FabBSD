@@ -169,7 +169,7 @@ struct cnc_stats {
 __BEGIN_DECLS
 int	cncmove(const struct cnc_velocity *, const cnc_vec_t *tgt);
 int	cncjog(const struct cnc_velocity *);
-int	cncjogstep(const struct cnc_velocity *);
+int	cncjogstep(void);
 int	spinctl(int, enum cnc_spindle_op, const struct cnc_spindle_args *);
 int	atcctl(int, enum cnc_atc_op, const struct cnc_atc_args *);
 int	laserctl(int, enum cnc_laser_op, const struct cnc_laser_args *);

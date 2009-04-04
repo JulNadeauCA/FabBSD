@@ -627,7 +627,7 @@
 /* syscall: "cncjog" ret: "int" args: "const struct cnc_velocity *" */
 #define	SYS_cncjog	311
 
-/* syscall: "cncjogstep" ret: "int" args: "const struct cnc_velocity *" */
+/* syscall: "cncjogstep" ret: "int" args: */
 #define	SYS_cncjogstep	312
 
 /* syscall: "spinctl" ret: "int" args: "int" "int" "const struct cnc_spindle_args *" */
