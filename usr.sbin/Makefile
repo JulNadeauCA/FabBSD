@@ -6,7 +6,7 @@
 SUBDIR=	adduser amd apm apmd arp \
 	chroot cncctl config cron dev_mkdb \
 	gpioctl hotplugd ifstated inetd iostat \
-	kgmon kvm_mkdb memconfig \
+	kgmon kvm_mkdb lpr memconfig \
 	mtree openssl \
 	pcidump pkg_add portmap procmap pstat pwd_mkdb \
 	rdate rdconfig rpc.lockd rpc.statd rtsold sensorsd sliplogin \
