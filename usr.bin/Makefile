@@ -24,7 +24,7 @@ SUBDIR= apply apropos arch asa asn1_compile awk banner basename bc \
 	top touch tput tr true tset tsort tty usbhidaction usbhidctl ul uname \
 	unexpand unifdef uniq units \
 	unvis users vgrind vi vis vmstat w wall wc \
-	what whatis which who window xargs xinstall \
+	what whatis which who window write xargs xinstall \
 	xstr yacc yes
 
 .include <bsd.subdir.mk>
