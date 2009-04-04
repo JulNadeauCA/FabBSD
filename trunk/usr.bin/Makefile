@@ -23,7 +23,7 @@ SUBDIR= apply apropos arch asa asn1_compile awk banner basename bc \
 	sudo tail tcopy tee telnet tftp tic time tip \
 	top touch tput tr true tset tsort tty usbhidaction usbhidctl ul uname \
 	unexpand unifdef uniq units \
-	unvis users vgrind vi vis vmstat w wc \
+	unvis users vgrind vi vis vmstat w wall wc \
 	what whatis which who window xargs xinstall \
 	xstr yacc yes
 
