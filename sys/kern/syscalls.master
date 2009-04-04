@@ -41,9 +41,6 @@
 #include <sys/syscallargs.h>
 #include <sys/poll.h>
 #include <sys/event.h>
-#include <sys/cnc.h>
-
-#include "cnc.h"
 
 ; Reserved/unimplemented system calls in the range 0-150 inclusive
 ; are reserved for use in future Berkeley releases.
@@ -469,7 +466,6 @@
 ;
 ; FabBSD-specific
 ;
-#if NCNC > 0
 310	STD		{ int sys_cncmove(const struct cnc_velocity *vel, const struct cnc_vector *tgt); }
 311	STD		{ int sys_cncjog(const struct cnc_velocity *vel); }
 312	STD		{ int sys_cncjogstep(void); }
@@ -479,14 +475,3 @@
 316	STD		{ int sys_pickplacectl(int pp, int op, const struct cnc_pickplace_args *args); }
 317	STD		{ int sys_coolantctl(int coolant, int op, int val); }
 318	STD		{ int sys_estop(void); }
-#else
-310	UNIMPL		cncmove
-311	UNIMPL		cncjog
-312	UNIMPL		cncjogstep
-313	UNIMPL		spinctl
-314	UNIMPL		atcctl
-315	UNIMPL		laserctl
-316	UNIMPL		pickplacectl
-317	UNIMPL		coolantctl
-318	UNIMPL		estop
-#endif
