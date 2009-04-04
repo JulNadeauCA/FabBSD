@@ -9,10 +9,7 @@
 #include <sys/kernel.h>
 #include <sys/device.h>
 
-#include <sys/gpio.h>
 #include <sys/cnc.h>
-
-#include <dev/gpio/gpiovar.h>
 
 #include "cnc_devicevar.h"
 #include "cncvar.h"
@@ -48,7 +45,7 @@ cnc_vec_add(cnc_vec_t *vDst, const cnc_vec_t *v1, const cnc_vec_t *v2)
 
 /* Return real dot product of v1 and v2. */
 cnc_real_t
-cnc_vec_dotprod(cnc_vec_t *vDst, const cnc_vec_t *v1, const cnc_vec_t *v2)
+cnc_vec_dotprod(const cnc_vec_t *v1, const cnc_vec_t *v2)
 {
 	cnc_real_t dot = 0.0;
 	int i;
@@ -69,7 +66,7 @@ cnc_vec_length(const cnc_vec_t *v)
 	for (i = 0; i < CNC_NAXES; i++) {
 		len_2 += ((cnc_real_t)v->v[i])*((cnc_real_t)v->v[i]);
 	}
-	return (cnc_sqrt(len_2));
+	return sqrt(len_2);
 }
 
 /* Return real distance between vectors v1 and v2. */
@@ -79,7 +76,7 @@ cnc_vec_distance(const cnc_vec_t *v1, const cnc_vec_t *v2)
 	cnc_vec_t vd;
 
 	cnc_vec_sub(&vd, v2, v1);
-	return (cnc_vec_length(&vd));
+	return cnc_vec_length(&vd);
 }
 
 /* Return 1 if the two arguments are the same vector. */
@@ -102,7 +99,7 @@ cnc_fmt_real(cnc_real_t v)
 	double fpart;
 	double ipart;
 
-	fpart = cnc_modf(v, &ipart);
+	fpart = modf(v, &ipart);
 	snprintf(s, sizeof(s), "%ld.%ld", (long)ipart, (long)(fpart*10000.0));
 	return (s);
 }
