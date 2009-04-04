@@ -9,7 +9,7 @@ SUBDIR=	adduser amd apm apmd arp \
 	kgmon kvm_mkdb lpr memconfig \
 	mtree openssl \
 	pcidump pkg_add portmap procmap pstat pwd_mkdb \
-	rdate rdconfig rpc.lockd rpc.statd rtsold sensorsd sliplogin \
+	rdate rdconfig rmt rpc.lockd rpc.statd rtsold sensorsd sliplogin \
 	slstats snmpctl snmpd syslogc syslogd sysmerge \
 	tcpdrop traceroute traceroute6 \
 	usbdevs user vipw watchdogd wsconscfg wsfontload \
