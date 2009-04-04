@@ -404,6 +404,7 @@ char *syscallnames[] = {
 	"statfs",			/* 307 = statfs */
 	"fstatfs",			/* 308 = fstatfs */
 	"fhstatfs",			/* 309 = fhstatfs */
+#if NCNC > 0
 	"cncmove",			/* 310 = cncmove */
 	"cncjog",			/* 311 = cncjog */
 	"cncjogstep",			/* 312 = cncjogstep */
@@ -413,4 +414,15 @@ char *syscallnames[] = {
 	"pickplacectl",			/* 316 = pickplacectl */
 	"coolantctl",			/* 317 = coolantctl */
 	"estop",			/* 318 = estop */
+#else
+	"#310 (unimplemented cncmove)",		/* 310 = unimplemented cncmove */
+	"#311 (unimplemented cncjog)",		/* 311 = unimplemented cncjog */
+	"#312 (unimplemented cncjogstep)",		/* 312 = unimplemented cncjogstep */
+	"#313 (unimplemented spinctl)",		/* 313 = unimplemented spinctl */
+	"#314 (unimplemented atcctl)",		/* 314 = unimplemented atcctl */
+	"#315 (unimplemented laserctl)",		/* 315 = unimplemented laserctl */
+	"#316 (unimplemented pickplacectl)",		/* 316 = unimplemented pickplacectl */
+	"#317 (unimplemented coolantctl)",		/* 317 = unimplemented coolantctl */
+	"#318 (unimplemented estop)",		/* 318 = unimplemented estop */
+#endif
 };
