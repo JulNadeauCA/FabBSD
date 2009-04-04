@@ -13,7 +13,7 @@ SUBDIR= apply apropos arch asa asn1_compile awk banner basename bc \
 	join jot kdump ktrace lam last lastcomm less lex lndir \
 	lock logger login logname look lorder m4 make man mesg mg \
 	mkdep mklocale mktemp msgs modstat \
-	motioncap nc netstat \
+	motioncap nc netstat newsyslog \
 	nfsstat nice nm nohup cvs pagesize passwd paste patch pctr \
 	pkg-config pkill \
 	pr printenv printf rcs \
