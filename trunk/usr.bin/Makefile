@@ -19,7 +19,7 @@ SUBDIR= apply apropos arch asa asn1_compile awk banner basename bc \
 	pr printenv printf rcs \
 	readlink renice rev rpcgen rpcinfo rs \
 	sdiff script sed sendbug shar showmount skey \
-	skeyaudit skeyinfo skeyinit sort ssh stat su systat \
+	skeyaudit skeyinfo skeyinit sort split ssh stat su systat \
 	sudo tail tee telnet tftp tic time tip \
 	top touch tput tr true tset tsort tty usbhidaction usbhidctl ul uname \
 	unexpand unifdef uniq units \
