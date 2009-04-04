@@ -15,7 +15,7 @@ BINGRP= wheel
 BIN1=	changelist ccd.conf csh.cshrc csh.login csh.logout daily \
 	exports ftpusers ftpchroot gettytab group hosts inetd.conf \
 	ksh.kshrc man.conf monthly motd mrouted.conf myname \
-	netstart networks phones protocols \
+	netstart networks phones printcap protocols \
 	rc rc.conf rc.local rc.securelevel rc.shutdown \
 	remote rpc security services shells syslog.conf weekly \
 	etc.${MACHINE}/disktab dhclient.conf \
