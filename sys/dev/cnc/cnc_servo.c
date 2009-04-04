@@ -147,10 +147,8 @@ servo_step(struct servo_softc *sc, int dir)
 {
 	if (sc->sc_dir != dir) {
 		sc->sc_dir = dir;
-		delay(1);
 		gpio_pin_write(sc->sc_gpio, &sc->sc_map, SERVO_PIN_DIR,
 		    (dir == 1) ? GPIO_PIN_HIGH : GPIO_PIN_LOW);
-		delay(1);
 	}
 	sc->sc_step = !sc->sc_step;
 	gpio_pin_write(sc->sc_gpio, &sc->sc_map, SERVO_PIN_STEP,

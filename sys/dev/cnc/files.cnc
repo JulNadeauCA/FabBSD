@@ -1,16 +1,12 @@
-# $OpenBSD$
+# $FabBSD$
 
 # CNC controller interface.
 pseudo-device	cnc
+
 file	dev/cnc/cnc.c			cnc needs-flag
+file	dev/cnc/cnc_capture.c		cnc needs-flag
 file	dev/cnc/cnc_device.c		cnc needs-flag
 file	dev/cnc/cnc_math.c		cnc needs-flag
-file	dev/cnc/cnc_sin.S		cnc needs-flag
-file	dev/cnc/cnc_sqrt.S		cnc needs-flag
-file	dev/cnc/cnc_cbrt.c		cnc needs-flag
-file	dev/cnc/cnc_log10.S		cnc needs-flag
-file	dev/cnc/cnc_modf.c		cnc needs-flag
-file	dev/cnc/cnc_fixunssfdi.c	cnc needs-flag
 file	dev/cnc/cnc_quintic.c		cnc needs-flag
 
 # Servo or stepping motor with clock/direction interface.

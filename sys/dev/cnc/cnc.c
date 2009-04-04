@@ -1,3 +1,4 @@
+/*	$FabBSD$	*/
 /*
  * Copyright (c) 2007-2009 Hypertriton, Inc. <http://www.hypertriton.com/>
  * All rights reserved.
@@ -59,6 +60,7 @@
 #include "cnc_lcdvar.h"
 
 #include "cncvar.h"
+#include "cnc_capturevar.h"
 
 #include "servo.h"
 #include "spindle.h"
@@ -88,6 +90,7 @@ const char *cnc_axis_names[] = {
 int cnc_opened;
 struct cnc_vector cnc_pos;
 struct cnc_timings cnc_timings;
+struct cnc_stats cnc_stats;
 
 struct servo_softc      *cnc_servos[CNC_MAX_SERVOS];
 struct spindle_softc    *cnc_spindles[CNC_MAX_SPINDLES];
@@ -97,6 +100,7 @@ struct mpg_softc        *cnc_mpgs[CNC_MAX_MPGS];
 struct cnclcd_softc     *cnc_lcds[CNC_MAX_LCDS];
 struct cncstatled_softc *cnc_status_led = NULL;
 
+int cnc_capture = 0;
 int cnc_nservos = 0;
 int cnc_nspindles = 0;
 int cnc_nestops = 0;
@@ -119,6 +123,8 @@ cncattach(int num)
 	
 	cnc_timings.hz = 0;
 	cnc_timings.move_jog = 0;
+	cnc_stats.peak_velocity = 0;
+	cnc_stats.estops = 0;
 }
 
 int
@@ -128,6 +134,10 @@ cncdetach(struct device *self, int flags)
 	int i;
 	for (i = 0; i < cnc_nlcds; i++)
 		cnclcd_close(cnc_lcds[i]);
+#endif
+#ifdef MOTIONCAPTURE
+	if (cnc_capture)
+		cnc_capture_close();
 #endif
 	return (0);
 }
@@ -151,8 +161,22 @@ cncopen(dev_t dev, int flag, int mode, struct proc *p)
 int
 cncclose(dev_t dev, int flag, int mode, struct proc *p)
 {
+#ifdef MOTIONCAPTURE
+	if (cnc_capture)
+		cnc_capture_close();
+#endif
 	cnc_opened = 0;
 	return (0);
+}
+
+int
+cncread(dev_t dev, struct uio *uio, int ioflag)
+{
+#ifdef MOTIONCAPTURE
+	return cnc_capture_read(dev, uio, ioflag);
+#else
+	return (ENODEV);
+#endif
 }
 
 int
@@ -176,31 +200,6 @@ cncwrite(dev_t dev, struct uio *uio, int ioflag)
 			printf("cncwrite: bad insn %d\n", insn.i_type);
 			return (ENODEV);
 		}
-		/*
-		 * We do the best we can to validate the program
-		 * before it is executed.
-		 */
-		switch (insn.i_type) {
-		case CNC_MOVE:
-			if (cnc_vec_distance(&cnc_pos, &insn.i_pos) == 0) {
-				cause = "L=0";
-				goto fail;
-			}
-			if (insn.i_Amax == 0) { cause = "Amax=0"; goto fail; }
-			if (insn.i_Jmax == 0) { cause = "Jmax=0"; goto fail; }
-			break;
-		case CNC_JOG:
-			break;
-		case CNC_SET_INTERP:
-			if (insn.i_interp_mode < 0 ||
-			    insn.i_interp_mode >= CNC_INTERP_LAST) {
-				cause = "bad interpolation mode";
-				goto fail;
-			}
-			break;
-		default:
-			break;
-		}
 		if ((iNew = pool_get(&cnc_insnpl, 0)) == NULL) {
 			cause = "out of memory for instruction";
 			goto fail;
@@ -209,11 +208,7 @@ cncwrite(dev_t dev, struct uio *uio, int ioflag)
 		TAILQ_INSERT_TAIL(&cnc_prog, iNew, prog);
 		ip++;
 	}
-	printf("cnc: added %u insns to program queue\n", ip);
 	return (0);
-fail:
-	printf("%s[%d]: %s\n", cnc_insn_names[insn.i_type], ip, cause);
-	return (EINVAL);
 #endif
 }
 
@@ -262,6 +257,9 @@ cnc_calibrate_hz(void)
 		t = (tv2.tv_sec - tv1.tv_sec)*1e6 +
 		    (tv2.tv_usec - tv1.tv_usec);
 
+		splx(s);
+		preempt(NULL);
+		s = splhigh();
 		printf(" %ld", tTgt-t);
 		if (t < tTgt) {
 			d = tTgt - t;
@@ -373,6 +371,23 @@ cncioctl(dev_t dev, u_long cmd, caddr_t data, int flag, struct proc *p)
 		}
 		bcopy(&cnc_timings, (void *)data, sizeof(struct cnc_timings));
 		return (0);
+	case CNC_SETCAPTUREMODE:
+#ifdef MOTIONCAPTURE
+		if (*(int *)data) {
+			cnc_capture_open();
+		} else {
+			cnc_capture_close();
+		}
+		return (0);
+#else
+		return (ENODEV);
+#endif
+	case CNC_GETSTATS:
+		bcopy(&cnc_stats, (void *)data, sizeof(struct cnc_stats));
+		return (0);
+	case CNC_CLRSTATS:
+		bzero(&cnc_stats, sizeof(struct cnc_stats));
+		return (0);
 	default:
 		break;
 	}
@@ -386,8 +401,10 @@ cnc_estop_raised(void)
 #if NESTOP > 0
 	int i;
 	for (i = 0; i < cnc_nestops; i++) {
-		if (estop_get_state(cnc_estops[i]))
+		if (estop_get_state(cnc_estops[i])) {
+			cnc_stats.estops++;
 			return (1);
+		}
 	}
 #endif
 	return (0);
@@ -418,16 +435,12 @@ sys_cncmove(struct proc *p, void *v, register_t *retval)
 		syscallarg(const cnc_vec_t *) tgt;
 	} */ *uap = v;
 	const struct cnc_velocity *velprof = SCARG(uap,vel);
-	const cnc_pos_t *v2 = SCARG(uap,tgt);
-	struct cnc_quintic_profile Q;
+	const cnc_vec_t *v2 = SCARG(uap,tgt);
 	cnc_real_t t;
-	cnc_vec_t v1 = cnc_pos;
-	cnc_vec_t d;
-	cnc_pos_t inc, incMin;
-	int dir[CNC_NAXES];
-	int i, nonzero = 0;
-	int axisMajor = 0;
-	cnc_pos_t vMajor = 0;
+	cnc_vec_t d, v1=cnc_pos;
+	cnc_pos_t inc, incMin, vMajor=0;
+	struct cnc_quintic_profile Q;
+	int dir[CNC_NAXES], s, i, nonzero=0, axisMajor=0;
 	
 	if (cnc_calibrated())
 		return (ENXIO);
@@ -460,42 +473,47 @@ sys_cncmove(struct proc *p, void *v, register_t *retval)
 	/* Compute the time constants for our quintic velocity profile. */
 	if (cnc_quintic_init(&Q,
 	    (cnc_real_t)d.v[axisMajor],
-	    (cnc_real_t)velprof->i_v0,
-	    (cnc_real_t)velprof->i_F,
-	    (cnc_real_t)velprof->i_Amax,
-	    (cnc_real_t)velprof->i_Jmax) == -1)
+	    (cnc_real_t)velprof->v0,
+	    (cnc_real_t)velprof->F,
+	    (cnc_real_t)velprof->Amax,
+	    (cnc_real_t)velprof->Jmax) == -1)
 		return (EINVAL);
 
 	/*
 	 * Enter the signal generation loop. We iterate over the displacement
 	 * of the major axis.
 	 */
+	if (!cnc_capture) { s = splhigh(); }
 	for (inc=0, t=0.0;
 	     inc < d.v[axisMajor] && t < MAXSTEPS;
 	     inc++, t+=1.0) {
 		cnc_real_t v;
 		cnc_utime_t delay, j;
-
-		if (cnc_estop_raised()) {
-			printf("cnc: emergency stop!\n");
-			return (EINTR);
-		}
+#ifdef MOTIONCAPTURE
+		struct cnc_capture_frame cf =
+		    CNC_CAPTURE_FRAME_INITIALIZER(t);
+#endif
+		if (cnc_estop_raised())
+			goto stop;
 #if NENCODER > 0
 		for (i = 0; i < cnc_nencoders; i++)
 			encoder_update(cnc_encoders[i]);
 #endif
-
 		/* Increment the major axis once per iteration. */
 		cnc_inc_axis(axisMajor, dir[axisMajor]);
-		
+		CNC_CAPTURE_STEP(&cf, axisMajor, dir[axisMajor]);
+
 		/* Increment the other axes by their scaled intervals. */
 		for (i = 0; i < CNC_NAXES; i++) {
 			if (i != axisMajor) {
 				incMin = (dir[i]*d.v[i]*t)/STEPLEN;
-				if (v1.v[i]+incMin != cnc_pos.v[i])
+				if (v1.v[i]+incMin != cnc_pos.v[i]) {
 					cnc_inc_axis(i, dir[i]);
+					CNC_CAPTURE_STEP(&cf, i, dir[i]);
+				}
 			}
 		}
+		CNC_CAPTURE_FRAME(&cf);
 
 		/*
 		 * Evaluate optimal velocity at t in steps/second, and
@@ -506,12 +524,20 @@ sys_cncmove(struct proc *p, void *v, register_t *retval)
 		    (Q.v0 + Q.v1 + Q.v2) +
 		    Q.v0;
 		if (v > 0) {
+			if (v > cnc_stats.peak_velocity) {
+				cnc_stats.peak_velocity = v;
+			}
 			delay = (cnc_utime_t)(cnc_timings.hz/v);
 			for (j = 0; j < delay; j++)
 				;;
 		}
 	}
+	if (!cnc_capture) { splx(s); }
 	return (0);
+stop:
+	if (!cnc_capture) { splx(s); }
+	printf("cnc: emergency stop!\n");
+	return (EINTR);
 }
 
 #else /* NSERVO == 0 */
@@ -527,13 +553,13 @@ sys_cncmove(struct proc *p, void *v, register_t *retval)
 #if (NSERVO > 0) && (NMPG > 0)
 
 /*
- * Manually control the servos with a MPG until estop is raised.
- * The MPG pulses are translated directly to servo pulses.
+ * Control the servos stepwise using an mpg(4) device. The kinematic limits
+ * are not applied in this case.
  */
 int
 sys_cncjogstep(struct proc *p, void *v, register_t *retval)
 {
-	int i;
+	int i, s;
 
 	if (cnc_nmpgs < 1)
 		return (ENXIO);
@@ -541,11 +567,12 @@ sys_cncjogstep(struct proc *p, void *v, register_t *retval)
 	/* Fetch the initial quadrature signal state. */
 	for (i = 0; i < cnc_nmpgs; i++)
 		mpg_jog_init(cnc_mpgs[i]);
-
+	
 	/*
 	 * Loop translating the quadrature signal to directly to step
 	 * by step motion.
 	 */
+	s = splhigh();
 	while (!cnc_estop_raised()) {
 		for (i = 0; i < cnc_nmpgs; i++) {
 			struct mpg_softc *mpg = cnc_mpgs[i];
@@ -568,12 +595,15 @@ sys_cncjogstep(struct proc *p, void *v, register_t *retval)
 			axis->Bprev = axis->B;
 		}
 	}
+	splx(s);
 	return (0);
 }
 
 /*
- * Let the operator manually move to a target position using an
- * mpg(4) device.
+ * Let the operator manually move to a target position using an mpg(4) device.
+ * The position is moved by the specified multiplier and kinematic limits
+ * are applied.
+ *
  * TODO allow other types of input devices (buttons, joysticks)
  */
 int
@@ -587,7 +617,7 @@ sys_cncjog(struct proc *p, void *v, register_t *retval)
 	struct cnc_quintic_profile Q, Qprev;
 	cnc_vec_t vTgt, vTgtLast;
 	cnc_real_t t = 0.0, dt = 0.0, L;
-	int dir, axis;
+	int dir, axis, s;
 	cnc_utime_t Telapsed = 0;
 	int moving = 0;
 	int mult = 10;			/* XXX TODO select */
@@ -609,6 +639,7 @@ sys_cncjog(struct proc *p, void *v, register_t *retval)
 	Q.To = 0.0;
 
 	/* Enter the jog loop. */
+	s = splhigh();
 	while (!cnc_estop_raised()) {
 		/*
 		 * Use the MPG to control the target position, fetch
@@ -643,11 +674,11 @@ sys_cncjog(struct proc *p, void *v, register_t *retval)
 			vTgtLast = vTgt;
 			Qprev = Q;
 			if (cnc_quintic_init(&Q, L,
-			    insn->i_v0,
-			    insn->i_F,
-			    insn->i_Amax,
-			    insn->i_Jmax) == -1) {
-				return (EINVAL);
+			    velprof->v0,
+			    velprof->F,
+			    velprof->Amax,
+			    velprof->Jmax) == -1) {
+				goto fail;
 			}
 			dt = (Q.Ta+Q.To)/L;
 
@@ -723,7 +754,11 @@ sys_cncjog(struct proc *p, void *v, register_t *retval)
 		if (simulate)
 			break;
 	}
+	splx(s);
 	return (0);
+fail:
+	splx(s);
+	return (EINVAL);
 }
 
 #else /* NMPG=0 or NSERVO=0 */
