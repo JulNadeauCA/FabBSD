@@ -79,23 +79,21 @@ The
 will fail if:
 .Bl -tag -width Er
 .It Bq Er ENXIO
-The trajectory planner has not been calibrated (i.e., the
-.Dv CNC_CALTIMINGS
-or
-.Dv CNC_SETTIMINGS
-ioctls have not been invoked).
+The trajectory planner has not been calibrated (see
+.Xr cncctl 8 ) .
 .It Bq Er EINVAL
 One of the specified parameters exceeds the kinematic limits of the machine
-(as set by the
-.Dv CNC_SETKINLIMITS
-ioctl).
+(as configured by
+.Xr cncctl 8 ) .
 .It Bq Er EINTR
 Program has been interrupted by an
 .Xr estop 4
 event.
 .El
 .Sh SEE ALSO
-.Xr cnc 4
+.Xr cnc 3 ,
+.Xr cncjog 2 ,
+.Xr cncjogstep 2
 .Rs
 .%A Daniela Constantinescu
 .%T "Smooth Time Optimal Trajectory Planning for Industrial Manipulators"
@@ -106,7 +104,7 @@ event.
 .Re
 .Rs
 .%A Sonja Macfarlane
-.%T "On-Line Smooth Trajectory Planning for Manipulators".
+.%T "On-Line Smooth Trajectory Planning for Manipulators"
 .Re
 .Sh HISTORY
 The
