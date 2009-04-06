@@ -1,3 +1,4 @@
+#	$FabBSD$
 #	$OpenBSD: Makefile,v 1.26 2006/03/14 09:19:37 deraadt Exp $
 #
 # All library objects contain sccsid strings by default; they may be
@@ -16,8 +17,6 @@
 .include <bsd.own.mk>
 
 LIB=c
-#WANTLINT=
-#LINTFLAGS=-z
 CLEANFILES+=tags
 #CFLAGS+=-Werror
 
