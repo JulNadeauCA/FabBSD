@@ -108,10 +108,13 @@ uipaq*	at uhub?		# iPAQ serial adapter
 ucom*	at uipaq?
 umsm*	at uhub?		# Qualcomm MSM EVDO
 ucom*	at umsm?
+ulpt*	at uhub?		# USB Printers
 umass*	at uhub?		# USB Mass Storage devices
 scsibus* at umass?
 atapiscsi* at umass?
 uhidev*	at uhub?		# Human Interface Devices
+ums*	at uhidev?		# USB mouse
+wsmouse* at ums? mux 0
 ukbd*	at uhidev?		# USB keyboard
 wskbd*	at ukbd? mux 1
 uhid*	at uhidev?		# USB generic HID support
@@ -156,6 +159,7 @@ rlphy*		at mii?		# Realtek 8139 internal PHYs
 ciphy*		at mii?		# Cicada CS8201 10/100/1000 copper PHY
 ukphy*		at mii?		# generic unknown PHYs
 
+#pseudo-device	wsmux		2
 pseudo-device	crypto		1
 pseudo-device	hotplug		1	# devices hot plugging
 

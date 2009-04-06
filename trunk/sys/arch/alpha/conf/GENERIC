@@ -38,8 +38,11 @@ option		USBVERBOSE
 
 # Wscons options
 option	WSDISPLAY_COMPAT_USL		# VT handling
+option	WSDISPLAY_COMPAT_RAWKBD		# provide raw scancodes; needed for X11
 option	WSDISPLAY_DEFAULTSCREENS=6	# initial number of text consoles
+option	WSDISPLAY_COMPAT_PCVT		# emulate some ioctls; needed for X11
 
+#option		APERTURE		# in-kernel aperture driver for XFree86
 option		USER_PCICONF		# user-space PCI configuration
 
 config		bsd	swap generic
@@ -80,10 +83,13 @@ uipaq*	at uhub?			# iPAQ serial adapter
 ucom*	at uipaq?
 uchcom*	at uhub?			# WinChipHead CH341/340 serial
 ucom*	at uchcom?
+ulpt*	at uhub?			# USB Printers
 umass*	at uhub?			# USB Mass Storage devices
 scsibus* at umass?
 atapiscsi* at umass?
 uhidev*	at uhub?			# Human Interface Devices
+ums*	at uhidev?			# USB mouse
+wsmouse* at ums? mux 0
 ukbd*	at uhidev?			# USB keyboard
 wskbd*	at ukbd? mux 1
 ucycom*	at uhidev?			# Cypress serial
@@ -117,6 +123,7 @@ onewire* at uow?
 #btkbd*	at bthidev?
 #btms*	at bthidev?
 #wskbd*	at btkbd? mux 1
+#wsmouse* at btms? mux 0
 
 # EV6 Tsunami Core Logic
 tsc*	at	mainbus0
@@ -303,6 +310,8 @@ pcppi*	at isa?				# PC prog. periph. interface
 spkr0	at pcppi?			# IBM BASIC emulation
 pckbc*	at isa?				# PC keyboard controller
 pckbd*	at pckbc?			# PC keyboard (kbd port)
+pms*	at pckbc?			# PS/2-style mouse (aux port)
+pmsi*	at pckbc?			# PS/2 "Intelli"mouse
 com*	at isa? port 0x3f8 irq 4	# standard serial ports
 com*	at isa? port 0x2f8 irq 3
 lpt*	at isa? port 0x3bc irq 7	# standard parallel port (printer)
@@ -366,6 +375,8 @@ com*	at puc?
 wsdisplay*	at	vga?
 wsdisplay*	at	tga?
 wskbd*		at	pckbd? mux 1
+wsmouse*	at	pms? mux 0
+wsmouse*	at	pmsi? mux 0
 
 # crypto support
 hifn*	at pci?				# Hi/fn 7751 crypto card
@@ -382,3 +393,4 @@ owtemp* at onewire?			# Temperature
 
 pseudo-device	crypto		1
 pseudo-device	hotplug		1	# devices hot plugging
+pseudo-device	wsmux		2	# mouse & keyboard multiplexor

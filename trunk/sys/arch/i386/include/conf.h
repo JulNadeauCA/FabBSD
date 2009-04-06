@@ -36,6 +36,7 @@
 #define	mmread	mmrw
 #define	mmwrite	mmrw
 cdev_decl(mm);
+cdev_decl(pms);
 
 bdev_decl(fd);
 cdev_decl(fd);
@@ -55,6 +56,12 @@ cdev_decl(pc);
 	(dev_type_mmap((*))) enodev, 0, D_KQFILTER, dev_init(c,n,kqfilter) }
 
 cdev_decl(spkr);
+
+cdev_decl(mms);
+
+cdev_decl(lms);
+
+cdev_decl(pms);
 
 cdev_decl(joy);
 

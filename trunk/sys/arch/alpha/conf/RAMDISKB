@@ -113,6 +113,7 @@ isa*	at	sio?
 mcclock* at isa? port 0x70
 pckbc*	at isa?				# PC keyboard controller
 pckbd*	at pckbc?			# PC keyboard (kbd port)
+#pms*	at pckbc?			# PS/2-style mouse (aux port)
 com*	at isa? port 0x3f8 irq 4	# standard serial ports
 com*	at isa? port 0x2f8 irq 3
 #lpt*	at isa? port 0x3bc irq 7	# standard parallel port
@@ -154,3 +155,4 @@ wskbd*		at pckbd? mux 1
 
 pseudo-device	loop
 pseudo-device	rd		1
+pseudo-device	wsmux		2	# mouse & keyboard multiplexor

@@ -118,6 +118,7 @@ cdev_decl(pci);
 #include "ucom.h"
 #include "ugen.h"
 #include "uhid.h"
+#include "ulpt.h"
 
 /*
  * WSCONS devices
@@ -127,7 +128,10 @@ cdev_decl(pci);
 #include "wsfont.h"
 */
 #include "wskbd.h"
+#include "wsmouse.h"
+#include "wsmux.h"
 cdev_decl(wskbd);
+cdev_decl(wsmouse);
 
 #ifdef CONF_HAVE_FCOM
 #include "fcom.h"
@@ -162,7 +166,7 @@ struct bdevsw bdevsw[] = {
 	bdev_disk_init(NVND,vnd),	/* 19: vnode disk driver */
 	bdev_lkm_dummy(),		/* 20: */
  	bdev_disk_init(NCCD,ccd),	/* 21: concatenated disk driver */
-	bdev_lkm_dummy(),		/* 22: */
+	bdev_lkm_dummy(),		/* 22 */
 	bdev_lkm_dummy(),		/* 23: */
 	bdev_disk_init(NSD,sd),		/* 24: SCSI disk */
 	bdev_tape_init(NST,st),		/* 25: SCSI tape */
@@ -269,7 +273,7 @@ struct cdevsw cdevsw[] = {
 	cdev_log_init(1,log),			/*  6: /dev/klog */
 	cdev_fd_init(1,filedesc),		/*  7: file descriptor pseudo-device */
 	cdev_ksyms_init(NKSYMS,ksyms),		/*  8: Kernel symbols device */
-	cdev_notdef(),				/*  9 */
+	cdev_lpt_init(NLPT,lpt),		/*  9: parallel printer */
 	cdev_lkm_dummy(),			/* 10: */
 	cdev_lkm_dummy(),			/* 11: */
 	cdev_tty_init(NCOM,com),		/* 12: serial port */
@@ -322,11 +326,11 @@ struct cdevsw cdevsw[] = {
 	cdev_notdef(),				/* 59 */
 	cdev_wsdisplay_init(NWSDISPLAY,wsdisplay), /* 60: frame buffers, etc.*/
 	cdev_mouse_init(NWSKBD,wskbd),		/* 61: keyboards */
-	cdev_notdef(),				/* 62 */
-	cdev_notdef(),				/* 63 */
+	cdev_mouse_init(NWSMOUSE,wsmouse),	/* 62: mice */
+	cdev_mouse_init(NWSMUX,wsmux),		/* 63: ws multiplexor */
 	cdev_usb_init(NUSB,usb),		/* 64: USB controller */
 	cdev_usbdev_init(NUHID,uhid),		/* 65: USB generic HID */
-	cdev_notdef(),				/* 66 */
+	cdev_lpt_init(NULPT,ulpt),		/* 66: USB printer */
 	cdev_notdef(),				/* 67 */
 	cdev_tty_init(NUCOM,ucom),		/* 68: USB tty */
 	cdev_notdef(),				/* 69 */
