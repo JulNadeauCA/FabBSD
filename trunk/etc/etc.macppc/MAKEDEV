@@ -36,6 +36,9 @@
 #	sd*	SCSI disks, including flopticals
 #	vnd*	"file" pseudo-disk devices
 #	wd*	"winchester" disk drives (ST506, IDE, ESDI, RLL, ...)
+# Tapes:
+#	ch*	SCSI media changers
+#	st*	SCSI tape drives
 # Terminal ports:
 #	tty[0-7][0-9a-f]	NS16x50 serial ports
 #	cua[a-z]*	Zilog 8530 serial ports
@@ -48,11 +51,15 @@
 #	wscons	Minimal wscons devices
 #	ttyC-J*	wscons display devices
 #	wskbd*	wscons keyboards
+#	wsmux	wscons keyboard/mouse mux devices
+# Pointing devices:
+#	wsmouse*	wscons mice
 # USB devices:
 #	uall	All USB devices
 #	ttyU*	USB serial ports
 #	ugen*	Generic USB devices
 #	uhid*	Generic HID devices
+#	ulpt*	Printer devices
 #	usb*	Bus control devices used by usbd for attach/detach
 # Special purpose devices:
 #	cnc	Computer aided machining interface
@@ -277,6 +284,10 @@ usb*)
 	M usb$u c 61 $U 660
 	;;
 
+ulpt*)
+	M ulpt$U c 64 $U 660
+	;;
+
 uhid*)
 	M uhid$U c 62 $U 660
 	;;
@@ -297,8 +308,17 @@ ttyU[0-9a-zA-Z])
 	;;
 
 uall)
-	R ttyU0 ttyU1 ttyU2 ttyU3 ugen0 ugen1 uhid0 uhid1 uhid2 uhid3
-	R usb0 usb1 usb2 usb3 usb4 usb5
+	R ttyU0 ttyU1 ttyU2 ttyU3 ugen0 ugen1 ulpt0 ulpt1 uhid0 uhid1
+	R uhid2 uhid3 usb0 usb1 usb2 usb3 usb4 usb5
+	;;
+
+wsmouse*)
+	M wsmouse$U c 69 $U 600
+	;;
+
+wsmux|wsmouse|wskbd)
+	M wsmouse c 70 0 600
+	M wskbd c 70 1 600
 	;;
 
 wskbd*)
@@ -325,8 +345,9 @@ tty[C-J]*)
 	;;
 
 wscons)
-	R wskbd0 wskbd1 wskbd2 wskbd3 ttyCcfg ttyC0 ttyC1 ttyC2 ttyC3
-	R ttyC4 ttyC5 ttyC6 ttyC7 ttyC8 ttyC9 ttyCa ttyCb
+	R wsmouse0 wsmouse1 wsmouse2 wsmouse3 wskbd0 wskbd1 wskbd2
+	R wskbd3 wsmux ttyCcfg ttyC0 ttyC1 ttyC2 ttyC3 ttyC4 ttyC5
+	R ttyC6 ttyC7 ttyC8 ttyC9 ttyCa ttyCb
 	;;
 
 pty*)
@@ -382,6 +403,20 @@ tty[0-7][0-9a-f])
 	M cua$U c 26 $(($o+128)) 660 dialer uucp
 	;;
 
+st*)
+	n=$(($U*16))
+	for pre in " " n e en
+	do
+		M ${pre}st$U	b 5 $n 660 operator
+		M ${pre}rst$U	c 20 $n 660 operator
+		n=$(($n+1))
+	done
+	;;
+
+ch*)
+	M ch$U c 10 $U 660 operator
+	;;
+
 vnd*)
 	dodisk vnd $U 14 19 $U 0
 	dodisk svnd $U 14 19 $U 2048
@@ -400,16 +435,17 @@ local)
 	;;
 
 ramdisk)
-	R pty0 rd0 cd0 cd1 wd0 wd1 wd2 wd3 wd4 sd0 sd1 sd2 sd3 sd4
-	R tty00 tty01 std
+	R pty0 rd0 cd0 cd1 st0 st1 wd0 wd1 wd2 wd3 wd4 sd0 sd1 sd2
+	R sd3 sd4 tty00 tty01 std
 	;;
 
 all)
 	R cnc bthub0 bthub1 bthub2 gpio0 gpio1 gpio2 ccd0 ccd1 ccd2
 	R ccd3 vnd0 vnd1 vnd2 vnd3 sd0 sd1 sd2 sd3 sd4 cd0 cd1 rd0
-	R tun0 tun1 tun2 tun3 pty0 cuaa cuab ttya ttyb hotplug ptm
-	R local pci0 pci1 pci2 pci3 iop0 iop1 uall uk0 random lkm
-	R tty00 tty01 tty02 tty03 apm crypto wd0 wd1 wd2 wd3 std fd
+	R tun0 tun1 tun2 tun3 pty0 ch0 cuaa cuab ttya ttyb hotplug ptm
+	R local wscons pci0 pci1 pci2 pci3 iop0 iop1 uall uk0 random
+	R lkm tty00 tty01 tty02 tty03 apm crypto wd0 wd1 wd2 wd3 std
+	R st0 st1 fd
 	;;
 
 wd*|sd*|ccd*)

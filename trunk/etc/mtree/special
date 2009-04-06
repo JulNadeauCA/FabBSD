@@ -17,6 +17,7 @@ mem		type=char mode=0640 uname=root gname=kmem
 ..	#dev
 
 etc		type=dir mode=0755 uname=root gname=wheel
+chio.conf	type=file mode=0644 uname=root gname=operator
 crontab		type=file mode=0600 uname=root gname=wheel optional
 csh.cshrc	type=file mode=0644 uname=root gname=wheel
 csh.login	type=file mode=0644 uname=root gname=wheel
@@ -34,6 +35,7 @@ hostapd.conf	type=file mode=0600 uname=root gname=wheel
 hosts		type=file mode=0644 uname=root gname=wheel
 hosts.equiv	type=file mode=0600 uname=root gname=wheel optional
 inetd.conf	type=file mode=0644 uname=root gname=wheel
+ipsec.conf	type=file mode=0600 uname=root gname=wheel
 host.random	type=file mode=0600 uname=root gname=wheel optional
 login.conf	type=file mode=0644 uname=root gname=wheel
 master.passwd	type=file mode=0600 uname=root gname=wheel
@@ -46,6 +48,7 @@ moduli		type=file mode=0644 uname=root gname=wheel
 netstart	type=file mode=0644 uname=root gname=wheel
 passwd		type=file mode=0644 uname=root gname=wheel
 pf.conf		type=file mode=0600 uname=root gname=wheel optional
+printcap	type=file mode=0644 uname=root gname=wheel
 rc		type=file mode=0644 uname=root gname=wheel
 rc.conf		type=file mode=0644 uname=root gname=wheel
 rc.conf.local	type=file mode=0644 uname=root gname=wheel optional
@@ -72,12 +75,12 @@ ssh_host_rsa_key.pub	type=file mode=0644 uname=root gname=wheel optional
 sshd_config	type=file mode=0644 uname=root gname=wheel
 ..	#ssh
 sudoers		type=file mode=0440 uname=root gname=wheel
-systrace	type=dir mode=0755 uname=root gname=wheel optional
-..	#systrace
 syslog.conf	type=file mode=0644 uname=root gname=wheel
 ttys		type=file mode=0644 uname=root gname=wheel
 weekly		type=file mode=0644 uname=root gname=wheel
 weekly.local	type=file mode=0644 uname=root gname=wheel optional
+output		type=dir mode=0775 uname=root gname=daemon ignore
+..	#var/spool/output
 uucp		type=dir mode=0755 uname=root gname=wheel optional ignore
 ..	#uucp
 ..	#etc

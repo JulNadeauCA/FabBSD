@@ -291,6 +291,12 @@ if [ -d /var/empty ]; then
 fi
 syslogd ${syslogd_flags}
 
+if [ X"${ipsec}" != X"NO" ]; then
+	if [ -f ${ipsec_rules} ]; then
+		ipsecctl -f ${ipsec_rules}
+	fi
+fi
+
 echo -n 'starting initial daemons:'
 
 if [ X"${portmap}" = X"YES" ]; then
@@ -427,6 +433,10 @@ if [ X"${ifstated_flags}" != X"NO" ]; then
 	echo -n ' ifstated';		ifstated $ifstated_flags
 fi
 
+if [ X"${lpd_flags}" != X"NO" ]; then
+	echo -n ' lpd';			lpd ${lpd_flags}
+fi
+
 if [ X"${ftpd_flags}" != X"NO" ]; then
 	echo -n ' ftpd';		/usr/libexec/ftpd ${ftpd_flags}
 fi
@@ -472,7 +482,8 @@ if [ -e "/var/db/cnc.timings" ]; then
 	echo "restoring existing cnc timings."
 	cncctl -C
 else
-	echo "WARNING: cnc timings are not calibrated, see cncctl(8)."
+	echo "WARNING: CNC timings are not calibrated. You will need to"
+	echo "run cncctl -C at least once; see cncctl(8)."
 fi
 
 date

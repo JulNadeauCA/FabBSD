@@ -37,6 +37,9 @@
 #	sd*	SCSI disks, including flopticals
 #	vnd*	"file" pseudo-disk devices
 #	wd*	"winchester" disk drives (ST506, IDE, ESDI, RLL, ...)
+# Tapes:
+#	ch*	SCSI media changers
+#	st*	SCSI tape drives
 # Terminal ports:
 #	tty[0-7][0-9a-f]	NS16x50 serial ports
 #	ttyB?	DEC 3000 ZS8530 ("scc") serial ports
@@ -49,11 +52,18 @@
 #	wscons	Minimal wscons devices
 #	ttyC-J*	wscons display devices
 #	wskbd*	wscons keyboards
+#	wsmux	wscons keyboard/mouse mux devices
+# Pointing devices:
+#	wsmouse*	wscons mice
+# Printers:
+#	lpa*	Polled printer port
+#	lpt*	IEEE 1284 centronics printer
 # USB devices:
 #	uall	All USB devices
 #	ttyU*	USB serial ports
 #	ugen*	Generic USB devices
 #	uhid*	Generic HID devices
+#	ulpt*	Printer devices
 #	usb*	Bus control devices used by usbd for attach/detach
 # Special purpose devices:
 #	cnc	Computer aided machining interface
@@ -194,7 +204,7 @@ U=`unt $i`
 case $i in
 ramdisk)
 	R std fd0 wd0 wd1 wd2 sd0 sd1 sd2
-	R cd0 ttyC0 rd0
+	R st0 cd0 ttyC0 rd0
 	;;
 
 std)
@@ -280,6 +290,10 @@ usb*)
 	M usb$u c 45 $U 660
 	;;
 
+ulpt*)
+	M ulpt$U c 47 $U 660
+	;;
+
 uhid*)
 	M uhid$U c 46 $U 660
 	;;
@@ -300,8 +314,25 @@ ttyU[0-9a-zA-Z])
 	;;
 
 uall)
-	R ttyU0 ttyU1 ttyU2 ttyU3 ugen0 ugen1 uhid0 uhid1 uhid2 uhid3
-	R usb0 usb1 usb2 usb3 usb4 usb5
+	R ttyU0 ttyU1 ttyU2 ttyU3 ugen0 ugen1 ulpt0 ulpt1 uhid0 uhid1
+	R uhid2 uhid3 usb0 usb1 usb2 usb3 usb4 usb5
+	;;
+
+lpt*|lpa*)
+	case $i in
+	lpt*) n=lpt f=0;;
+	lpa*) n=lpa f=128;;
+	esac
+	M $n$U c 31 $(($U+$f)) 600
+	;;
+
+wsmouse*)
+	M wsmouse$U c 30 $U 600
+	;;
+
+wsmux|wsmouse|wskbd)
+	M wsmouse c 60 0 600
+	M wskbd c 60 1 600
 	;;
 
 wskbd*)
@@ -328,8 +359,9 @@ tty[C-J]*)
 	;;
 
 wscons)
-	R wskbd0 wskbd1 wskbd2 wskbd3 ttyCcfg ttyC0 ttyC1 ttyC2 ttyC3
-	R ttyC4 ttyC5 ttyC6 ttyC7 ttyC8 ttyC9 ttyCa ttyCb
+	R wsmouse0 wsmouse1 wsmouse2 wsmouse3 wskbd0 wskbd1 wskbd2
+	R wskbd3 wsmux ttyCcfg ttyC0 ttyC1 ttyC2 ttyC3 ttyC4 ttyC5
+	R ttyC6 ttyC7 ttyC8 ttyC9 ttyCa ttyCb
 	;;
 
 pty*)
@@ -363,6 +395,20 @@ tty[0-7][0-9a-f])
 	o=$(h2d $U)
 	M tty$U c 26 $o 660 dialer uucp
 	M cua$U c 26 $(($o+128)) 660 dialer uucp
+	;;
+
+st*)
+	n=$(($U*16))
+	for pre in " " n e en
+	do
+		M ${pre}st$U	b 2 $n 660 operator
+		M ${pre}rst$U	c 12 $n 660 operator
+		n=$(($n+1))
+	done
+	;;
+
+ch*)
+	M ch$U c 14 $U 660 operator
 	;;
 
 vnd*)
@@ -415,11 +461,12 @@ local)
 all)
 	R ccd0 ccd1 ccd2 ccd3 vnd0 vnd1 vnd2 vnd3 sd0 sd1 sd2 sd3 sd4
 	R cd0 cd1 rd0 tun0 tun1 tun2 tun3 pty0 fd1 fd1B fd1C fd1D fd1E
-	R fd1F fd1G fd1H fd0 fd0B fd0C fd0D fd0E fd0F fd0G fd0H
-	R hotplug ptm local pci0 pci1 pci2 pci3 iop0 iop1 uall speaker
-	R uk0 random lkm tty00 tty01 tty02 tty03 ttyc0 ttyc1 ttyc2
-	R ttyc3 ttyc4 ttyc5 ttyc6 ttyc7 ttyB0 ttyB1 ttyB2 ttyB3 ttyB4
-	R ttyB5 crypto wd0 wd1 wd2 wd3 std fd
+	R fd1F fd1G fd1H fd0 fd0B fd0C fd0D fd0E fd0F fd0G fd0H ch0
+	R hotplug ptm local wscons pci0 pci1 pci2 pci3 iop0 iop1 uall
+	R speaker uk0 random lpa0 lpa1 lpa2 lpt0 lpt1 lpt2 lkm tty00
+	R tty01 tty02 tty03 ttyc0 ttyc1 ttyc2 ttyc3 ttyc4 ttyc5 ttyc6
+	R ttyc7 ttyB0 ttyB1 ttyB2 ttyB3 ttyB4 ttyB5 crypto wd0 wd1 wd2
+	R wd3 std st0 st1 fd
 	;;
 
 wd*|sd*|ccd*)

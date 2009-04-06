@@ -181,6 +181,7 @@ __devitem(ramdisk, ramdisk, Ramdisk kernel devices,nothing)dnl
 dnl
 target(usb, usb, 0, 1, 2, 3, 4, 5)dnl
 target(usb, uhid, 0, 1, 2, 3)dnl
+target(usb, ulpt, 0, 1)dnl
 target(usb, ugen, 0, 1)dnl
 target(usb, ttyU, 0, 1, 2, 3)dnl
 dnl
@@ -190,6 +191,14 @@ show_target({-usb-})dnl
 -})dnl
 __devtitle(tap, Tapes)dnl
 __devitem(tz, tz*, {-DEC TK50 cartridge tape drives-})dnl
+__devitem(st, {-st*-}, SCSI tape drives)dnl
+_mkdev(st, st*, {-n=Mult($U, 16)
+	for pre in " " n e en
+	do
+		M ${pre}st$U	b major_st_b $n 660 operator
+		M ${pre}rst$U	c major_st_c $n 660 operator
+		n=Add($n, 1)
+	done-})dnl
 __devtitle(dis, Disks)dnl
 __devitem(sd, {-sd*-}, {-SCSI disks{-,-} including flopticals-})dnl
 __devitem(cd, {-cd*-}, ATAPI and SCSI CD-ROM drives)dnl
@@ -292,7 +301,9 @@ dnl
 __devtitle(cons, Console ports)dnl
 __devitem(wscons, wscons, Minimal wscons devices)dnl
 twrget(wscons, wscons, ttyC, cfg, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, a, b)dnl
+target(wscons, wsmux)dnl
 target(wscons, wskbd, 0, 1, 2, 3)dnl
+target(wscons, wsmouse, 0, 1, 2, 3)dnl
 _mkdev({-wscons-}, {-wscons-}, {-dnl
 show_target(wscons)dnl
 -})dnl
@@ -315,7 +326,13 @@ _mkdev({-wsdisp-}, tty[C-J]*, {-U=${i##tty[C-J]}
 	esac-})dnl
 __devitem(wskbd, wskbd*, wscons keyboards)dnl
 _mkdev(wskbd, wskbd*, {-M wskbd$U c major_wskbd_c $U 600-})dnl
+__devitem(wsmux, wsmux, wscons keyboard/mouse mux devices)dnl
+_mkdev(wsmux, wsmux|wsmouse|wskbd, {-M wsmouse c major_wsmux_c 0 600
+	M wskbd c major_wsmux_c 1 600-})dnl
 __devitem(pcons, console, PROM console)dnl
+__devtitle(point, Pointing devices)dnl
+__devitem(wsmouse, wsmouse*, wscons mice)dnl
+_mkdev(wsmouse, wsmouse*, {-M wsmouse$U c major_wsmouse_c $U 600-})dnl
 __devtitle(pty, Pseudo terminals)dnl
 __devitem(ptm, ptm, pty master device)dnl
 _mkdev(ptm, ptm, {-M ptm c major_ptm_c 0 666-})dnl
@@ -341,12 +358,24 @@ _mkdev(pty, pty*, {-if [ $U -gt 15 ]; then
 		n=Add($n, 1)
 	done-})dnl
 __devitem(dc, dc*, {-4 channel serial interface (keyboard{-,-} mouse{-,-}modem{-,-} printer)-})dnl
+__devtitle(prn, Printers)dnl
+__devitem(lpt, lpt*, IEEE 1284 centronics printer)dnl
+_mkdev(lpt, lpt*|lpa*,
+{-case $i in
+	lpt*) n=lpt f=0;;
+	lpa*) n=lpa f=128;;
+	esac
+	M $n$U c major_lpt_c Add($U, $f) 600-})dnl
+__devitem(lpa, lpa*, Polled printer port,lpt)dnl
+__devitem(ppi, ppi*, HP-IB plotters)dnl
 __devtitle({-usb-}, USB devices)dnl
 __devitem({-usb-}, usb*, Bus control devices used by usbd for attach/detach)dnl
 _mkdev({-usb-}, usb*, {-[ "$i" = "usb" ] && u= || u=$U
 	M usb$u c major_usb_c $U 660-})dnl
 __devitem(uhid, uhid*, Generic HID devices)dnl
 _mcdev({-uhid-}, uhid*, {-uhid-}, {-major_uhid_c-}, 660)dnl
+__devitem(ulpt, ulpt*, Printer devices)dnl
+_mcdev({-ulpt-}, ulpt*, {-ulpt-}, {-major_ulpt_c-}, 660)dnl
 __devitem(ttyU, ttyU*, USB serial ports,ucom)dnl
 _mkdev({-ttyU-}, {-ttyU[0-9a-zA-Z]-}, {-U=${i#ttyU*}
 	o=$(alph2d $U)
