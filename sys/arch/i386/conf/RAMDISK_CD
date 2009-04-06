@@ -114,12 +114,15 @@ uhub*	at uhub?		# USB Hubs
 #ucom*	at umodem?
 #uftdi*	at uhub?
 #ucom*	at uftdi?
+#ulpt*	at uhub?		# USB Printers
 uhidev*	at uhub?
 ukbd*	at uhidev?
 wskbd*	at ukbd? mux 1
 umass*	at uhub?		# USB Mass Storage devices
 scsibus* at umass?
 atapiscsi* at umass?
+#ums*	at uhidev?
+#wsmouse* at ums? mux 0
 aue*	at uhub?		# ADMtek AN986 Pegasus Ethernet
 #atu*	at uhub?		# Atmel AT76c50x based 802.11b
 axe*	at uhub?		# ASIX Electronics AX88172 USB Ethernet
@@ -408,3 +411,4 @@ pseudo-device	loop	1		# network loopback
 #pseudo-device	sl	1		# CSLIP
 pseudo-device	rd	1		# ramdisk
 pseudo-device	ccd	4		# concatenated disk devices
+pseudo-device	wsmux	2

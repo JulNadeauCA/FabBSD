@@ -89,6 +89,7 @@ cdev_decl(com);
 
 #include "wsdisplay.h"
 #include "wskbd.h"
+#include "wsmouse.h"
 
 #include "iop.h"
 
@@ -104,12 +105,15 @@ cdev_decl(com);
 #include "usb.h"
 #include "uhid.h"
 #include "ugen.h"
+#include "ulpt.h"
 #include "ucom.h"
 
 #include "inet.h"
 
 #include "apm.h"
 #include "bthub.h"
+
+#include "wsmux.h"
 
 #ifdef USER_PCICONF
 #include "pci.h"
@@ -184,14 +188,15 @@ struct cdevsw cdevsw[] = {
 	cdev_usb_init(NUSB,usb),	/* 61: USB controller */
 	cdev_usbdev_init(NUHID,uhid),	/* 62: USB generic HID */
 	cdev_usbdev_init(NUGEN,ugen),	/* 63: USB generic driver */
-	cdev_notdef(),			/* 64 */
+	cdev_ulpt_init(NULPT,ulpt),	/* 64: USB printers */
 	cdev_notdef(),			/* 65 */
 	cdev_tty_init(NUCOM,ucom),	/* 66: USB tty */
 	cdev_wsdisplay_init(NWSDISPLAY,	/* 67: frame buffers, etc. */
 		wsdisplay),
 	cdev_mouse_init(NWSKBD, wskbd),	/* 68: keyboards */
-	cdev_notdef(),			/* 69 */
-	cdev_notdef(),			/* 70 */
+	cdev_mouse_init(NWSMOUSE,	/* 69: mice */
+		wsmouse),
+	cdev_mouse_init(NWSMUX, wsmux),	/* 70: ws multiplexor */
 #ifdef USER_PCICONF
 	cdev_pci_init(NPCI,pci),	/* 71: PCI user */
 #else

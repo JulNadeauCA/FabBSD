@@ -19,6 +19,7 @@ option		USER_PCICONF	# user-space PCI configuration
 #option		VM86		# Virtual 8086 emulation
 option		KVM86		# Kernel Virtual 8086 emulation
 option		USER_LDT	# user-settable LDT; see i386_set_ldt(2)
+#option		APERTURE	# in-kernel aperture driver for XFree86
 
 #option		KGDB		# Remote debugger support; exclusive of DDB
 #option		"KGDB_DEVNAME=\"com\"",KGDBADDR=0x2f8,KGDBRATE=9600
@@ -218,10 +219,15 @@ umsm*	at uhub?		# Qualcomm MSM EVDO
 ucom*	at umsm?
 uchcom*	at uhub?		# WinChipHead CH341/340 serial
 ucom*	at uchcom?
+ulpt*	at uhub?		# USB Printers
 umass*	at uhub?		# USB Mass Storage devices
 scsibus* at umass?
 atapiscsi* at umass?
 uhidev*	at uhub?		# Human Interface Devices
+ums*	at uhidev?		# USB mouse
+wsmouse* at ums? mux 0
+uts*	at uhub?		# USB touchscreen
+wsmouse* at uts? mux 0
 ukbd*	at uhidev?		# USB keyboard
 wskbd*	at ukbd? mux 1
 ucycom*	at uhidev?		# Cypress serial
@@ -269,22 +275,29 @@ scsibus* at sdmmc?		# SCSI emulation
 #btkbd*	at bthidev?
 #btms*	at bthidev?
 #wskbd*	at btkbd? mux 1
+#wsmouse* at btms? mux 0
 
 npx0	at isa? port 0xf0 irq 13	# math coprocessor
 isadma0	at isa?
 isapnp0	at isa?
 
 option	WSDISPLAY_COMPAT_USL		# VT handling
+option	WSDISPLAY_COMPAT_RAWKBD		# provide raw scancodes; needed for X11
 option	WSDISPLAY_DEFAULTSCREENS=6	# initial number of text consoles
+option	WSDISPLAY_COMPAT_PCVT		# emulate some ioctls; needed for X11
 
 pckbc0		at isa?		# PC keyboard controller
 pckbd*		at pckbc?	# PC keyboard
+pms*		at pckbc?	# PS/2 mouse for wsmouse
+pmsi*		at pckbc?	# PS/2 "Intelli"mouse for wsmouse
 vga0		at isa?
 vga*		at pci?
 pcdisplay0	at isa?		# CGA, MDA, EGA, HGA
 wsdisplay*	at vga?
 wsdisplay*	at pcdisplay?
 wskbd*		at pckbd? mux 1
+wsmouse*	at pms? mux 0
+wsmouse*	at pmsi? mux 0
 
 agp*		at vga?		# AGP bridges
 
@@ -327,12 +340,20 @@ com*	at cardbus?
 #lpt2	at isa? port 0x3bc
 #lpt*	at puc?
 
+#lms0	at isa? port 0x23c irq 5	# Logitech bus mouse
+#lms1	at isa? port 0x238 irq 5
+#mms0	at isa? port 0x23c irq 5	# Microsoft InPort mouse
+#mms1	at isa? port 0x238 irq 5
+
 lptgpio0 at isa? port 0x378 		# standard PC parallel ports (gpio)
 lptgpio1 at isa? port 0x278
 #lptgpio2 at isa? port 0x3bc
 #lptgpio* at puc?
 gpio0 at lptgpio0
 gpio1 at lptgpio1
+
+#wsmouse*	at lms? mux 0
+#wsmouse*	at mms? mux 0
 
 bha0	at isa? port 0x330		# BusLogic [57]4X SCSI controllers
 bha1	at isa? disable port 0x334	# BusLogic [57]4X SCSI controllers
@@ -630,4 +651,5 @@ pseudo-device	pctr		1
 pseudo-device	mtrr		1	# Memory range attributes control
 pseudo-device	nvram		1
 pseudo-device	hotplug		1	# devices hot plugging
+pseudo-device	wsmux		2
 pseudo-device	crypto		1

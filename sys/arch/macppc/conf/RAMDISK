@@ -133,6 +133,8 @@ macgpio*	at macobio?	# GPIO, PMU interrupt router.
 macgpio*	at macgpio?	# GPIO, PMU interrupt router.
 akbd*		at adb?		# ADB keyboard
 wskbd*		at akbd? mux 1
+#ams*		at adb?		# ADB mouse
+#wsmouse*	at ams? mux 0
 #abtn*		at adb?		# ADB button?
 zsc*		at macobio?
 zstty*		at zsc?
@@ -176,6 +178,9 @@ uhub*		at uhub?
 uhidev*		at uhub?
 uhid*		at uhidev?		# USB Generic HID devices
 ukbd*		at uhidev?		# USB HID Keyboard devices
+#ums*		at uhub?		# USB Mice
+#wsmouse*	at ums? mux 0
+#ulpt*		at uhub?		# USB Printer
 aue*		at uhub?		# ADMtek AN986 Pegasus Ethernet
 axe*		at uhub?		# ASIX Electronics AX88172 USB Ethernet
 cue*		at uhub?		# CATC USB-EL1201A based Ethernet
@@ -216,6 +221,7 @@ cd*		at scsibus?
 
 pseudo-device	loop	1	# network loopback
 pseudo-device	rd	1	# ram disk
+pseudo-device	wsmux	2	# mouse & keyboard multiplexor
 
 option		BOOT_CONFIG	# boot-time kernel config
 

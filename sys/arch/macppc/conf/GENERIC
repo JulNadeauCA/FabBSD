@@ -23,6 +23,8 @@ option		USBVERBOSE
 #option		MACOBIOVERBOSE
 option		ADBVERBOSE
 option		ALTIVEC
+#option		APERTURE	# in-kernel aperture driver for XFree86
+option		WSDISPLAY_COMPAT_RAWKBD	# provide raw scancodes; needed for X11
 
 option		USER_PCICONF	# user-space PCI configuration
 
@@ -152,6 +154,8 @@ macgpio*	at macgpio?	# GPIO, PMU interrupt router.
 sysbutton*	at macgpio?	# Xserve system id button.
 akbd*		at adb?		# ADB keyboard
 wskbd*		at akbd? mux 1
+ams*		at adb?		# ADB mouse
+wsmouse*	at ams?	mux 0
 abtn*		at adb?		# ADB button?
 zsc*		at macobio?
 zstty*		at zsc?
@@ -222,10 +226,15 @@ umsm*	at uhub?		# Qualcomm MSM EVDO
 ucom*	at umsm?
 uchcom*	at uhub?		# WinChipHead CH341/340 serial
 ucom*	at uchcom?
+ulpt*	at uhub?		# USB Printers
 umass*	at uhub?		# USB Mass Storage devices
 scsibus* at umass?
 atapiscsi* at umass?
 uhidev*	at uhub?		# Human Interface Devices
+tpms*	at uhidev?		# Apple touchpad mouse
+wsmouse* at tpms? mux 0
+ums*	at uhidev?		# USB mouse
+wsmouse* at ums? mux 0
 ukbd*	at uhidev?		# USB keyboard
 wskbd*	at ukbd? mux 1
 ucycom*	at uhidev?			# Cypress serial
@@ -259,7 +268,9 @@ onewire* at uow?
 # Bluetooth HID support
 #bthidev* at bthub?
 #btkbd*	at bthidev?
+#btms*	at bthidev?
 #wskbd*	at btkbd? mux 1
+#wsmouse* at btms? mux 0
 
 # I2C bus support
 iic*		at kiic?
@@ -320,3 +331,4 @@ owsbm*	at onewire?		# Smart Battery Monitor
 owtemp* at onewire?		# Temperature
 
 pseudo-device	hotplug	1	# devices hot plugging
+pseudo-device	wsmux	2	# mouse & keyboard multiplexor

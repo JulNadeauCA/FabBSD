@@ -120,9 +120,19 @@ cdev_decl(wd);
 #include "com.h"
 cdev_decl(com);
 cdev_decl(fd);
+#include "lpt.h"
+cdev_decl(lpt);
 #include "ch.h"
 #include "spkr.h"
 cdev_decl(spkr);
+#if 0 /* old (non-wsmouse) drivers */
+#include "mms.h"
+cdev_decl(mms);
+#include "lms.h"
+cdev_decl(lms);
+#include "opms.h"
+cdev_decl(pms);
+#endif
 #include "cy.h"
 cdev_decl(cy);
 cdev_decl(mcd);
@@ -136,6 +146,7 @@ cdev_decl(mcd);
 #include "usb.h"
 #include "uhid.h"
 #include "ugen.h"
+#include "ulpt.h"
 #include "ucom.h"
 #include "cz.h"
 cdev_decl(cztty);
@@ -152,6 +163,8 @@ cdev_decl(agp);
 
 #include "wsdisplay.h"
 #include "wskbd.h"
+#include "wsmouse.h"
+#include "wsmux.h"
 
 #ifdef USER_PCICONF
 #include "pci.h"
@@ -185,7 +198,7 @@ struct cdevsw	cdevsw[] =
 	cdev_disk_init(NSD,sd),			/* 13: SCSI disk */
 	cdev_tape_init(NST,st),			/* 14: SCSI tape */
 	cdev_disk_init(NCD,cd),			/* 15: SCSI CD-ROM */
-	cdev_notdef(),				/* 16 */
+	cdev_lpt_init(NLPT,lpt),		/* 16: parallel printer */
 	cdev_ch_init(NCH,ch),			/* 17: SCSI autochanger */
 	cdev_disk_init(NCCD,ccd),		/* 18: concatenated disk driver */
 	cdev_notdef(),				/* 19 */
@@ -204,9 +217,9 @@ struct cdevsw	cdevsw[] =
 	cdev_lkm_dummy(),			/* 32 */
 	cdev_lkm_dummy(),			/* 33 */
 	cdev_lkm_dummy(),			/* 34 */
-	cdev_notdef(),				/* 35 */
-	cdev_notdef(),				/* 36 */
-	cdev_notdef(),				/* 37 */
+	cdev_notdef(),				/* 35: Microsoft mouse */
+	cdev_notdef(),				/* 36: Logitech mouse */
+	cdev_notdef(),				/* 37: Extended PS/2 mouse */
 	cdev_tty_init(NCY,cy),			/* 38: Cyclom serial port */
 	cdev_disk_init(NMCD,mcd),		/* 39: Mitsumi CD-ROM */
 	cdev_tun_init(NTUN,tun),		/* 40: network tunnel */
@@ -233,12 +246,12 @@ struct cdevsw	cdevsw[] =
 	cdev_usb_init(NUSB,usb),		/* 61: USB controller */
 	cdev_usbdev_init(NUHID,uhid),		/* 62: USB generic HID */
 	cdev_usbdev_init(NUGEN,ugen),		/* 63: USB generic driver */
-	cdev_notdef(),				/* 64 */
+	cdev_ulpt_init(NULPT,ulpt), 		/* 64: USB printers */
 	cdev_notdef(),				/* 65 */
 	cdev_tty_init(NUCOM,ucom),		/* 66: USB tty */
-	cdev_notdef(),				/* 67 */
-	cdev_notdef(),				/* 68 */
-	cdev_notdef(),				/* 69 */
+	cdev_mouse_init(NWSKBD, wskbd),		/* 67: keyboards */
+	cdev_mouse_init(NWSMOUSE, wsmouse),	/* 68: mice */
+	cdev_mouse_init(NWSMUX, wsmux),		/* 69: ws multiplexor */
 	cdev_crypto_init(NCRYPTO,crypto),	/* 70: /dev/crypto */
 	cdev_tty_init(NCZ,cztty),		/* 71: Cyclades-Z serial port */
 #ifdef USER_PCICONF
@@ -261,7 +274,7 @@ struct cdevsw	cdevsw[] =
 	cdev_notdef(),				/* 85 */
 	cdev_bthub_init(NBTHUB,bthub),		/* 86: bthub */
 	cdev_agp_init(NAGP,agp),		/* 87: agp */
-	cdev_notdef(),				/* 88 */
+	cdev_notdef(),				/* 88: drm (not implemented) */
 	cdev_amdmsr_init(NAMDMSR,amdmsr),	/* 89: amdmsr */
 	cdev_cnc_init(NCNC,cnc),		/* 90: CNC interface */
 };

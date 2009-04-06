@@ -90,10 +90,14 @@ cdev_decl(scc);
 cdev_decl(com);
 #include "wsdisplay.h"
 #include "wskbd.h"
+#include "wsmouse.h"
+#include "wsmux.h"
 
 #include "spkr.h"
 cdev_decl(spkr);
 
+#include "lpt.h"
+cdev_decl(lpt);
 cdev_decl(prom);			/* XXX XXX XXX */
 cdev_decl(wd);
 cdev_decl(fd);
@@ -105,6 +109,7 @@ cdev_decl(cy);
 #include "usb.h"
 #include "uhid.h"
 #include "ugen.h"
+#include "ulpt.h"
 #include "ucom.h"
 #ifdef USER_PCICONF
 #include "pci.h"
@@ -145,12 +150,12 @@ struct cdevsw	cdevsw[] =
 	cdev_disk_init(NCCD,ccd),	/* 27: concatenated disk driver */
 	cdev_disk_init(NRD,rd),		/* 28: ram disk driver */
 	cdev_mouse_init(NWSKBD,wskbd),	/* 29: /dev/kbd XXX */
-	cdev_notdef(),			/* 30 */
-	cdev_notdef(),			/* 31 */
-	cdev_notdef(),			/* 32 */
+	cdev_mouse_init(NWSMOUSE,wsmouse),	/* 30: /dev/mouse XXX */
+	cdev_lpt_init(NLPT,lpt),	/* 31: parallel printer */
+	cdev_notdef(),			/* 32: SCSI scanner (unimplemented) */
 	cdev_uk_init(NUK,uk),		/* 33: SCSI unknown */
 	cdev_random_init(1,random),	/* 34: random data source */
-	cdev_notdef(),			/* 35 */
+	cdev_notdef(),			/* 35: packet filter (unimplemented) */
 	cdev_disk_init(NWD,wd), 	/* 36: ST506/ESDI/IDE disk */
 	cdev_disk_init(NFD,fd),		/* 37: Floppy disk */
         cdev_tty_init(NCY,cy),          /* 38: Cyclom serial port */
@@ -162,7 +167,7 @@ struct cdevsw	cdevsw[] =
 	cdev_notdef(),			/* 44 */
 	cdev_usb_init(NUSB,usb),	/* 45: USB controller */
 	cdev_usbdev_init(NUHID,uhid),	/* 46: USB generic HID */
-	cdev_notdef(),			/* 47 */
+	cdev_ulpt_init(NULPT,ulpt),	/* 47: USB printer */
 	cdev_usbdev_init(NUGEN,ugen),	/* 48: USB generic driver */
 	cdev_tty_init(NUCOM, ucom),	/* 49: USB tty */
 	cdev_notdef(),			/* 50 */
@@ -177,9 +182,9 @@ struct cdevsw	cdevsw[] =
 	cdev_ptm_init(NPTY,ptm),	/* 55: pseudo-tty ptm device */
 	cdev_hotplug_init(NHOTPLUG,hotplug), /* 56: devices hot plugging */
 	cdev_crypto_init(NCRYPTO,crypto), /* 57: /dev/crypto */
-	cdev_notdef(),			/* 58 */
-	cdev_notdef(),			/* 59 */
-	cdev_notdef(),			/* 60 */
+	cdev_notdef(),			/* 58: Bt848 (unimplemented) */
+	cdev_notdef(),			/* 59: Radio (unimplemented) */
+	cdev_mouse_init(NWSMUX, wsmux)	/* 60: ws multiplexor */
 };
 int	nchrdev = sizeof (cdevsw) / sizeof (cdevsw[0]);
 

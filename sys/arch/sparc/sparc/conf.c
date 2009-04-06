@@ -80,6 +80,8 @@
 
 #include "wsdisplay.h"
 #include "wskbd.h"
+#include "wsmouse.h"
+#include "wsmux.h"
 
 #include "ksyms.h"
 
@@ -204,8 +206,8 @@ struct cdevsw	cdevsw[] =
 	cdev_wsdisplay_init(NWSDISPLAY,	/* 78: frame buffers, etc. */
 	    wsdisplay),
 	cdev_mouse_init(NWSKBD, wskbd),	/* 79: keyboards */
-	cdev_notdef(),			/* 80 */
-	cdev_notdef(),			/* 81 */
+	cdev_mouse_init(NWSMOUSE, wsmouse), /* 80: mice */
+	cdev_mouse_init(NWSMUX, wsmux),	/* 81: ws multiplexer */
 	cdev_notdef(),			/* 82 */
 	cdev_notdef(),			/* 83 */
 	cdev_notdef(),			/* 84 */

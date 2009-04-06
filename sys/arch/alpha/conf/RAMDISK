@@ -160,3 +160,4 @@ wskbd*		at pckbd? mux 1
 
 pseudo-device	loop
 pseudo-device	rd		1
+pseudo-device	wsmux		2	# mouse & keyboard multiplexor

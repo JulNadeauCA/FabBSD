@@ -19,6 +19,7 @@ option		SUN4V
 
 option		PCIVERBOSE
 option		USER_PCICONF		# user-space PCI configuration
+#option		APERTURE
 option		USBVERBOSE
 
 option		WSEMUL_SUN	# provide sun terminal emulation; required
@@ -167,10 +168,13 @@ uipaq*	at uhub?		# iPAQ serial adapter
 ucom*	at uipaq?
 uchcom*	at uhub?		# WinChipHead CH341/340 serial
 ucom*	at uchcom?
+ulpt*	at uhub?		# USB Printers
 umass*	at uhub?		# USB Mass Storage devices
 scsibus* at umass?
 atapiscsi* at umass?
 uhidev*	at uhub?		# Human Interface Devices
+ums*	at uhidev?		# USB mouse
+wsmouse* at ums? mux 0
 ukbd*	at uhidev?		# USB keyboard
 wskbd*	at ukbd? mux 1
 ucycom*	at uhidev?		# Cypress serial
@@ -204,7 +208,9 @@ onewire* at uow?
 # Bluetooth HID support
 #bthidev* at bthub?
 #btkbd*	at bthidev?
+#btms*	at bthidev?
 #wskbd*	at btkbd? mux 1
+#wsmouse* at btms? mux 0
 
 # CardBus bus support
 cardbus* at cardslot?
@@ -228,6 +234,10 @@ sabtty* at sab?
 com*	at ebus?
 comkbd*	at ebus?
 wskbd* at comkbd?
+pms*	at pckbc?			#  ps2 mouse
+wsmouse* at pms?			#   generic mouse
+pmsi*	at pckbc?			#  ps2 "intelli"mouse
+wsmouse* at pmsi?			#   generic mouse
 
 # Z8530 based serial ports
 zs*	at sbus?
@@ -449,3 +459,4 @@ owsbm*	at onewire?			# Smart Battery Monitor
 owtemp* at onewire?			# Temperature
 
 pseudo-device	hotplug	1		# devices hot plugging
+#pseudo-device	wsmux	2

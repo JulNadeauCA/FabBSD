@@ -275,6 +275,10 @@ file	dev/ic/hme.c
 attach	hme at pci with hme_pci
 file	dev/pci/if_hme_pci.c				hme_pci
 
+device	tpms: hid, wsmousedev
+attach	tpms at uhidbus
+file	arch/macppc/dev/tpms.c				tpms
+
 # Apple Sudden Motion Sensor
 device	asms
 attach	asms at i2c

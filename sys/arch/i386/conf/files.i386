@@ -192,6 +192,14 @@ file	arch/i386/isa/npx.c		npx needs-flag
 # XXX should be a real device
 define pckbcport {[irq = -1], [port = -1]}
 
+# PC Mice; Logitech-style, Microsoft-style, and PS/2-style
+device	lms: wsmousedev
+attach	lms at isa
+file	arch/i386/isa/lms.c		lms needs-flag
+device	mms: wsmousedev
+attach	mms at isa
+file	arch/i386/isa/mms.c		mms needs-flag
+
 include	"dev/wscons/files.wscons"
 include	"dev/pckbc/files.pckbc"
 
