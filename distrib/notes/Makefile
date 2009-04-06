@@ -1,3 +1,4 @@
+#	$FabBSD$
 #	$OpenBSD: Makefile,v 1.31 2008/05/15 21:01:14 miod Exp $
 
 NOPROG=
@@ -18,10 +19,9 @@ all:	$(TARG)
 
 allarchs:
 	@cd $(.CURDIR); \
-	for arch in alpha amd64 armish aviion hp300 hppa i386 landisk \
-	    luna88k mac68k macppc mvme68k mvme88k sgi socppc sparc sparc64 \
-	    vax zaurus; \
-	do ${MAKE} M=$$arch; done
+	for arch in alpha amd64 armish i386 macppc sparc sparc64; do \
+		${MAKE} M=$$arch; \
+	done
 
 $(TARG): $(DEP)
 	m4 -DOSREV=$(OSREV) -DOSrev=$(OSrev) -DINCLUDE=$(.CURDIR)/$M \

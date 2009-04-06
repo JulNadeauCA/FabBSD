@@ -40,7 +40,6 @@ LINK	instbin					sbin/newfs
 LINK	instbin					sbin/ping
 LINK	instbin					sbin/ping6
 LINK	instbin					sbin/reboot sbin/halt
-LINK	instbin					sbin/restore
 LINK	instbin					sbin/route
 LINK	instbin					sbin/rtsol
 LINK	instbin					sbin/umount

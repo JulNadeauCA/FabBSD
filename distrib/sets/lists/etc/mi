@@ -31,7 +31,6 @@
 ./etc/moduli
 ./etc/monthly
 ./etc/motd
-./etc/mrouted.conf
 ./etc/mtree/4.4BSD.dist
 ./etc/mtree/BSD.local.dist
 ./etc/mtree/BSD.x11.dist
@@ -41,10 +40,7 @@
 ./etc/networks
 ./etc/newsyslog.conf
 ./etc/passwd
-./etc/pf.conf
-./etc/pf.os
 ./etc/phones
-./etc/portal.conf
 ./etc/printcap
 ./etc/protocols
 ./etc/pwd.db
@@ -61,7 +57,6 @@
 ./etc/shells
 ./etc/skel/.cshrc
 ./etc/skel/.login
-./etc/skel/.mailrc
 ./etc/skel/.profile
 ./etc/skel/.ssh
 ./etc/skel/.ssh/authorized_keys
@@ -94,6 +89,5 @@
 ./var/log/secure
 ./var/log/wtmp
 ./var/log/xferlog
-./var/mail/root
 ./var/msgs/bounds
 ./var/run/utmp
