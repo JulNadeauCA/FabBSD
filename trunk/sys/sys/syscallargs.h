@@ -1195,7 +1195,6 @@ int	sys_getfsstat(struct proc *, void *, register_t *);
 int	sys_statfs(struct proc *, void *, register_t *);
 int	sys_fstatfs(struct proc *, void *, register_t *);
 int	sys_fhstatfs(struct proc *, void *, register_t *);
-#if NCNC > 0
 int	sys_cncmove(struct proc *, void *, register_t *);
 int	sys_cncjog(struct proc *, void *, register_t *);
 int	sys_cncjogstep(struct proc *, void *, register_t *);
@@ -1205,5 +1204,3 @@ int	sys_laserctl(struct proc *, void *, register_t *);
 int	sys_pickplacectl(struct proc *, void *, register_t *);
 int	sys_coolantctl(struct proc *, void *, register_t *);
 int	sys_estop(struct proc *, void *, register_t *);
-#else
-#endif
