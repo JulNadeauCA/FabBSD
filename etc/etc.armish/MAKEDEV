@@ -37,6 +37,8 @@
 #	sd*	SCSI disks, including flopticals
 #	vnd*	"file" pseudo-disk devices
 #	wd*	"winchester" disk drives (ST506, IDE, ESDI, RLL, ...)
+# Tapes:
+#	st*	SCSI tape drives
 # Terminal ports:
 #	tty[0-7][0-9a-f]	NS16x50 serial ports
 # Pseudo terminals:
@@ -47,11 +49,14 @@
 #	wscons	Minimal wscons devices
 #	ttyC-J*	wscons display devices
 #	wskbd*	wscons keyboards
+#	wsmouse*	wscons mice
+#	wsmux	wscons keyboard/mouse mux devices
 # USB devices:
 #	uall	All USB devices
 #	ttyU*	USB serial ports
 #	ugen*	Generic USB devices
 #	uhid*	Generic HID devices
+#	ulpt*	Printer devices
 #	usb*	Bus control devices used by usbd for attach/detach
 # Special purpose devices:
 #	cnc	Computer aided machining interface
@@ -191,8 +196,8 @@ U=`unt $i`
 
 case $i in
 ramdisk)
-	R std wd0 wd1 sd0 tty00 rd0
-	R ttyC0 wskbd0 apm
+	R std wd0 wd1 sd0 tty00 rd0 wsmouse
+	R st0 ttyC0 wskbd0 apm
 	;;
 
 std)
@@ -268,6 +273,10 @@ usb*)
 	M usb$u c 64 $U 660
 	;;
 
+ulpt*)
+	M ulpt$U c 66 $U 660
+	;;
+
 uhid*)
 	M uhid$U c 65 $U 660
 	;;
@@ -288,8 +297,17 @@ ttyU[0-9a-zA-Z])
 	;;
 
 uall)
-	R ttyU0 ttyU1 ttyU2 ttyU3 ugen0 ugen1 uhid0 uhid1 uhid2 uhid3
-	R usb0 usb1 usb2 usb3 usb4 usb5
+	R ttyU0 ttyU1 ttyU2 ttyU3 ugen0 ugen1 ulpt0 ulpt1 uhid0 uhid1
+	R uhid2 uhid3 usb0 usb1 usb2 usb3 usb4 usb5
+	;;
+
+wsmux|wsmouse|wskbd)
+	M wsmouse c 63 0 600
+	M wskbd c 63 1 600
+	;;
+
+wsmouse*)
+	M wsmouse$U c 62 $U 600
 	;;
 
 wskbd*)
@@ -316,8 +334,9 @@ tty[C-J]*)
 	;;
 
 wscons)
-	R wskbd0 wskbd1 wskbd2 wskbd3 ttyCcfg ttyC0 ttyC1 ttyC2 ttyC3
-	R ttyC4 ttyC5 ttyC6 ttyC7 ttyC8 ttyC9 ttyCa ttyCb
+	R wsmouse0 wsmouse1 wsmouse2 wsmouse3 wskbd0 wskbd1 wskbd2
+	R wskbd3 wsmux ttyCcfg ttyC0 ttyC1 ttyC2 ttyC3 ttyC4 ttyC5
+	R ttyC6 ttyC7 ttyC8 ttyC9 ttyCa ttyCb
 	;;
 
 pty*)
@@ -353,6 +372,16 @@ tty[0-7][0-9a-f])
 	M cua$U c 12 $(($o+128)) 660 dialer uucp
 	;;
 
+st*)
+	n=$(($U*16))
+	for pre in " " n e en
+	do
+		M ${pre}st$U	b 25 $n 660 operator
+		M ${pre}rst$U	c 25 $n 660 operator
+		n=$(($n+1))
+	done
+	;;
+
 vnd*)
 	dodisk vnd $U 19 19 $U 0
 	dodisk svnd $U 19 19 $U 2048
@@ -377,8 +406,9 @@ local)
 all)
 	R cnc ccd0 ccd1 ccd2 ccd3 vnd0 vnd1 vnd2 vnd3 sd0 sd1 sd2 sd3
 	R sd4 cd0 cd1 rd0 tun0 tun1 tun2 tun3 pty0 ch0 hotplug ptm
-	R local pci0 pci1 pci2 pci3 iop0 iop1 uall uk0 random lkm
-	R tty00 tty01 tty02 tty03 apm crypto wd0 wd1 wd2 wd3 std fd
+	R local wscons pci0 pci1 pci2 pci3 iop0 iop1 uall uk0 random
+	R lkm tty00 tty01 tty02 tty03 apm crypto wd0 wd1 wd2 wd3 std
+	R st0 st1 fd
 	;;
 
 wd*|sd*|ccd*)

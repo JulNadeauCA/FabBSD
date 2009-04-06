@@ -1,3 +1,4 @@
+# $FabBSD$
 # $OpenBSD: dot.login,v 1.3 2002/06/09 06:15:15 todd Exp $
 #
 # csh login file

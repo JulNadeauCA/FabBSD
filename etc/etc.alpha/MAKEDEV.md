@@ -33,6 +33,9 @@ _DEV(rd, 28, 6)
 _DEV(sd, 8, 8)
 _DEV(vnd, 9, 9)
 _DEV(wd, 36, 0)
+_TITLE(tap)
+_DEV(ch, 14)
+_DEV(st, 12, 2)
 _TITLE(term)
 _DEV(com, 26)
 _DEV(ttyB)
@@ -45,11 +48,18 @@ _TITLE(cons)
 _DEV(wscons)
 _DEV(wsdisp, 25)
 _DEV(wskbd, 29)
+_DEV(wsmux, 60)
+_TITLE(point)
+_DEV(wsmouse, 30)
+_TITLE(prn)
+_DEV(lpa)
+_DEV(lpt, 31)
 _TITLE(usb)
 _DEV(uall)
 _DEV(ttyU, 49)
 _DEV(ugen, 48)
 _DEV(uhid, 46)
+_DEV(ulpt, 47)
 _DEV(usb, 45)
 _TITLE(spec)
 _DEV(cnc, 90)
@@ -68,7 +78,7 @@ divert(__mddivert)dnl
 dnl
 ramdisk)
 	_recurse std fd0 wd0 wd1 wd2 sd0 sd1 sd2
-	_recurse cd0 ttyC0 rd0
+	_recurse st0 cd0 ttyC0 rd0
 	;;
 
 _std(1, 2, 39, 3, 6)

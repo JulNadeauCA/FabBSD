@@ -126,6 +126,12 @@ bin
 # ./usr/bin
 ..
 
+# ./usr/games
+games
+
+# ./usr/games
+..
+
 # ./usr/include
 include		gname=bin uname=root mode=0755
 
@@ -217,6 +223,11 @@ libexec
 # ./usr/libexec/auth
 auth		type=dir uname=root gname=auth mode=0750
 # ./usr/libexec/auth
+..
+
+# ./usr/libexec/lpr
+lpr
+# ./usr/libexec/lpr
 ..
 
 # ./usr/libexec

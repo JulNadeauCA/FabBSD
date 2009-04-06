@@ -1,3 +1,4 @@
+#	$FabBSD$
 #	$OpenBSD: Makefile.inc,v 1.7 2006/07/27 02:53:55 deraadt Exp $
 
 .ifdef DESTDIR

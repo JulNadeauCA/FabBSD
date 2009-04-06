@@ -1,3 +1,4 @@
+#	$FabBSD$
 #	$OpenBSD: Makefile,v 1.268 2008/06/15 01:52:19 todd Exp $
 
 TZDIR=		/usr/share/zoneinfo
@@ -13,9 +14,9 @@ NOOBJ=
 BINOWN= root
 BINGRP= wheel
 BIN1=	changelist ccd.conf csh.cshrc csh.login csh.logout daily \
-	exports ftpusers ftpchroot gettytab group hosts inetd.conf \
-	ksh.kshrc man.conf monthly motd mrouted.conf myname \
-	netstart networks phones printcap protocols \
+	exports ftpusers ftpchroot gettytab group hosts hosts.lpd inetd.conf \
+	ksh.kshrc man.conf monthly motd myname \
+	netstart networks newsyslog.conf phones printcap protocols \
 	rc rc.conf rc.local rc.securelevel rc.shutdown \
 	remote rpc security services shells syslog.conf weekly \
 	etc.${MACHINE}/disktab dhclient.conf \
@@ -75,6 +76,7 @@ distribution-etc-root-var: distrib-dirs
 	${INSTALL} -c -o root -g wheel -m 600 crontab ${DESTDIR}/var/cron/tabs/root
 	${INSTALL} -c -o root -g wheel -m 600 master.passwd ${DESTDIR}/etc
 	pwd_mkdb -p -d ${DESTDIR}/etc /etc/master.passwd
+	${INSTALL} -c -o root -g operator -m 644 chio.conf ${DESTDIR}/etc
 	${INSTALL} -c -o root -g wheel -m 600 snmpd.conf ${DESTDIR}/etc
 	${INSTALL} -c -o ${BINOWN} -g ${BINGRP} -m 555 \
 	    etc.${MACHINE}/MAKEDEV ${DESTDIR}/dev
@@ -113,6 +115,8 @@ distribution-etc-root-var: distrib-dirs
 		    ${DESTDIR}/etc/mtree
 	/bin/rm -f ${DESTDIR}/etc/localtime
 	ln -s ${TZDIR}/${LOCALTIME} ${DESTDIR}/etc/localtime
+	/bin/rm -f ${DESTDIR}/etc/rmt
+	ln -s /usr/sbin/rmt ${DESTDIR}/etc/rmt
 	${INSTALL} -c -o root -g wheel -m 644 minfree \
 	    ${DESTDIR}/var/crash
 	${INSTALL} -c -o ${BINOWN} -g operator -m 664 /dev/null \
@@ -133,6 +137,8 @@ distribution-etc-root-var: distrib-dirs
 	    ${DESTDIR}/var/log/ftpd
 	${INSTALL} -c -o ${BINOWN} -g wheel -m 644 /dev/null \
 	    ${DESTDIR}/var/log/lastlog
+	${INSTALL} -c -o ${BINOWN} -g wheel -m 640 /dev/null \
+	    ${DESTDIR}/var/log/lpd-errs
 	${INSTALL} -c -o ${BINOWN} -g wheel -m 644 /dev/null \
 	    ${DESTDIR}/var/log/messages
 	${INSTALL} -c -o ${BINOWN} -g wheel -m 600 /dev/null \
@@ -145,12 +151,6 @@ distribution-etc-root-var: distrib-dirs
 	    ${DESTDIR}/var/msgs/bounds
 	${INSTALL} -c -o ${BINOWN} -g utmp -m 664 /dev/null \
 	    ${DESTDIR}/var/run/utmp
-.if ${MACHINE} == "vax"
-	uudecode -p etc.vax/${PCS}.uu > ${DESTDIR}/${PCS} && \
-	    chown ${BINOWN} ${DESTDIR}/${PCS} && \
-	    chgrp ${BINGRP} ${DESTDIR}/${PCS} && \
-	    chmod 644 ${DESTDIR}/${PCS}
-.endif
 	cd ../usr.bin/ssh && exec ${MAKE} distribution
 	cd ../lib/libssl && exec ${MAKE} distribution
 	cd ../gnu/usr.bin/lynx && exec ${MAKE} -f Makefile.bsd-wrapper distribution
@@ -207,7 +207,7 @@ distrib:
 DHSIZE=1024 1536 2048 3072 4096
 update-moduli:
 	( \
-		echo -n '#    $Open'; echo 'BSD$'; \
+		echo -n '#      Fab'; echo 'BSD '; \
 		echo '# Time Type Tests Tries Size Generator Modulus'; \
 		( for i in ${DHSIZE}; do \
 			ssh-keygen -b $$i -G /dev/stdout; \

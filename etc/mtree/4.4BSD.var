@@ -258,6 +258,13 @@ tmp             type=dir
 ..
 
 
+# ./spool/output
+/set type=file gname=daemon uname=daemon mode=0775
+output          type=dir uname=root gname=wheel mode=0755
+# ./spool/output
+..
+
+
 # ./spool/sockets
 /set type=file gname=wheel uname=root mode=0777
 sockets         type=dir
