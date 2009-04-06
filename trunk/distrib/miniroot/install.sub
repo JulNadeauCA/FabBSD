@@ -1531,30 +1531,30 @@ questions() {
 		    >>/mnt/etc/rc.conf.local
 	fi
 
-	ask_yn "Start ntpd(8) by default?" no
-	if [[ $resp == y ]]; then
-		echo "ntpd_flags=		# enabled during install" \
-			>>/mnt/etc/rc.conf.local
-		ask "NTP server? (hostname or 'default')" default
-		if [[ $resp != default ]]; then
-			# Comment out the default 'servers' line, and add a
-			# 'server' line with the first token in $resp as the
-			# server.
-			set -- $resp
-			sed -e "s/^servers /#&/;/#server /a\\
-server $1
-" /mnt/etc/ntpd.conf >/tmp/ntpd.conf
-		fi
-	fi
+#	ask_yn "Start ntpd(8) by default?" no
+#	if [[ $resp == y ]]; then
+#		echo "ntpd_flags=		# enabled during install" \
+#			>>/mnt/etc/rc.conf.local
+#		ask "NTP server? (hostname or 'default')" default
+#		if [[ $resp != default ]]; then
+#			# Comment out the default 'servers' line, and add a
+#			# 'server' line with the first token in $resp as the
+#			# server.
+#			set -- $resp
+#			sed -e "s/^servers /#&/;/#server /a\\
+#server $1
+#" /mnt/etc/ntpd.conf >/tmp/ntpd.conf
+#		fi
+#	fi
 
-	if [[ -n $MDXAPERTURE ]]; then
-		ask_yn "Do you expect to run the X Window System?"
-		if [[ $resp == y ]]; then
-			sed -e "/^#\(machdep\.allowaperture=${MDXAPERTURE}\)/s//\1	/" \
-			    /mnt/etc/sysctl.conf >/tmp/sysctl.conf
-			cp /tmp/sysctl.conf /mnt/etc/sysctl.conf
-		fi
-	fi
+#	if [[ -n $MDXAPERTURE ]]; then
+#		ask_yn "Do you expect to run the X Window System?"
+#		if [[ $resp == y ]]; then
+#			sed -e "/^#\(machdep\.allowaperture=${MDXAPERTURE}\)/s//\1	/" \
+#			    /mnt/etc/sysctl.conf >/tmp/sysctl.conf
+#			cp /tmp/sysctl.conf /mnt/etc/sysctl.conf
+#		fi
+#	fi
 
 	[[ -n $CDEV ]] || return
 	_d=${CPROM:-$CDEV}
@@ -1635,7 +1635,7 @@ __EOT
 ROOTDISK=
 ROOTDEV=
 
-VERSION=44
+VERSION=10
 
 VNAME="$(( $VERSION / 10 )).$(( $VERSION % 10 ))"
 SETDIR="$VNAME/$ARCH"

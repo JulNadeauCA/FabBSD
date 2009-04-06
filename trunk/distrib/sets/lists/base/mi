@@ -89,11 +89,8 @@
 ./sbin/mount_mfs
 ./sbin/mount_msdos
 ./sbin/mount_nfs
-./sbin/mount_portal
-./sbin/mount_procfs
 ./sbin/mount_udf
 ./sbin/mount_vnd
-./sbin/mount_xfs
 ./sbin/mountd
 ./sbin/ncheck
 ./sbin/ncheck_ffs
@@ -104,7 +101,6 @@
 ./sbin/ping
 ./sbin/ping6
 ./sbin/reboot
-./sbin/restore
 ./sbin/route
 ./sbin/savecore
 ./sbin/scan_ffs
@@ -138,7 +134,6 @@
 ./usr/bin/cap_mkdb
 ./usr/bin/captoinfo
 ./usr/bin/cdio
-./usr/bin/checknr
 ./usr/bin/chflags
 ./usr/bin/chfn
 ./usr/bin/chpass
@@ -157,7 +152,6 @@
 ./usr/bin/cpan
 ./usr/bin/cpp
 ./usr/bin/crontab
-./usr/bin/csplit
 ./usr/bin/ctags
 ./usr/bin/cu
 ./usr/bin/cut
@@ -263,7 +257,6 @@
 ./usr/bin/more
 ./usr/bin/motioncap
 ./usr/bin/move
-./usr/bin/mset
 ./usr/bin/msgs
 ./usr/bin/nawk
 ./usr/bin/nc
@@ -313,7 +306,6 @@
 ./usr/bin/psbb
 ./usr/bin/psed
 ./usr/bin/pstruct
-./usr/bin/purgestat
 ./usr/bin/rcs
 ./usr/bin/rcs2log
 ./usr/bin/rcsclean
@@ -1550,7 +1542,6 @@
 ./usr/libdata/perl5/warnings.pm
 ./usr/libdata/perl5/warnings/register.pm
 ./usr/libdata/ssh
-./usr/libdata/ssh/Ssh.bin
 ./usr/libexec
 ./usr/libexec/auth
 ./usr/libexec/auth/login_chpass
@@ -1623,7 +1614,6 @@
 ./usr/sbin/amd
 ./usr/sbin/amq
 ./usr/sbin/arp
-./usr/sbin/chat
 ./usr/sbin/chgrp
 ./usr/sbin/chown
 ./usr/sbin/chroot
@@ -1631,7 +1621,6 @@
 ./usr/sbin/config
 ./usr/sbin/cron
 ./usr/sbin/dev_mkdb
-./usr/sbin/fs
 ./usr/sbin/group
 ./usr/sbin/groupadd
 ./usr/sbin/groupdel
@@ -1644,6 +1633,7 @@
 ./usr/sbin/lpc
 ./usr/sbin/lpd
 ./usr/sbin/lptest
+./usr/sbin/mkhybrid
 ./usr/sbin/mtree
 ./usr/sbin/openssl
 ./usr/sbin/pkg
@@ -1670,7 +1660,6 @@
 ./usr/sbin/snmpctl
 ./usr/sbin/snmpd
 ./usr/sbin/sshd
-./usr/sbin/suexec
 ./usr/sbin/sysctl
 ./usr/sbin/syslogc
 ./usr/sbin/syslogd
@@ -4008,7 +3997,6 @@
 ./var/spool/ftp/etc
 ./var/spool/ftp/hidden
 ./var/spool/lock
-./var/spool/output
 ./var/spool/uucp
 ./var/spool/uucppublic
 ./var/tmp
