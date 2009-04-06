@@ -65,10 +65,26 @@ attach	ukbd at uhidbus
 file	dev/usb/ukbd.c			ukbd			needs-flag
 file	dev/usb/ukbdmap.c		ukbd
 
+# Mice
+device	ums: hid, wsmousedev
+attach	ums at uhidbus
+file	dev/usb/ums.c			ums
+
+# USB Touchscreen
+device	uts: wsmousedev
+attach	uts at uhub
+file	dev/usb/uts.c			uts
+
 # Cypress microcontroller based serial adpaters
 device	ucycom: hid, ucombus
 attach	ucycom at uhidbus
 file	dev/usb/ucycom.c		ucycom			needs-flag
+
+# Printers
+device	ulpt
+attach	ulpt at uhub
+file	dev/usb/ulpt.c			ulpt			needs-flag
+
 
 # Mass storage
 device	umass: scsi, atapi, ata
