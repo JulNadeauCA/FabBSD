@@ -11,19 +11,6 @@ SRCS+=	Ovfork.S brk.S cerror.S exect.S fork.S rfork.S \
 	sbrk.S sigpending.S sigprocmask.S sigreturn.S \
 	sigsuspend.S syscall.S
 
-LSRCS+=	Lint_Ovfork.c Lint_brk.c Lint_exect.c Lint_fork.c \
-	Lint_rfork.c Lint_sbrk.c \
-	Lint_sigpending.c Lint_sigprocmask.c Lint_sigreturn.c \
-	Lint_sigsuspend.c Lint_syscall.c Lint_crt.c Lint_environ.c \
-	Lint_setjmp.c Lint_longjmp.c \
-	Lint_sigsetjmp.c Lint_siglongjmp.c
-DPSRCS+= Lint_Ovfork.c Lint_brk.c Lint_exect.c Lint_fork.c \
-	Lint_sbrk.c \
-	Lint_sigpending.c Lint_sigprocmask.c Lint_sigreturn.c \
-	Lint_sigsuspend.c Lint_syscall.c Lint_crt.c Lint_environ.c \
-	Lint_setjmp.c Lint_longjmp.c \
-	Lint_sigsetjmp.c Lint_siglongjmp.c
-
 # glue to provide compatibility between GCC 1.X and 2.X and for compat
 # with old syscall interfaces.
 SRCS+=	ftruncate.c lseek.c mquery.c mmap.c ptrace.c semctl.c truncate.c \
@@ -185,32 +172,6 @@ ${PSEUDO_NOERR}: ${LIBCSRCDIR}/arch/${MACHINE_ARCH}/SYS.h /usr/include/sys/sysca
 	    ${CPP} ${CFLAGS:M-[ID]*} ${AINC} | ${AS} -o ${.TARGET}.o
 	@${LD} -X -r ${.TARGET}.o -o ${.TARGET}
 	@rm -f ${.TARGET}.o
-
-# Lint stubs for all automatically-generated assembly stubs (GENERATED)
-#LSRCS+=	LintSysNormal.c LintSysNoerr.c LintSysPseudoNoerr.c
-#DPSRCS+= LintSysNormal.c LintSysNoerr.c LintSysPseudoNoerr.c
-LSRCS+=	LintSysNormal.c LintSysPseudoNoerr.c
-DPSRCS+= LintSysNormal.c LintSysPseudoNoerr.c
-
-CLEANFILES+= LintSysNormal.c LintSysNoerr.c LintSysPseudoNoerr.c
-
-LintSysNormal.c: ${LIBCSRCDIR}/sys/makelintstub.sh \
-    ${DESTDIR}/usr/include/sys/syscall.h
-	@echo creating ${.TARGET}
-	@sh ${LIBCSRCDIR}/sys/makelintstub.sh -o ${.TARGET} \
-	    -s ${DESTDIR}/usr/include/sys/syscall.h ${ASM}
-
-LintSysNoerr.c: ${LIBCSRCDIR}/sys/makelintstub.sh \
-    ${DESTDIR}/usr/include/sys/syscall.h
-	@echo creating ${.TARGET}
-	@sh ${LIBCSRCDIR}/sys/makelintstub.sh -o ${.TARGET} -n \
-	    -s ${DESTDIR}/usr/include/sys/syscall.h ${NOERR}
-
-LintSysPseudoNoerr.c: ${LIBCSRCDIR}/sys/makelintstub.sh \
-    ${DESTDIR}/usr/include/sys/syscall.h
-	@echo creating ${.TARGET}
-	@sh ${LIBCSRCDIR}/sys/makelintstub.sh -o ${.TARGET} -p \
-	    -s ${DESTDIR}/usr/include/sys/syscall.h ${PSEUDO_NOERR}
 
 MAN+=	accept.2 access.2 adjfreq.2 adjtime.2 bind.2 brk.2 chdir.2 \
 	chflags.2 \
