@@ -363,6 +363,11 @@ include "dev/gpio/files.gpio"
 #
 include "dev/onewire/files.onewire"
 
+#
+# Machine-independent CNC machine control drivers
+#
+include "dev/cnc/files.cnc"
+
 # Virtual console
 device	vcons
 attach	vcons at vbus

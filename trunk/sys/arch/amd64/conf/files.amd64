@@ -191,6 +191,11 @@ file	arch/amd64/amd64/nvram.c	nvram needs-flag
 include	"dev/usb/files.usb"
 
 #
+# Machine-independent CNC machine control drivers
+#
+include "dev/cnc/files.cnc"
+
+#
 # Bluetooth
 #
 include "dev/bluetooth/files.bluetooth"

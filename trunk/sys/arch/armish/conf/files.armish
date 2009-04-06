@@ -82,3 +82,8 @@ include "dev/gpio/files.gpio"
 # Machine-independent 1-Wire drivers
 #
 include "dev/onewire/files.onewire"
+
+#
+# Machine-independent CNC machine control drivers
+#
+include "dev/cnc/files.cnc"
