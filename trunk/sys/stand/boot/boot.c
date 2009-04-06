@@ -1,3 +1,4 @@
+/*	$FabBSD$	*/
 /*	$OpenBSD: boot.c,v 1.36 2007/06/26 10:34:41 tom Exp $	*/
 
 /*
@@ -61,7 +62,7 @@ boot(dev_t bootdev)
 	machdep();
 
 	snprintf(prog_ident, sizeof(prog_ident),
-	    ">> OpenBSD/" MACHINE " %s %s", progname, version);
+	    ">> FabBSD/" MACHINE " %s %s", progname, version);
 	printf("%s\n", prog_ident);
 
 	devboot(bootdev, cmd.bootdev);
