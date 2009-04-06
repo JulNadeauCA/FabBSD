@@ -263,6 +263,11 @@ include "dev/gpio/files.gpio"
 #
 include "dev/onewire/files.onewire"
 
+#
+# Machine-independent CNC machine control drivers
+#
+include "dev/cnc/files.cnc"
+
 # Sun HME Ethernet controllers
 device	hme: ether, ifnet, mii, ifmedia
 file	dev/ic/hme.c

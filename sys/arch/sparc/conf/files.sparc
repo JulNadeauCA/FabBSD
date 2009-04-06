@@ -105,6 +105,11 @@ include	"../../../dev/mii/files.mii"
 #
 include	"../../../scsi/files.scsi"
 
+#
+# Machine-independent CNC machine control drivers
+#
+include "../../../dev/cnc/files.cnc"
+
 major	{sd = 7}
 major	{vnd = 8}
 major	{cd = 18}

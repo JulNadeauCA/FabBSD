@@ -344,6 +344,11 @@ include "dev/i2c/files.i2c"
 include	"dev/usb/files.usb"
 
 #
+# Machine-independent CNC machine control drivers
+#
+include "dev/cnc/files.cnc"
+
+#
 # Bluetooth
 #
 include "dev/bluetooth/files.bluetooth"
