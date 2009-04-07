@@ -812,3 +812,18 @@ sys_estop(struct proc *p, void *v, register_t *retval)
 {
 	return cnc_estop_raised() ? 1 : 0;
 }
+
+int
+sys_cncpos(struct proc *p, void *v, register_t *retval)
+{
+	struct sys_cncpos_args /* {
+		syscallarg(cnc_vec_t *) vec;
+	} */ *uap = v;
+	cnc_vec_t *pos = SCARG(uap,vec);
+	int i;
+
+	for (i = 0; i < CNC_NAXES; i++) {
+		pos->v[i] = cnc_pos.v[i];
+	}
+	return (0);
+}

@@ -192,6 +192,20 @@ extern struct cdevsw cdevsw[];
 	dev_init(c,n,tty), ttpoll, (dev_type_mmap((*))) enodev, \
 	D_TTY, D_KQFILTER, ttkqfilter }
 
+/* open, close, read, ioctl, poll, nokqfilter */
+#define	cdev_mouse_init(c,n) { \
+	dev_init(c,n,open), dev_init(c,n,close), dev_init(c,n,read), \
+	(dev_type_write((*))) enodev, dev_init(c,n,ioctl), \
+	(dev_type_stop((*))) enodev, 0, dev_init(c,n,poll), \
+	(dev_type_mmap((*))) enodev }
+
+/* open, close, read, write, ioctl, poll, nokqfilter */
+#define	cdev_mousewr_init(c,n) { \
+	dev_init(c,n,open), dev_init(c,n,close), dev_init(c,n,read), \
+	dev_init(c,n,write), dev_init(c,n,ioctl), \
+	(dev_type_stop((*))) enodev, 0, dev_init(c,n,poll), \
+	(dev_type_mmap((*))) enodev }
+
 #define	cdev_lkm_dummy() { \
 	(dev_type_open((*))) lkmenodev, (dev_type_close((*))) enodev, \
 	(dev_type_read((*))) enodev, (dev_type_write((*))) enodev, \
@@ -375,6 +389,12 @@ void	randomattach(void);
 	(dev_type_stop((*))) enodev, 0, dev_init(c,n,poll), \
 	(dev_type_mmap((*))) enodev }
 
+/* open, close, write, ioctl */
+#define cdev_ulpt_init(c,n) { \
+	dev_init(c,n,open), dev_init(c,n,close), (dev_type_read((*))) enodev, \
+	dev_init(c,n,write), dev_init(c,n,ioctl), (dev_type_stop((*))) enodev, \
+	0, (dev_type_poll((*))) enodev, (dev_type_mmap((*))) enodev }
+
 /* open, close, read, write, ioctl, poll, kqfilter */
 #define	cdev_usbdev_init(c,n) { \
 	dev_init(c,n,open), dev_init(c,n,close), dev_init(c,n,read), \
@@ -398,6 +418,12 @@ void	randomattach(void);
 
 /* open, close, write, ioctl */
 #define cdev_spkr_init(c,n) { \
+	dev_init(c,n,open), dev_init(c,n,close), (dev_type_read((*))) enodev, \
+	dev_init(c,n,write), dev_init(c,n,ioctl), (dev_type_stop((*))) enodev, \
+	0, seltrue, (dev_type_mmap((*))) enodev }
+
+/* open, close, write, ioctl */
+#define cdev_lpt_init(c,n) { \
 	dev_init(c,n,open), dev_init(c,n,close), (dev_type_read((*))) enodev, \
 	dev_init(c,n,write), dev_init(c,n,ioctl), (dev_type_stop((*))) enodev, \
 	0, seltrue, (dev_type_mmap((*))) enodev }
@@ -549,6 +575,8 @@ cdev_decl(random);
 
 cdev_decl(wsdisplay);
 cdev_decl(wskbd);
+cdev_decl(wsmouse);
+cdev_decl(wsmux);
 
 cdev_decl(ksyms);
 
@@ -558,12 +586,11 @@ cdev_decl(bthub);
 
 cdev_decl(gpr);
 
-cdev_decl(lpt);
-
 cdev_decl(usb);
 cdev_decl(ugen);
 cdev_decl(uhid);
 cdev_decl(ucom);
+cdev_decl(ulpt);
 
 cdev_decl(hotplug);
 cdev_decl(gpio);

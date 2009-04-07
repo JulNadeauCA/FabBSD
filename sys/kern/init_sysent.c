@@ -780,5 +780,7 @@ struct sysent sysent[] = {
 	    sys_coolantctl },			/* 317 = coolantctl */
 	{ 0, 0, 0,
 	    sys_estop },			/* 318 = estop */
+	{ 1, s(struct sys_cncpos_args), 0,
+	    sys_cncpos },			/* 319 = cncpos */
 };
 

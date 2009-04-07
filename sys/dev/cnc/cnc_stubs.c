@@ -54,5 +54,6 @@ int sys_laserctl(struct proc *p, void *v, register_t *retval) { return (ENODEV);
 int sys_pickplacectl(struct proc *p, void *v, register_t *retval) { return (ENODEV); }
 int sys_coolantctl(struct proc *p, void *v, register_t *retval) { return (ENODEV); }
 int sys_estop(struct proc *p, void *v, register_t *retval) { return (ENODEV); }
+int sys_cncpos(struct proc *p, void *v, register_t *retval) { return (ENODEV); }
 
 #endif

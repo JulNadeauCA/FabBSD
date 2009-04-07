@@ -413,4 +413,5 @@ char *syscallnames[] = {
 	"pickplacectl",			/* 316 = pickplacectl */
 	"coolantctl",			/* 317 = coolantctl */
 	"estop",			/* 318 = estop */
+	"cncpos",			/* 319 = cncpos */
 };
