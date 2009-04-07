@@ -38,7 +38,7 @@ int
 cnc_vec_parse(cnc_vec_t *V, const char *sarg)
 {
 	char *ep;
-	char *sb = strdup(sarg), *s = sb;
+	char *sb = strdup(sarg), *s = sb, *sp;
 	int i;
 
 	if (sb == NULL) {
@@ -49,11 +49,11 @@ cnc_vec_parse(cnc_vec_t *V, const char *sarg)
 		V->v[i] = 0;
 	}
 	for (i = 0;
-	     (s = strsep(&s, ",: ")) && i < CNC_NAXES;
+	     (sp = strsep(&s, ",: ")) && i < CNC_NAXES;
 	     i++) {
 		errno = 0;
-		V->v[i] = (cnc_pos_t)strtoull(s, &ep, 10);
-		if (s[0] == '\0' || *ep != '\0') {
+		V->v[i] = (cnc_pos_t)strtoull(sp, &ep, 10);
+		if (sp[0] == '\0' || *ep != '\0') {
 			cnc_set_error("No numerical velocity value");
 			goto fail;
 		}
