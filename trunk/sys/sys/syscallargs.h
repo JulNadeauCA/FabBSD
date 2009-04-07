@@ -954,6 +954,10 @@ struct sys_coolantctl_args {
 	syscallarg(int) val;
 };
 
+struct sys_cncpos_args {
+	syscallarg(struct cnc_vector *) vec;
+};
+
 /*
  * System call prototypes.
  */
@@ -1204,3 +1208,4 @@ int	sys_laserctl(struct proc *, void *, register_t *);
 int	sys_pickplacectl(struct proc *, void *, register_t *);
 int	sys_coolantctl(struct proc *, void *, register_t *);
 int	sys_estop(struct proc *, void *, register_t *);
+int	sys_cncpos(struct proc *, void *, register_t *);

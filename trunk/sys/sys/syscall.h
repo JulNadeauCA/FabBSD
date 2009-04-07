@@ -648,4 +648,7 @@
 /* syscall: "estop" ret: "int" args: */
 #define	SYS_estop	318
 
-#define	SYS_MAXSYSCALL	319
+/* syscall: "cncpos" ret: "int" args: "struct cnc_vector *" */
+#define	SYS_cncpos	319
+
+#define	SYS_MAXSYSCALL	320

@@ -475,3 +475,4 @@
 316	STD		{ int sys_pickplacectl(int pp, int op, const struct cnc_pickplace_args *args); }
 317	STD		{ int sys_coolantctl(int coolant, int op, int val); }
 318	STD		{ int sys_estop(void); }
+319	STD		{ int sys_cncpos(struct cnc_vector *vec); }

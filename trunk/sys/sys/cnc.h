@@ -176,6 +176,7 @@ int	laserctl(int, enum cnc_laser_op, const struct cnc_laser_args *);
 int	pickplacectl(int, enum cnc_pickplace_op, const struct cnc_pickplace_args *);
 int	coolantctl(int, enum cnc_coolant_op, const struct cnc_coolant_args *);
 int	estop(void);
+int	cncpos(cnc_vec_t *);
 __END_DECLS
 
 #endif /* !_KERNEL */
