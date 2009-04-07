@@ -7,25 +7,26 @@ INSTALLATION NOTES for FabBSD/MACHINE OSREV
 What is FabBSD?
 ---------------
 
-FabBSD is an open-source, 4.4BSD-like operating system designed for
+FabBSD is an open-source, 4.4BSD-like operating system designed for the
 numerical control of machinery and instrumentation. FabBSD can be used to
 control various types of equipment:
 
-	- Machine tools: CNC milling machines, lathes, routers, lasers
-	- Process control: Power supplies, heaters, chillers, valves, relays
-	- Measurement: Optical encoders, thickness gauges, tachometers,
-	  thermocouples
+ - Machine tools: CNC milling machines, lathes, routers, lasers
+ - Process control: Manipulators, power supplies, relays, valves, heaters
+ - Measurement: Optical encoders, thickness gauges, sensors
 
-Due to the real-time aspect of its kernel, FabBSD is designed for use on
-systems dedicated to machine control. Hardware requirements are minimal.
-For instance, in a typical computer-aided machining setup, FabBSD running
-on a 133MHz 486-class processor will control a set of 350kHz motor drives
-with ease, with or without software-based closed-loop control.
+FabBSD handles system interrupts, process scheduling and floating-point
+units differently from general-purpose systems, such that tasks requiring
+real-time priority can be performed, without sacrificing the convenience
+of a fully functional Unix system.
 
-FabBSD OSREV integrates a subset of the standard BSD system commands and
-utilities from OpenBSD. The distribution also includes Binutils, GCC, gdb,
-OpenSSH and Sudo. FabBSD adds programming interfaces such as cnc(3), a set
-of command-line utilities and the machctld(8) daemon.
+FabBSD OSREV is derived from OpenBSD and the distribution includes OpenSSH,
+Sudo, Binutils, GCC and GDB. FabBSD introduces:
+
+- New devices: atc(4), cnclcd(4), cncstatled(4), encoder(4), estop(4),
+               mpg(4), servo(4), spindle(4).
+- New system calls and libraries: cnc(3).
+- New commands: ngc(1), move(1), boltpattern(1), gerbdrill(1).
 
 Because FabBSD is from Canada, the export of Cryptography pieces (such
 as OpenSSH and IPsec) to the world is not restricted.
@@ -99,7 +100,7 @@ access to source code so that you can recompile pieces of the system.
 
 A few methods are provided.  If you have an FabBSD CD-ROM, the source
 code is provided.  Otherwise, you can get the pieces over the Internet:
-using anonymous CVS, CTM, CVSync or FTP.  For more information, see
+using Subversion or FTP.  For more information, see
 
 	http://www.FabBSD.org/download.html
 
@@ -107,9 +108,9 @@ using anonymous CVS, CTM, CVSync or FTP.  For more information, see
 Using online FabBSD documentation:
 ----------------------------------
 
-Documentation is available if you first install the manual pages
-distribution set.  Traditionally, the UN*X "man pages" (documentation)
-are denoted by 'name(section)'.  Some examples of this are
+Documentation is available if you first install the "man" distribution
+set.  Traditionally, the UN*X "man pages" (documentation) are denoted by
+'name(section)'.  Some examples of this are
 
 	intro(1),
 	man(1),
@@ -123,27 +124,22 @@ are of primary interest: user commands are in section 1, file formats
 are in section 5, and administrative information is in section 8.
 
 The 'man' command is used to view the documentation on a topic, and is
-started by entering 'man [section] topic'.  The brackets [] around the
-section should not be entered, but rather indicate that the section is
-optional.  If you don't ask for a particular section, the topic with the
-least-numbered section name will be displayed.  For instance, after
-logging in, enter
+started by entering 'man [section] topic'. For instance, after logging
+in, enter
 
 	man passwd
 
-to read the documentation for passwd(1).  To view the documentation for
-passwd(5), enter
+to read the documentation for passwd(1). To view the documentation for
+passwd(5), enter instead:
 
 	man 5 passwd
 
-instead.
-
-If you are unsure of what man page you are looking for, enter
+If you are unsure of what man page you are looking for, enter:
 
 	apropos subject-word
 
-where "subject-word" is your topic of interest; a list of possibly
-related man pages will be displayed.
+where "subject-word" is your topic of interest; a list of possibly related
+man pages will be displayed.
 
 
 Adding third party software; ``packages'' and ``ports'':
@@ -156,23 +152,21 @@ Administrivia:
 --------------
 
 Information about the various FabBSD mailing list and proper netiquette
-is available at
+is available at:
+	http://FabBSD.org/lists.html.
+ 
+To report bugs, please use our Bugzilla interface at:
+	http://FabBSD.org/bugs
 
-	http://FabBSD.org/lists.html
-
-To report bugs, use the 'sendbug' command shipped with FabBSD, and fill
-in as much information about the problem as you can.  Good bug reports
-{:-include-:} lots of details.  Additionally, bug reports can be sent
-by mail to:
+Include in as much information about the problem as you can. Good bug
+reports {:-include-:} lots of details. Additionally, bug reports can be
+sent by mail to:
 
 	bugs@FabBSD.org
 
-Use of 'sendbug' is encouraged, however, because bugs reported with it
-are entered into the FabBSD bugs database, and thus can't slip through
-the cracks.
+As a favor, please avoid mailing huge documents or files to the mailing
+lists. Instead, put the material you would have sent up for FTP or HTTP
+somewhere, then mail the appropriate list about it, or, if you'd rather
+not do that, mail the list saying you'll send the data to those who want
+it.
 
-As a favor, please avoid mailing huge documents or files to the
-mailing lists.  Instead, put the material you would have sent up
-for FTP somewhere, then mail the appropriate list about it, or, if
-you'd rather not do that, mail the list saying you'll send the data
-to those who want it.
