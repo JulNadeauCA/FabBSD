@@ -36,7 +36,7 @@ Creating a PXE network bootable setup using FabBSD or other Un*x-like system:
 FabBSDXferShortPrelude
 
 
-FabBSDXferBareTape(xbase xetc xfont xserv xshare)
+FabBSDXferBareTape()
 
 dnl FabBSDXferNFS
 dnl

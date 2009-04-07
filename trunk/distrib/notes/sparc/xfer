@@ -132,6 +132,6 @@ Creating a network bootable setup using SunOS or other Un*x-like system:
 FabBSDXferPrelude
 
 
-FabBSDXferBootTape(xbase xetc xfont xserv xshare,bsd.rd obs=8k conv=sync,boot obs=8k conv=sync)
+FabBSDXferBootTape(,bsd.rd obs=8k conv=sync,boot obs=8k conv=sync)
 
 FabBSDXferFFS
