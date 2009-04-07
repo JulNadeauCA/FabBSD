@@ -50,6 +50,7 @@
 ./etc/rc.securelevel
 ./etc/rc.shutdown
 ./etc/remote
+./etc/rmt
 ./etc/rpc
 ./etc/security
 ./etc/sensorsd.conf
@@ -85,6 +86,7 @@
 ./var/log/failedlogin
 ./var/log/ftpd
 ./var/log/lastlog
+./var/log/lpd-errs
 ./var/log/messages
 ./var/log/secure
 ./var/log/wtmp
