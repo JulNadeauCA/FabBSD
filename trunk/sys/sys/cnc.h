@@ -60,6 +60,8 @@ struct cnc_velocity {
 	cnc_vel_t Amax;		 /* max steps/ms^2 */
 	cnc_vel_t Jmax;		 /* max steps/ms^3 */
 };
+#define CNC_VELOCITY_INITIALIZER(v0,F,Amax,Jmax) \
+	{ (v0), (F), (Amax), (Jmax) }
 
 /* Spindle control - arguments to spinctl(2) */
 enum cnc_spindle_op {
