@@ -1,0 +1,79 @@
+#
+# RS274/NGC numerical parameters. This file is read and updated by ngc(1).
+# Parameter numbers 1-5400 are allowed.
+#
+5161	0.0		# G28 Home - X
+5162	0.0		# G28 Home - Y
+5163	0.0		# G28 Home - Z
+5164	0.0		# G28 Home - A
+5165	0.0		# G28 Home - B
+5166	0.0		# G28 Home - C
+5181	0.0		# G30 Home - X
+5182	0.0		# G30 Home - Y
+5183	0.0		# G30 Home - Z
+5184	0.0		# G30 Home - A
+5185	0.0		# G30 Home - B
+5186	0.0		# G30 Home - C
+5211	0.0		# G92 Offset - X
+5212	0.0		# G92 Offset - Y
+5213	0.0		# G92 Offset - Z
+5214	0.0		# G92 Offset - A
+5215	0.0		# G92 Offset - B
+5216	0.0		# G92 Offset - C
+5218	0.0
+5219	0.0
+5220	1.0		# Coordinate system select
+5221	0.0		# Coordinate system 1 - X
+5222	0.0		# Coordinate system 1 - Y
+5223	0.0		# Coordinate system 1 - Z
+5224	0.0		# Coordinate system 1 - A
+5225	0.0		# Coordinate system 1 - B
+5226	0.0		# Coordinate system 1 - C
+5241	0.0		# Coordinate system 2 - X
+5242	0.0		# Coordinate system 2 - Y
+5243	0.0		# Coordinate system 2 - Z
+5244	0.0		# Coordinate system 2 - A
+5245	0.0		# Coordinate system 2 - B
+5246	0.0		# Coordinate system 2 - C
+5261	0.0		# Coordinate system 3 - X
+5262	0.0		# Coordinate system 3 - Y
+5263	0.0		# Coordinate system 3 - Z
+5264	0.0		# Coordinate system 3 - A
+5265	0.0		# Coordinate system 3 - B
+5266	0.0		# Coordinate system 3 - C
+5281	0.0		# Coordinate system 4 - X
+5282	0.0		# Coordinate system 4 - Y
+5283	0.0		# Coordinate system 4 - Z
+5284	0.0		# Coordinate system 4 - A
+5285	0.0		# Coordinate system 4 - B
+5286	0.0		# Coordinate system 4 - C
+5301	0.0		# Coordinate system 5 - X
+5302	0.0		# Coordinate system 5 - Y
+5303	0.0		# Coordinate system 5 - Z
+5304	0.0		# Coordinate system 5 - A
+5305	0.0		# Coordinate system 5 - B
+5306	0.0		# Coordinate system 5 - C
+5321	0.0		# Coordinate system 6 - X
+5322	0.0		# Coordinate system 6 - Y
+5323	0.0		# Coordinate system 6 - Z
+5324	0.0		# Coordinate system 6 - A
+5325	0.0		# Coordinate system 6 - B
+5326	0.0		# Coordinate system 6 - C
+5341	0.0		# Coordinate system 7 - X
+5342	0.0		# Coordinate system 7 - Y
+5343	0.0		# Coordinate system 7 - Z
+5344	0.0		# Coordinate system 7 - A
+5345	0.0		# Coordinate system 7 - B
+5346	0.0		# Coordinate system 7 - C
+5361	0.0		# Coordinate system 8 - X
+5362	0.0		# Coordinate system 8 - Y
+5363	0.0		# Coordinate system 8 - Z
+5364	0.0		# Coordinate system 8 - A
+5365	0.0		# Coordinate system 8 - B
+5366	0.0		# Coordinate system 8 - C
+5381	0.0		# Coordinate system 9 - X
+5382	0.0		# Coordinate system 9 - Y
+5383	0.0		# Coordinate system 9 - Z
+5384	0.0		# Coordinate system 9 - A
+5385	0.0		# Coordinate system 9 - B
+5386	0.0		# Coordinate system 9 - C
