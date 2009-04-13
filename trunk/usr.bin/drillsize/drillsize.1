@@ -1,0 +1,50 @@
+.\"	$FabBSD$
+.\"	Public domain
+.\"
+.Dd $Mdocdate: April 5 2009 $
+.Dt DRILLSIZE 1
+.Os
+.Sh NAME
+.Nm drillsize
+.Nd convert between drill bit numbering systems
+.Sh SYNOPSIS
+.Nm drillsize
+.Op Fl R
+.Op Fl p Ar angle
+.Op Fl i Ar inches
+|
+.Op Fl l Ar letter
+|
+.Op Fl m Ar mm
+|
+.Op Fl w Ar wireno
+.Sh DESCRIPTION
+The
+.Nm
+utility prints the standard drill bit sizes most closely matching a specified
+diameter.
+The options are as follows.
+.Bl -tag -width Ds
+.It Fl i
+Specify diameter in fractional or decimal inches.
+.It Fl l
+Specify letter drill.
+.It Fl m
+Specify diameter in millimeters.
+.It Fl w
+Specify wire gauge number drill.
+.It Fl p
+Compute the length of the drill point from the given diameter and the specified
+drill point angle.
+.It Fl R
+If there is no exact match, do not round to nearest standard drill size and
+instead return an error code.
+.El
+.Sh SEE ALSO
+.Xr cnc 3 ,
+.Xr drillpoints 7 ,
+.Xr tools 8
+.Sh HISTORY
+The
+.Nm
+command first appeared in FabBSD 1.0.
