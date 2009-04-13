@@ -1,3 +1,4 @@
+/*	$FabBSD$	*/
 /*	$OpenBSD: user.c,v 1.23 2006/07/27 04:06:13 ray Exp $	*/
 
 /*
@@ -46,7 +47,7 @@
 /* Our command table */
 static cmd_table_t cmd_table[] = {
 	{"help",   Xhelp,	"Command help list"},
-	{"manual", Xmanual,	"Show entire OpenBSD man page for fdisk"},
+	{"manual", Xmanual,	"Show entire FabBSD man page for fdisk"},
 	{"reinit", Xreinit,	"Re-initialize loaded MBR (to defaults)"},
 	{"setpid", Xsetpid,	"Set the identifier of a given table entry"},
 	{"disk",   Xdisk,	"Edit current drive stats"},

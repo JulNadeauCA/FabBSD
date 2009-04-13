@@ -1,3 +1,4 @@
+/*	$FabBSD$	*/
 /*	$OpenBSD: part.c,v 1.47 2008/05/31 09:45:01 fgsch Exp $	*/
 
 /*
@@ -113,7 +114,7 @@ static const struct part_type {
 	{ 0x9F, "BSDI        "},   /* BSDI BSD/OS */
 	{ 0xA0, "NotebookSave"},   /* Phoenix NoteBIOS save-to-disk */
 	{ 0xA5, "FreeBSD     "},   /* FreeBSD */
-	{ 0xA6, "OpenBSD     "},   /* OpenBSD */
+	{ 0xA6, "Open/FabBSD "},   /* OpenBSD or FabBSD (for now) */
 	{ 0xA7, "NEXTSTEP    "},   /* NEXTSTEP */
 	{ 0xA8, "MacOS X     "},   /* MacOS X main partition */
 	{ 0xA9, "NetBSD      "},   /* NetBSD */
