@@ -3,7 +3,7 @@
 .include <bsd.own.mk>
 
 SUBDIR=	lib ssh sshd ssh-add ssh-keygen ssh-agent scp sftp-server \
-	ssh-keysign ssh-keyscan sftp scard
+	ssh-keysign ssh-keyscan sftp
 
 distribution:
 	${INSTALL} -C -o root -g wheel -m 0644 ${.CURDIR}/ssh_config \
