@@ -5,16 +5,16 @@
 
 SUBDIR= apply apropos arch asa asn1_compile awk banner basename bc \
 	cap_mkdb cdio chpass cmp col colcrt colrm \
-	column comm compile_et compress cpp crontab ctags cut \
-	dc deroff diff diff3 dirname du encrypt env expand false file \
-	file2c find fmt fold fstat ftp gencat getcap \
+	column comm compile_et compress cpp crontab csplit ctags cut \
+	dc deroff diff diff3 dirname drillsize du encrypt env expand false \
+	file file2c find fmt fold fstat ftp gencat getcap \
 	getconf getent getopt grep gzsig head hexdump id \
 	indent infocmp ipcrm ipcs \
 	join jot kdump ktrace lam last lastcomm less lex lndir \
 	lock logger login logname look lorder m4 make man mesg mg \
 	mkdep mklocale mktemp msgs modstat \
-	motioncap nc netstat newsyslog \
-	nfsstat nice nm nohup cvs pagesize passwd paste patch pctr \
+	motioncap move nc netstat newsyslog \
+	nfsstat ngc nice nm nohup cvs pagesize passwd paste patch pctr \
 	pkg-config pkill \
 	pr printenv printf rcs \
 	readlink renice rev rpcgen rpcinfo rs \

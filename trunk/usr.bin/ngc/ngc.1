@@ -1,0 +1,134 @@
+.\"	$FabBSD$
+.\"	Public domain
+.\"
+.Dd $Mdocdate: April 4 2009 $
+.Dt NGC 1
+.Os
+.Sh NAME
+.Nm ngc
+.Nd NIST RS274/NGC numerical control code interpreter
+.Sh SYNOPSIS
+.Nm ngc
+.Op Fl lmnvW
+.Op Fl t Ar toolfile
+.Op Ar file[:index] ...
+.Sh DESCRIPTION
+The
+.Nm
+command executes a machine tool program written in RS274/NGC code
+(NIST
+.Dq Next Generation Controller
+Version 3).
+Unless the simulation
+.Pf ( Fl n )
+option is used,
+.Nm
+performs machine actions directly.
+.Pp
+Code may be spread across multiple files.
+The program
+.Em main
+(which must be the first program passed to
+.Nm )
+and subroutines are separated by lines containing a single
+.Sq %
+character.
+Subroutines are identified by "O1234" (or ":1234") lines.
+.Pp
+.Nm
+verifies input programs for errors before they are executed.
+However, fatal hardware conditions (e.g., raised
+.Xr estop 4
+events,
+.Xr atc 4
+failures) will cause
+.Nm
+to interrupt execution and exit with an error code.
+.Pp
+The options are as follows:
+.Bl -tag -width Ds
+.It Fl l
+Execute program(s) in
+.Em lathe
+(turning) mode.
+.It Fl m
+Execute program(s) in
+.Em milling
+mode.
+This is the default.
+.It Fl n
+Run the program in simulation mode (do not perform actual machining operations).
+This is useful for verifying the syntax of a program.
+.It Fl t
+Read the tool sheet from
+.Ar toolfile .
+The tool sheet is a CSV file containing information about the tools referenced
+by the
+.Em T
+instructions in the program; see the
+.Dq TOOL FILES
+section for more information.
+.It Fl v
+Enable verbose operation (default).
+.It Fl W
+Enable extra warnings.
+.El
+.Sh TOOL FILES
+The
+.Nm
+tool file format is a simple CSV-style database with fields:
+.Bl -tag -width "Tool Length Offset "
+.It Name
+The unsigned integer identifying the tool, which will be referenced by
+.Em T
+commands.
+.It Tool Length Offset
+A real number normally representing the length of the tool as it extends
+from the chuck.
+.It Diameter
+Effective diameter of the tool.
+This value is only applicable to tool paths programmed with radius compensation.
+If the tool path programmed corresponds to the edge of the part, this specifies
+the
+.Em measured diameter
+of the tool.
+Alternatively, if the tool path represents the motion of a cutter of nominal
+diameter, this field should describe the small
+.Em difference
+with respect to the nominal diameter.
+.It Carousel slot
+When an
+.Xr atc 4
+is used to interface with a tool carousel, this field should specify the pocket
+(slot) number of the tool.
+.It Comment
+An arbitrary string description of the tool.
+.El
+.Sh ENVIRONMENT
+.Bl -tag -width UNITS
+.It Ev UNITS
+Set to
+.Sq metric
+or
+.Sq inch .
+Defaults to
+.Sq metric .
+.El
+.Sh SEE ALSO
+.Xr atc 4 ,
+.Xr cnc 3 ,
+.Xr cncmove 3
+.Rs
+.%A Thomas R. Kramer
+.%A Frederick M. Proctor
+.%A Elena Messina
+.%D August 2000
+.%T "The NIST RS274NGC Interpreter - Version 3"
+.%C Gaithersburg, Maryland
+.%I National Institute of Standards and Technology
+.%R NISTIR 6556
+.Re
+.Sh HISTORY
+The
+.Nm
+command first appeared in FabBSD 1.0.
