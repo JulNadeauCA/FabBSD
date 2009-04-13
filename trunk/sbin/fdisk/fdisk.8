@@ -1,3 +1,4 @@
+.\"	$FabBSD$
 .\"	$OpenBSD: fdisk.8,v 1.66 2008/05/13 13:28:15 jmc Exp $
 .\"
 .\" Copyright (c) 1997 Tobias Weingartner
@@ -115,9 +116,8 @@ using the default MBR template
 .Fl f
 flag).
 In the default template, MBR partition number 3 will be configured as an
-.Ox
-MBR partition spanning from cylinder 0, head 1, sector 1, and extending
-to the end of the disk.
+OpenBSD/FabBSD MBR partition spanning from cylinder 0, head 1, sector 1,
+and extending to the end of the disk.
 This mode is designed to initialize the MBR the very first time.
 .It Fl u
 Update MBR bootcode, preserving existing MBR partition table.
@@ -147,16 +147,15 @@ Offset: 0       Signature: 0xAA55
  0: 04    0   1  1 -  170   0 63 [          63:     2570462 ] DOS FAT-16
  1: 00    0   0  0 -    0   0  0 [           0:           0 ] unused
  2: 00    0   0  0 -    0   0  0 [           0:           0 ] unused
-*3: A6  170   1  1 - 5167 239 63 [     2570525:    75569697 ] OpenBSD
+*3: A6  170   1  1 - 5167 239 63 [     2570525:    75569697 ] Open/FabBSD
 .Ed
 .Pp
 This 78140160 sector (38154MB) disk drive is divided into two MBR
 partitions that span the whole disk.
 The first MBR partition is a 1225MB FAT-16 DOS partition
 (in this case containing a Phoenix BIOS Laptop Suspend-to-Disk file),
-the second is a 36GB
-.Ox
-MBR partition using the remainder of the disk.
+the second is a 36GB OpenBSD/FabBSD MBR partition using the remainder
+of the disk.
 The fields of the output are thus:
 .Bl -tag -width "start/size"
 .It Em "#"
@@ -166,9 +165,9 @@ There are a total of four slots.
 denotes the MBR partition which is declared bootable.
 .It Em "id"
 MBR partition type identifier.
-.Ox
-reserves the
-magic number hexadecimal A6 (166 decimal).
+Currently, FabBSD uses the magic number hexadecimal A6 (166 decimal),
+shared by
+.Ox .
 .It Em "C/H/S"
 These fields provide the starting and ending address of the MBR partition
 in BIOS geometry.
@@ -187,14 +186,10 @@ for the system to be able to boot and use the drive correctly.
 These values must be kept correctly synchronized or a variety of
 problems develop which are very difficult to diagnose.
 .Pp
-The
-.Ox
-MBR partition shown above is subdivided further using the
+The FabBSD MBR partition shown above is subdivided further using the
 functionality provided by
 .Xr disklabel 8 ,
-which provides
-.Ox
-partitions.
+which provides FabBSD partitions.
 .Bd -literal -offset 1n
 # Inside MBR partition 3: type A6 start 2570463 size 75569697
 # /dev/rwd0c:
@@ -232,9 +227,7 @@ drivedata: 0
   m:    59727024   18413136  4.2BSD   2048 16384  328 # Cyl 18267 - 77519
 .Ed
 .Pp
-These
-.Ox
-partitions are then mounted as follows using
+These FabBSD partitions are then mounted as follows using
 .Pa /etc/fstab :
 .Bd -literal -offset indent
 /dev/wd0a / ffs rw,softdep 1 1
@@ -310,7 +303,8 @@ Change the MBR partition
 identifier of the given MBR partition table entry.
 This command is particularly useful for reassigning
 an existing MBR partition to
-.Ox .
+.Ox
+or FabBSD.
 .It swap Ar # Ar #
 Swap two MBR entries.
 .It print Op unit
@@ -356,9 +350,7 @@ default MBR template
 .Xr boot_amd64 8 ,
 .Xr boot_armish 8 ,
 .Xr boot_i386 8 ,
-.Xr boot_landisk 8 ,
 .Xr boot_macppc 8 ,
-.Xr boot_zaurus 8 ,
 .Xr disklabel 8
 .Sh CAVEATS
 Hand crafted disk layouts are highly error prone.

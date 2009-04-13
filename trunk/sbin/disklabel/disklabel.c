@@ -1,3 +1,4 @@
+/*	$FabBSD$	*/
 /*	$OpenBSD: disklabel.c,v 1.136 2008/08/11 19:03:05 reyk Exp $	*/
 
 /*
@@ -618,7 +619,7 @@ readmbr(int f)
 
 	/* If no OpenBSD partition, find first used partition. */
 	if (first != NULL) {
-		warnx("warning, DOS partition table with no valid OpenBSD partition");
+		warnx("warning, DOS partition table with no valid OpenBSD/FabBSD partition");
 		return (first);
 	}
 

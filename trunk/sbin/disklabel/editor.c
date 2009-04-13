@@ -1,3 +1,4 @@
+/*	$FabBSD$	*/
 /*	$OpenBSD: editor.c,v 1.168 2008/06/25 18:31:07 otto Exp $	*/
 
 /*
@@ -1259,7 +1260,7 @@ set_bounds(struct disklabel *lp)
 	/* Starting sector */
 	do {
 		ui = getuint(lp, "Starting sector",
-		  "The start of the OpenBSD portion of the disk.",
+		  "The start of the FabBSD portion of the disk.",
 		  starting_sector, DL_GETDSIZE(lp), 0, 0);
 		if (ui == ULLONG_MAX - 1) {
 			fputs("Command aborted\n", stderr);
@@ -1271,7 +1272,7 @@ set_bounds(struct disklabel *lp)
 	/* Size */
 	do {
 		ui = getuint(lp, "Size ('*' for entire disk)",
-		  "The size of the OpenBSD portion of the disk ('*' for the "
+		  "The size of the FabBSD portion of the disk ('*' for the "
 		  "entire disk).", ending_sector - starting_sector,
 		  DL_GETDSIZE(lp) - start_temp, 0, 0);
 		if (ui == ULLONG_MAX - 1) {
@@ -1386,7 +1387,7 @@ find_bounds(struct disklabel *lp)
 			starting_sector = 63;
 		}
 
-		printf("Treating sectors %llu-%llu as the OpenBSD portion of the "
+		printf("Treating sectors %llu-%llu as the FabBSD portion of the "
 		    "disk.\nYou can use the 'b' command to change this.\n\n",
 		    starting_sector, ending_sector);
 	}
@@ -1437,7 +1438,7 @@ editor_help(char *arg)
 		break;
 	case 'M':
 		puts(
-"The 'M' command pipes the entire OpenBSD manual page for disk label through\n"
+"The 'M' command pipes the entire FabBSD manual page for disk label through\n"
 "the pager specified by the PAGER environment variable or 'less' if PAGER is\n"
 "not set.  It is especially useful during install when the normal system\n"
 "manual is not available.\n");
@@ -1459,10 +1460,10 @@ editor_help(char *arg)
 		break;
 	case 'b':
 		puts(
-"The 'b' command is used to change the boundaries of the OpenBSD portion of\n"
+"The 'b' command is used to change the boundaries of the FabBSD portion of\n"
 "the disk.  This is only useful on disks with an fdisk partition.  By default,\n"
 "on a disk with an fdisk partition, the boundaries are set to be the first\n"
-"and last sectors of the OpenBSD fdisk partition.  You should only change\n"
+"and last sectors of the FabBSD fdisk partition.  You should only change\n"
 "these if your fdisk partition table is incorrect or you have a disk larger\n"
 "than 8gig, since 8gig is the maximum size an fdisk partition can be.  You\n"
 "may enter '*' at the 'Size' prompt to indicate the entire size of the disk\n"
@@ -1565,7 +1566,7 @@ editor_help(char *arg)
 		puts(
 "  ? [command] - show help                   n [part] - set mount point\n"
 "  a [part]    - add partition               p [unit] - print partitions\n"
-"  b           - set OpenBSD boundaries      q        - quit & save changes\n"
+"  b           - set FabBSD boundaries       q        - quit & save changes\n"
 "  c [part]    - change partition size       r        - display free space\n"
 "  D           - reset label to default      s [path] - save label to file\n"
 "  d [part]    - delete partition            u        - undo last change\n"
@@ -1695,7 +1696,7 @@ get_offset(struct disklabel *lp, int partno)
 		fputs("Invalid entry\n", stderr);
 	else if (ui < starting_sector || ui >= ending_sector)
 		fprintf(stderr, "The offset must be >= %llu and < %llu, "
-		    "the limits of the OpenBSD portion\n"
+		    "the limits of the FabBSD portion\n"
 		    "of the disk. The 'b' command can change these limits.\n",
 		    starting_sector, ending_sector);
 #ifdef SUN_AAT0
@@ -1748,7 +1749,7 @@ get_size(struct disklabel *lp, int partno)
 		fprintf(stderr, "The size can't be more than "
 		    "%llu sectors, or the partition would\n"
 		    "extend beyond the last sector (%llu) of the "
-		    "OpenBSD portion of\nthe disk. "
+		    "FabBSD portion of\nthe disk. "
 		    "The 'b' command can change this limit.\n",
 		    ending_sector - DL_GETPOFFSET(pp), ending_sector);
 	else if (ui > maxsize)
@@ -2063,7 +2064,7 @@ display_edit(struct disklabel *lp, char **mp, char unit, u_int64_t fr)
 
 	unit = toupper(unit);
 
-	printf("OpenBSD area: ");
+	printf("FabBSD area: ");
 	psize(starting_sector, unit, lp);
 	printf("-");
 	psize(ending_sector, unit, lp);
