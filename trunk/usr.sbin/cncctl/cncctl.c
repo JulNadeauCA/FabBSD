@@ -44,7 +44,7 @@
 #include "pathnames.h"
 
 static const char *showopt_list[] = {
-	"devices", "limits", "info", NULL
+	"devices", "info", "limits", "position", NULL
 };
 static const char *flushopt_list[] = {
 	"info", NULL
@@ -58,13 +58,24 @@ int devfd = -1;
 int quiet = 0;
 
 static void
-printusage(void)
+printusage(const char *optlist[])
 {
 	extern char *__progname;
 
-	fprintf(stderr, "usage: %s [-qCc] [-c timingfile] "
-	                "[-s modifier] [-F modifier] [-p coords]\n",
-			__progname);
+	if (optlist != NULL) {
+		const char **s = &optlist[0];
+		fprintf(stderr, "acceptable modifiers: ");
+		while (*s != NULL) {
+			fputs(*s, stderr);
+			fputc(' ', stderr);
+			s++;
+		}
+		fputc('\n', stderr);
+	} else {
+		fprintf(stderr, "usage: %s [-qCc] [-c timingfile] "
+		                "[-s modifier] [-F modifier] [-p coords]\n",
+				__progname);
+	}
 	exit(1);
 }
 
@@ -125,9 +136,13 @@ calibrate_timings(void)
 int
 main(int argc, char *argv[])
 {
+	struct cnc_vector pos;
+	char pb[128];
 	int ch;
 	int do_cal = 0;
-	int pin = 0, value = 0;
+	
+	if ((devfd = open(device, O_WRONLY)) == -1)
+		err(1, "%s", device);
 
 	while ((ch = getopt(argc, argv, "Cs:F:p:")) != -1) {
 		switch (ch) {
@@ -138,33 +153,55 @@ main(int argc, char *argv[])
 			if ((showopt = lookup_option(optarg, showopt_list))
 			    == NULL) {
 				warnx("Unknown show modifier '%s'", optarg);
-				printusage();
+				printusage(showopt_list);
 			}
 			break;
 		case 'F':
 			if ((flushopt = lookup_option(optarg, flushopt_list))
 			    == NULL) {
 				warnx("Unknown flush modifier '%s'", optarg);
-				printusage();
+				printusage(flushopt_list);
 			}
 			break;
 		case 'q':
 			quiet = 1;
 			break;
+		case 'p':
+			if (!quiet) {
+				if (ioctl(devfd, CNC_GETPOS, &pos) == -1) {
+					errx(1, "CNC_GETPOS");
+				}
+				cnc_vec_print(&pos, pb, sizeof(pb));
+				printf("%s -> %s\n", pb, optarg);
+			}
+			if (cnc_vec_parse(&pos, optarg) == -1)
+				errx(1, "-p: %s", cnc_get_error());
+			if (ioctl(devfd, CNC_SETPOS, &pos) == -1)
+				errx(1, "CNC_SETPOS");
+			break;
 		default:
-			printusage();
+			printusage(NULL);
 		}
 	}
 	if (argc == 0)
-		printusage();
+		printusage(NULL);
 	
-	if ((devfd = open(device, O_WRONLY)) == -1)
-		err(1, "%s", device);
-
 	if (do_cal) {
 		calibrate_timings();
 	} else if (showopt) {
 		switch (*showopt) {
+		case 'p':
+			{
+				struct cnc_vector pos;
+				char pb[128];
+				if (ioctl(devfd, CNC_GETPOS, &pos) == -1) {
+					errx(1, "CNC_GETPOS");
+				}
+				cnc_vec_print(&pos, pb, sizeof(pb));
+				fputs(pb, stdout);
+				fputc('\n', stdout);
+			}
+			break;
 		case 'd':
 			{
 				struct cnc_device_info di;
