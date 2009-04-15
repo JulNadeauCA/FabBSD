@@ -1,0 +1,54 @@
+.\"	$FabBSD$
+.\"	Public domain
+.\"
+.Dd $Mdocdate: April 15 2009 $
+.Dt JOG 1
+.Os
+.Sh NAME
+.Nm jog
+.Nd move machine axes manually
+.Sh SYNOPSIS
+.Nm jog
+.Op Fl s Ar startvel
+.Op Fl f Ar feedrate
+.Op Fl a Ar accellim
+.Op Fl j Ar jerklim
+.Sh DESCRIPTION
+The
+.Nm
+command is places FabBSD's trajectory planner in "jog" mode, such that
+the machine axes (see
+.Xr servo 4 )
+may be controlled using controls such as
+.Xr mpg 4
+handwheels.
+.Nm
+only returns after a software stop (see
+.Xr estop 4 )
+has been raised.
+.Pp
+The options are as follows:
+.Bl -tag -width Ds
+.It Fl s
+Specify an initial, starting velocity in steps/s for the velocity profile.
+Default is 0.
+.It Fl f
+Specify a maximum feed rate in steps/s.
+The trajectory planner may or may not achieve this feed rate (depending on the
+other parameters and travel distance).
+Default is machine-dependent.
+.It Fl a
+Specify the limit on acceleration in steps/s^2.
+Default is machine-dependent.
+.It Fl j
+Specify the limit on jerk in steps/s^3.
+Default is machine-dependent.
+.El
+.Sh SEE ALSO
+.Xr move 1 ,
+.Xr servo 4 ,
+.Xr cncctl 8
+.Sh HISTORY
+The
+.Nm
+command first appeared in FabBSD 1.0.
