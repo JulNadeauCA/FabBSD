@@ -9,7 +9,7 @@ SUBDIR= apply apropos arch asa asn1_compile awk banner basename bc \
 	dc deroff diff diff3 dirname drillsize du encrypt env expand false \
 	file file2c find fmt fold fstat ftp gencat getcap \
 	getconf getent getopt grep gzsig head hexdump id \
-	indent infocmp ipcrm ipcs \
+	indent infocmp ipcrm ipcs jog \
 	join jot kdump ktrace lam last lastcomm less lex lndir \
 	lock logger login logname look lorder m4 make man mesg mg \
 	mkdep mklocale mktemp msgs modstat \
