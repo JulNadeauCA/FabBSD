@@ -57,16 +57,6 @@ Reread the timing calibration data from
 This command is typically invoked by the
 .Pa /etc/rc
 boot script.
-.It Fl p Ar coordinates
-Configure the current machine coordinates (or the kernel's idea of what they
-are supposed to be).
-If
-.Fl p
-is invoked without an argument,
-.Nm
-prints the current coordinates.
-The boot scripts use this command to save and restore the coordinates across
-system reboots.
 .It Fl s Ar modifier
 Show the cnc parameters specified by
 .Ar modifier
@@ -75,10 +65,12 @@ Show the cnc parameters specified by
 .Bl -tag -width xxxxxxxxxxx -compact
 .It Fl s Cm devices
 List the devices registered with the motion control system.
-.It Fl s Cm limits
-Display the kinematic limits in effect.
 .It Fl s Cm info
 Display various statistics and counters.
+.It Fl s Cm limits
+Display the kinematic limits in effect.
+.It Fl s Cm position
+Print the current machine position (in steps).
 .El
 .It Fl F Ar modifier
 Flush the cnc parameters specified by
@@ -90,8 +82,11 @@ Flush the cnc parameters specified by
 Flush all statistics and counters.
 .El
 .It Fl p Ar coords
-Set the current machine position (the kernel's idea of the current position)
-to the specified coordinates.
+Set the current machine position.
+This changes the kernel's idea of the actual machine position, no motion is
+performed.
+The boot scripts use this command to save and restore the coordinates across
+system reboots.
 .El
 .Sh FILES
 .Bl -tag -width "/var/db/cnc.timings" -compact
