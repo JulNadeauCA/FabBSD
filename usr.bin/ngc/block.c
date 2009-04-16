@@ -186,7 +186,11 @@ fastmove(ngc_vec_t *nPos)
 	Vp.Amax = (cnc_vel_t)10;		/* XXX use machine default! */
 	Vp.Jmax = (cnc_vel_t)10;		/* XXX use machine default! */
 
-	return cncmove(&Vp, &kPos);
+	if (!ngc_simulate) {
+		return cncmove(&Vp, &kPos);
+	} else {
+		return (0);
+	}
 }
 
 /* Return to home (through an optional intermediate point). */
@@ -334,11 +338,11 @@ movelinear_feed(struct ngc_block *blk)
 		            nPos.v[i]*ngc_linscale :
 			    nPos.v[i]*ngc_rotscale;
 	}
-	if (cncmove(&Vp, &kPos) == -1) {
-		cnc_set_error("G1: %s", cnc_get_error());
-		return (-1);
+	if (!ngc_simulate) {
+		return cncmove(&Vp, &kPos);
+	} else {
+		return (0);
 	}
-	return (0);
 }
 
 /* Perform circular or helical arc motion at feedrate (G2/G3) */
@@ -358,9 +362,10 @@ movearc_feed(struct ngc_block *blk, struct ngc_word *w)
 		return (-1);
 	}
 	return (0);
-#endif
 	cnc_set_error("unimplemented arcs");
 	return (-1);
+#endif
+	return (0);
 }
 
 /*

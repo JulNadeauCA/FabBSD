@@ -8,6 +8,8 @@ LDADD= -lcnc -lm
 
 .include <bsd.prog.mk>
 
+CFLAGS+=-Wall -Werror
+
 afterinstall:
 	@if [ ! -e "${DESTDIR}/var/db" ]; then \
 		echo "${INSTALL} -d ${DESTDIR}/var/db"; \

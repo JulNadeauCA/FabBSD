@@ -51,6 +51,7 @@ int			 ngc_csys_bases[10] = { 0, 5221, 5241, 5261, 5281,
 ngc_real_t		 ngc_csys_offset[6];
 
 #include "addresses.h"
+#include "modal.h"
 
 ngc_vec_t		ngc_pos;
 ngc_real_t		ngc_linscale = 400.0;	/* mm (XYZ) to steps */
@@ -76,14 +77,50 @@ int			ngc_tlo = 0;
 enum ngc_pathctl_mode	ngc_pathctl = NGC_EXACT_PATH;
 enum ngc_retract_mode	ngc_retract = NGC_RETRACT_PREVIOUS;
 
+/* G-commands in effect */
+int ngc_Gmodes[NGC_G_LAST] = {
+	-1,
+	80,	/* 1. G80: Cancel motion */
+	17,	/* 2. G17: X-Y plane */
+	91,	/* 3. G91: Incremental */
+	-1,	/* 4 */
+	94,	/* 5. G95: Units/minute mode */
+	21,	/* 6. G21: Millimeters input */
+	40,	/* 7. G40: Cutter radius compensation off */
+	49,	/* 8. G49: Tool length offset off */
+	-1,	/* 9 */
+	98,	/* 10. G98: Retract to previous position */
+	-1,	/* 11 */
+	54,	/* 12. G54: Use coordinate system #1 */
+	61	/* 13. G61: Exact path mode */
+};
+
+/* M-commands in effect */
+int ngc_Mmodes[NGC_G_LAST] = {
+	-1,	/* 0 */
+	-1,	/* 1 */
+	-1,	/* 2 */
+	-1,	/* 3 */
+	-1,	/* 4. Stopping */
+	-1,	/* 5. Set I/O point */
+	-1,	/* 6. Tool changer commands */
+	-1,	/* 7. Spindle commands */
+	-1,	/* 8. Coolant commands */
+	-1,	/* 9. Panel switch overrides */
+	-1,	/* 10 */
+	-1,	/* 11 */
+	-1,	/* 12 */
+	-1,	/* 13 */
+};
+
 int	ngc_spinspeed = 0;
 int	ngc_tool = 0;
 int	ngc_csys = 1;
 
 /*
- * Parse a postprocessed RS274/NGC program line (or "block") into a list
- * of ngc_words. Verify that the addresses and values are appropriate
- * to the current interpreter mode.
+ * Parse a RS274/NGC program line (or "block") into a list of ngc_words.
+ * Verify that the addresses and values are appropriate to the current
+ * interpreter mode.
  */
 static int
 readprogline(struct ngc_prog *prog, int nLine, char *pLine)
@@ -254,7 +291,8 @@ ngc_prog_del(struct ngc_prog *prog)
 }
 
 /*
- * Parse the RS274/NGC program(s) contained in the specified file.
+ * Parse the RS274/NGC program(s) contained in the specified file. Programs
+ * are separated by '%' and identified by 'O' or ':' directives.
  */
 static int
 readprogfile(const char *path)
@@ -544,6 +582,7 @@ main(int argc, char *argv[])
 		break;
 	}
 
+	/* Parse input program code into ngc_progs. */
 	argv += optind;
 	argc -= optind;
 	for (i = 0; i < argc; i++) {

@@ -119,43 +119,47 @@ struct ngc_prog {
 };
 TAILQ_HEAD(ngc_progq, ngc_prog);
 
-/* Modal groups for G commands */
-enum ngc_nonmodal_g {
-	NGC_G_NONMODAL = 0		/* Non-modal G commands */
+/* Description of modal command groups */
+struct ngc_modal_group {
+	int n;				/* Standard group number */
+	char word;			/* 'G'|'M' */
+	const char *desc;		/* Description */
+	const int *cmds;		/* Array of G/M command numbers */
 };
-enum ngc_modal_g {
-	NGC_GMOT	= 1,		/* Motion */
-	NGC_GPLANESEL	= 2,		/* Plane selection */
-	NGC_GDIMMODE	= 3,		/* Dimensioning mode */
-	NGC_GFEEDRATE	= 5,		/* Feed rate */
-	NGC_GUNITS	= 6,		/* Unit selection */
-	NGC_GCUTTEROFFS = 7,		/* Cutter radius offset */
-	NGC_GTLO	= 8,		/* Tool length offset */
-	NGC_GCANNEDRET	= 10,		/* Return mode in canned cycles */
-	NGC_GCSYSSEL	= 12,		/* Coordinate system selection */
-	NGC_GPATHCTL	= 13		/* Path control mode */
-};
-
-/* Modal groups for M codes */
-enum ngc_modal_m {
-	NGC_GMSTOP	= 4,		/* Stopping */
-	NGC_GMTOOLCHG	= 6,		/* Tool changer commands */
-	NGC_GMSPINDLE	= 7,		/* Spindle commands */
-	NGC_GMCOOLANT	= 8,		/* Coolant commands */
-	NGC_GMFSOVR	= 9		/* Feed/speed override */
+enum ngc_modal_group_names {
+	NGC_G_GNONMODAL = 0,		/* G: Non-modal commands */
+	NGC_G_GMOTION	= 1,		/* G: Motion */
+	NGC_G_GPLANESEL	= 2,		/* G: Plane selection */
+	NGC_G_GDIMMODE	= 3,		/* G: Dimensioning mode */
+	NGC_G_MSTOP	= 4,		/* M: Stopping */
+	NGC_G_GFEEDRATE	= 5,		/* G: Feed rate */
+	NGC_M_IOPOINT	= 5,		/* M: Set I/O point */
+	NGC_G_GUNITS	= 6,		/* G: Unit selection */
+	NGC_G_MTOOLCHG	= 6,		/* M: Tool changer commands */
+	NGC_G_GCRO	= 7,		/* G: Cutter radius offset */
+	NGC_G_MSPINDLE	= 7,		/* M: Spindle commands */
+	NGC_G_GTLO	= 8,		/* G: Tool length offset */
+	NGC_G_MCOOLANT	= 8,		/* M: Coolant commands */
+	NGC_G_MSWOVER	= 9,		/* M: Panel switch overrides */
+	NGC_G_GCANNEDRET= 10,		/* G: Return mode in canned cycles */
+	NGC_G_GCSYSSEL	= 12,		/* G: Coordinate system selection */
+	NGC_G_GPATHCTL	= 13,		/* G: Path control mode */
+	NGC_G_LAST	= 14,
 };
 
 extern int ngc_verbose;
 extern int ngc_warnings;
 extern int ngc_simulate;
 
-extern struct ngc_progq ngc_progs;		/* Programs */
-extern ngc_real_t       ngc_params[NGC_NPARAMS];/* Parameters */
-extern int              ngc_csys_bases[10];	/* Coord sys param bases */
-extern ngc_real_t       ngc_csys_offset[NGC_NAXES]; /* Coord sys offsets */
-extern const struct ngc_address	ngc_maddr[26]; 	/* For milling mode */
-extern const struct ngc_address	ngc_taddr[26]; 	/* For turning mode */
-extern const struct ngc_address	*ngc_addr; 	/* For current mode */
+extern struct ngc_progq ngc_progs;                   /* Programs in core */
+extern ngc_real_t       ngc_params[NGC_NPARAMS];     /* Parameters */
+extern int              ngc_csys_bases[10];          /* Coord sys param bases */
+extern ngc_real_t       ngc_csys_offset[NGC_NAXES];  /* Coord sys offsets */
+extern const struct ngc_address	ngc_maddr[26];       /* For milling mode */
+extern const struct ngc_address	ngc_taddr[26];       /* For turning mode */
+extern const struct ngc_modal_group ngc_modal_grp[]; /* Modal command groups */
+extern const int                    ngc_modal_grp_count;
+extern const struct ngc_address	*ngc_addr;           /* For current mode */
 
 extern ngc_vec_t		 ngc_pos;	/* Current position */
 extern ngc_real_t		 ngc_linscale;	/* Linear scaling factor */
@@ -178,6 +182,9 @@ extern int			 ngc_tlo;	/* Tool length offset */
 extern enum ngc_pathctl_mode	 ngc_pathctl;	/* Path control mode */
 extern enum ngc_retract_mode	 ngc_retract;	/* Canned cycle retract mode */
 
+extern int ngc_Gmodes[NGC_G_LAST]; /* Effective G commands per modal group */
+extern int ngc_Mmodes[NGC_G_LAST]; /* Effective M commands per modal group */
+
 extern int ngc_spinspeed;	/* Effective spindle speed */
 extern int ngc_tool;		/* Selected tool */
 extern int ngc_csys;		/* Effective coordinate system */
@@ -199,4 +206,5 @@ ngc_vec_t ngc_vec_mult(const ngc_vec_t *, const ngc_vec_t *);
 void      ngc_vec_print(char *, size_t, const ngc_vec_t *)
               __attribute__((__bounded__(__string__,1,2)));
 
-ngc_real_t ngc_units_to_mm(ngc_real_t);
+ngc_real_t                    ngc_units_to_mm(ngc_real_t);
+const struct ngc_modal_group *ngc_lookup_modal_group(char, int);
