@@ -123,3 +123,25 @@ ngc_units_to_mm(ngc_real_t v)
 {
 	return (ngc_units == NGC_INCH) ? (v*25.4) : v;
 }
+
+/* Return the modal group for the given command */
+const struct ngc_modal_group *
+ngc_lookup_modal_group(char word, int n)
+{
+	const int *code;
+	int i;
+
+	for (i = 0; i < ngc_modal_grp_count; i++) {
+		const struct ngc_modal_group *G = &ngc_modal_grp[i];
+
+		if (G->word != word) {
+			continue;
+		}
+		for (code = &G->cmds[0]; *code != -1; code++) {
+			if (*code == n)
+				return (G);
+		}
+	}
+	cnc_set_error("No such code: %c%d", word, n);
+	return (NULL);
+}
