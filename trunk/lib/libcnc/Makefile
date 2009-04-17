@@ -1,5 +1,7 @@
 #	$FabBSD$
 
+.PATH:	${.CURDIR}/man
+
 LIB=	cnc
 
 SRCS=	cnc.c cnc_distance.c cnc_vector.c cnc_velocity.c
