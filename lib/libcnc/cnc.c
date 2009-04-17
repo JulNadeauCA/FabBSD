@@ -32,7 +32,7 @@
 
 #include "pathnames.h"
 
-char *cnc_error_msg;
+char *cnc_error_msg = NULL;
 
 const char *
 cnc_get_error(void)
