@@ -1,8 +1,6 @@
 #	$OpenBSD: Makefile,v 1.10 2008/06/05 21:06:11 kurt Exp $
 
 LIB=rthread
-WANTLINT=
-LINTFLAGS=-z
 LIBCSRCDIR=	${.CURDIR}/../libc
 
 CFLAGS+=-Wall -g -Werror -Wshadow

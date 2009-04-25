@@ -1,3 +1,4 @@
+#	$FabBSD$
 #	$OpenBSD: Makefile,v 1.23 2005/11/24 20:49:20 deraadt Exp $
 
 #
@@ -9,8 +10,6 @@ SRCDIR=		${.CURDIR}
 LIBCSRCDIR=	${.CURDIR}/../libc
 
 LIB=		pthread
-WANTLINT=
-LINTFLAGS=	-z
 CFLAGS+=	-DPTHREAD_KERNEL -D_POSIX_THREADS -D_THREAD_SAFE -Wall
 CFLAGS+=	-Wpointer-arith -Wwrite-strings -Wstrict-prototypes
 CFLAGS+=	-Wmissing-prototypes -Wsign-compare # -Werror

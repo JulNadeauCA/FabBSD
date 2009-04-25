@@ -1,7 +1,7 @@
+# $FabBSD$
 # $OpenBSD: Makefile,v 1.21 2005/11/24 20:49:23 deraadt Exp $
 
 LIB=	ssl
-WANTLINT=
 
 SSLEAYDIST= src
 
