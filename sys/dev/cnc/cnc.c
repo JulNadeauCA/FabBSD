@@ -336,7 +336,7 @@ cncioctl(dev_t dev, u_long cmd, caddr_t data, int flag, struct proc *p)
 		pos = (cnc_vec_t *)data;
 		for (i = 0; i < CNC_NAXES; i++) {
 			printf("cnc: SETPOS axis#%d: %lu -> %lu\n", i,
-			    cnc_pos.v[i], pos->v[i]);
+			    cnc_pos.v[i], (u_long)pos->v[i]);
 			cnc_pos.v[i] = pos->v[i];
 		}
 		return (0);
