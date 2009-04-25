@@ -1,3 +1,4 @@
+.\"	$FabBSD$
 .\"	$OpenBSD: resolv.conf.5,v 1.29 2007/05/31 19:19:58 jmc Exp $
 .\"	$NetBSD: resolv.conf.5,v 1.7 1996/03/06 18:22:16 scottr Exp $
 .\"
@@ -56,8 +57,7 @@ The file is designed to be human readable and contains a list of
 keywords with values that provide various types of resolver information.
 A resolv.conf file is not required for some setups, so this file is optional.
 It can be created manually, and is also created as part of the
-.Ox
-install process
+FabBSD install process
 if use of the DHCP protocol is specified for any interface.
 .Pp
 If
@@ -224,8 +224,7 @@ lines are able to handle EDNS0 extension.
 Enables support for IPv6-only applications, by setting RES_USE_INET6 in
 _res.options (see
 .Xr resolver 3 ) .
-Use of this option is discouraged, and meaningless on
-.Ox .
+Use of this option is discouraged, and meaningless on FabBSD.
 .It Sy insecure1
 Do not require IP source address on the reply packet to be equal to the
 server's address.

@@ -1,3 +1,4 @@
+.\"	$FabBSD$
 .\"	$OpenBSD: elf.5,v 1.15 2007/05/31 19:19:58 jmc Exp $
 .\"Copyright (c) 1999 Jeroen Ruigrok van der Werven
 .\"All rights reserved.
@@ -1007,9 +1008,8 @@ format described below.
 This section is of type
 .Sy SHT_NOTE .
 No attribute types are used.
-.Ox
-native executables usually contain a
-.Sy .note.openbsd.ident
+FabBSD native executables usually contain a
+.Sy .note.fabbsd.ident
 section to identify themselves, for the kernel to bypass any compatibility
 ELF binary emulation tests when loading the file.
 .It .plt

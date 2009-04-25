@@ -142,9 +142,8 @@ checksummed.
 Invoking
 .Ar checksum
 with REFETCH=true
-will try to fetch a version with the correct checksum from the
-.Ox
-main archive site in the case of a checksum mismatch.
+will try to fetch a version with the correct checksum from the FabBSD main
+archive site in the case of a checksum mismatch.
 .Ev NO_CHECKSUM
 can be used to avoid all checksumming steps.
 .It Ar clean
@@ -378,9 +377,7 @@ If ${PERMIT_PACKAGE_CDROM} is set to
 copies built packages into ${PACKAGE_REPOSITORY}/${MACHINE_ARCH}/cdrom}, using
 hard links if possible.
 .It Ar patch
-Apply distribution and
-.Ox
-specific patches.
+Apply distribution and FabBSD specific patches.
 Because of historical accident,
 .Ar patch
 does not follow the exact same scheme other standard targets do.
@@ -400,9 +397,7 @@ directly.
 So, if the
 .Ar do-patch
 target is overridden, it should still begin by calling
-make distpatch, before applying
-.Ox
-specific patches.
+make distpatch, before applying FabBSD specific patches.
 Accordingly, the exact sequence of hooks is:
 .Ar pre-patch ,
 .Ar do-distpatch ,
@@ -658,9 +653,7 @@ Where to invoke autoconf if ${CONFIGURE_STYLE} includes autoconf.
 Defaults to ${WRKSRC}.
 .\" AUTOCONF_DIR should probably be a list, and be renamed to AUTOCONF_DIRS ?
 .It Ev AUTOCONF_VERSION
-Starting with
-.Ox 3.3 ,
-several versions of autoconf may coexist peacefully.
+Several versions of autoconf may coexist peacefully.
 Setting
 .Ev AUTOCONF_VERSION
 along with
@@ -834,9 +827,7 @@ Same as COMMENT but used for a sub-, flavored package.
 .It Ev COMES_WITH
 The first release where the port was made part of the standard
 distribution.
-If the current
-.Ox
-version is >= this version then a notice
+If the current FabBSD version is >= this version then a notice
 will be displayed instead of the port being built.
 .It Ev CONFIGURE_ARGS
 Arguments to pass to configure script.
@@ -1362,12 +1353,10 @@ List of architectures on which this port builds.
 Can hold both processor-specific information (e.g., m68k), and more
 specific model information (e.g., hp300).
 .It Ev OPSYS
-Always
-.Ox .
+Always FabBSD.
 Read-only.
 .It Ev OPSYS_VER
-Revision number of
-.Ox .
+Revision number of FabBSD.
 Read-only.
 .It Ev PACKAGE_REPOSITORY
 User settings.
@@ -1646,8 +1635,7 @@ that are then used for substitution by
 The porter is responsible for making sure the port uses those version numbers
 when shared libraries are built.
 .Pp
-The intent is that the
-.Ox
+The intent is that the FabBSD
 ports system must have control over shared library versions because of global
 changes that may require bumping the major version of every shared library in
 the system, or simply because the third party programmers do not understand
@@ -1947,15 +1935,6 @@ instead.
 See
 .Xr mirroring-ports 7
 for more efficient and flexible ways to build mirrors.
-.It Ar obj
-Starting with
-.Ox 3.3 ,
-using
-.Ev WRKOBJDIR
-no longer creates a symlink between the current directory and
-a subdirectory of ${WRKOBJDIR}, so
-.Ar obj
-is no longer applicable.
 .It Ar print-depends
 Use
 .Ar print-build-depends
@@ -1996,8 +1975,7 @@ Some magic has been put in to allow for a seamless transition.
 From
 .Nx .
 This is DESCR.
-.Ox
-does not give a specific name to the generated file.
+FabBSD does not give a specific name to the generated file.
 It is not recommended to try to access it directly.
 .It Ev EXTRACT_AFTER_ARGS
 Was used to cobble together the normal extraction command, as
@@ -2052,8 +2030,7 @@ Derived directly from
 From
 .Fx .
 Used to organize a collection of ports that share most files.
-.Ox
-uses a single port with flavors or multi-packages to produce
+FabBSD uses a single port with flavors or multi-packages to produce
 package variations instead.
 .It Ev MASTER_SITE_SUBDIR
 Contents were used to replace
@@ -2101,17 +2078,6 @@ Set EXTRACT_ONLY= instead.
 Use
 .Ev CONFIGURE_STYLE
 instead.
-.It Ev NO_MTREE
-Starting with
-.Ox 2.7 ,
-the operating system installation script runs the /usr/local specification
-globally, instead of embedding it in each package.
-So packages no longer record an
-.Xr mtree 8
-specification.
-Use an explicit
-.Sq @exec
-command if needed.
 .It Ev NO_PACKAGE
 All ports should generate a package, preferably before install.
 .It Ev NO_PATCH
@@ -2128,16 +2094,6 @@ Use CLEANDEPENDS instead.
 .Fx
 ships with compressed man pages, and uses this variable to control
 that behavior.
-.It Ev OBJMACHINE
-Starting with
-.Ox 3.3 ,
-setting
-.Ev WRKOBJDIR
-creates the whole
-.Ev WRKDIR
-hierarchy under ${WRKOBJDIR}, so
-.Ev OBJMACHINE
-is no longer useful.
 .It Ev PACKAGES
 Base location for packages built, renamed
 .Ev PKGREPOSITORYBASE .
@@ -2180,8 +2136,7 @@ See
 From
 .Nx .
 This is PLIST.
-.Ox
-does not give a specific name to the generated file.
+FabBSD does not give a specific name to the generated file.
 It is not recommended to try to access them directly.
 .It Ev PKGNAME
 Used to refer to the full package name, has been superseded by
@@ -2199,14 +2154,12 @@ From
 and
 .Fx .
 Use SUBST_VARS instead.
-.Ox
-does not allow general substitutions of the form VAR=value, but uses
+FabBSD does not allow general substitutions of the form VAR=value, but uses
 only a list of variables instead.
 Most package files gets transformed, instead of only the packing list.
 .It Ev RESTRICTED
 Port has cryptographic issues.
-.Ox
-focuses on
+FabBSD focuses on
 .Ev PERMIT_PACKAGE_{FTP,CDROM}
 instead.
 .It Ev SED_PLIST
@@ -2290,19 +2243,15 @@ whereas
 .Pa /usr/share/mk/bsd.port.mk
 is just a stub.
 .It Pa {scripts,files,patches}.${OPSYS}
-The
-.Ox
-ports tree focuses on robustness, not on being portable to other operating
-systems.
+The FabBSD ports tree focuses on robustness, not on being portable to other
+operating systems.
 In any case, portability should not need to depend on operating
 system dependent patches.
 .It Pa /usr/local/etc
 Used by
 .Fx
 to marshall system configuration files.
-All
-.Ox
-system configuration files are located in
+All FabBSD system configuration files are located in
 .Pa /etc ,
 or in a subdirectory of
 .Pa /etc .
@@ -2362,13 +2311,8 @@ ${FAKE_FLAGS} is used to set variables on
 command line, which will override the port Makefile contents.
 Thus, a port that mentions DESTDIR= does not need any patch to work with fake.
 .Sh FLAVORS AND MULTI_PACKAGES
-Starting with
-.Ox 2.7 ,
-each port can generate distinct packages through two orthogonal mechanisms:
+Each port can generate distinct packages through two orthogonal mechanisms:
 FLAVORS and MULTI_PACKAGES.
-.Pp
-The current MULTI_PACKAGES mechanism was introduced after
-.Ox 4.0 .
 .Pp
 If a port can be compiled with several options, set FLAVORS to the list of
 possible options in the Makefile.
@@ -2510,9 +2454,7 @@ is the same as invoking
 subupdate
 for all subpackages.
 .Sh THE GENERATION OF PACKAGE INFORMATION
-Starting after
-.Ox 4.1
-all package information is processed directly by
+All package information is processed directly by
 .Xr pkg_create 1
 from templates in ${PKG_DIR}.
 .Pp

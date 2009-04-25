@@ -1,3 +1,4 @@
+.\" $FabBSD$
 .\" $OpenBSD: packages-specs.7,v 1.10 2008/07/15 11:10:51 espie Exp $
 .\"
 .\" Copyright (c) 2001 Marc Espie
@@ -56,9 +57,8 @@ or to the end of the package name, if no flavor modifier is present.
 All packages must have a version number.
 Normally, the version number directly matches the original software
 distribution version number, or release date.
-In case there are substantial changes in the
-.Ox
-package, a patch level marker should be appended, e.g.,
+In case there are substantial changes in the FabBSD package, a patch level
+marker should be appended, e.g.,
 .Sq p0 ,
 .Sq p1 ...
 For example, assuming that the screen package for release 2.8 was
@@ -67,9 +67,7 @@ named
 and that an important security patch led to a newer package,
 the new package would be called
 .Qq screen-2.9.8p0 .
-Obviously, these specific markers are reserved for
-.Ox
-purposes.
+Obviously, these specific markers are reserved for FabBSD purposes.
 .Pp
 In some rare cases, version numbering changes completely upstream.
 A version style marker, of the form
