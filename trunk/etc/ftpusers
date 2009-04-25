@@ -1,3 +1,4 @@
+#	$FabBSD$
 #	$OpenBSD: ftpusers,v 1.35 2008/06/26 16:17:22 otto Exp $
 #
 # list of users disallowed any ftp access.

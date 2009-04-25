@@ -1,4 +1,5 @@
 #!/bin/sh -
+#	$FabBSD$
 #	$OpenBSD: monthly,v 1.7 2006/10/26 12:20:55 ajacoutot Exp $
 umask 022
 

@@ -479,11 +479,9 @@ ifconfig -g carp -carpdemote 128
 echo '.'
 
 if [ -e "/var/db/cnc.timings" ]; then
-	echo "restoring existing cnc timings."
 	cncctl -C
 else
-	echo "WARNING: CNC timings are not calibrated. You will need to"
-	echo "run cncctl -C at least once; see cncctl(8)."
+	echo "WARNING: CNC timings were not calibrated yet; see cncctl(8)."
 fi
 
 date
