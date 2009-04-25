@@ -25,7 +25,7 @@ ASM=	accept.o access.o adjfreq.o adjtime.o bind.o chdir.o chflags.o \
 	chmod.o \
 	chown.o chroot.o clock_gettime.o clock_settime.o clock_getres.o \
 	close.o closefrom.o \
-	cncmove.o cncjog.o cncjogstep.o \
+	cncmove.o cncjog.o cncjogstep.o cncpos.o \
 	connect.o dup.o dup2.o execve.o fchdir.o \
 	fchflags.o fchmod.o fchown.o fcntl.o fhopen.o fhstat.o fhstatfs.o \
 	flock.o fpathconf.o fstat.o \
@@ -176,7 +176,7 @@ ${PSEUDO_NOERR}: ${LIBCSRCDIR}/arch/${MACHINE_ARCH}/SYS.h /usr/include/sys/sysca
 MAN+=	accept.2 access.2 adjfreq.2 adjtime.2 bind.2 brk.2 chdir.2 \
 	chflags.2 \
 	chmod.2 chown.2 chroot.2 clock_gettime.2 close.2 closefrom.2 \
-	cncmove.2 \
+	cncmove.2 cncpos.2 \
 	connect.2 dup.2 execve.2 _exit.2 fcntl.2 fhopen.2 \
 	flock.2 fork.2 fsync.2 getdirentries.2 \
 	getfh.2 getfsstat.2 getgid.2 getgroups.2 getitimer.2 getlogin.2 \
