@@ -1,5 +1,6 @@
 #!/bin/sh -
 #
+#	$FabBSD$
 #	$OpenBSD: security,v 1.81 2008/07/23 16:05:47 sthen Exp $
 #	from: @(#)security	8.1 (Berkeley) 6/9/93
 #
@@ -428,15 +429,15 @@ if [ -s $OUTPUT ] ; then
 fi
 
 # Mailboxes should be owned by user and unreadable.
-ls -l /var/mail | sed 1d | \
-awk '$3 != $9 \
-	{ print "user " $9 " mailbox is owned by " $3 }
-     $1 != "-rw-------" \
-	{ print "user " $9 " mailbox is " $1 ", group " $4 }' > $OUTPUT
-if [ -s $OUTPUT ] ; then
-	echo "\nChecking mailbox ownership."
-	cat $OUTPUT
-fi
+#ls -l /var/mail | sed 1d | \
+#awk '$3 != $9 \
+#	{ print "user " $9 " mailbox is owned by " $3 }
+#     $1 != "-rw-------" \
+#	{ print "user " $9 " mailbox is " $1 ", group " $4 }' > $OUTPUT
+#if [ -s $OUTPUT ] ; then
+#	echo "\nChecking mailbox ownership."
+#	cat $OUTPUT
+#fi
 
 # File systems should not be globally exported.
 if [ -s /etc/exports ] ; then

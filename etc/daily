@@ -1,5 +1,6 @@
 #!/bin/sh -
 #
+#	$FabBSD$
 #	$OpenBSD: daily,v 1.56 2006/10/26 12:20:55 ajacoutot Exp $
 #	From: @(#)daily	8.2 (Berkeley) 1/25/94
 #
@@ -91,8 +92,6 @@ fi
 		fsck -y /dev/r$rootbak
 	}
 }
-
-# Rotation of mail log now handled automatically by cron and 'newsyslog'
 
 echo ""
 echo "Checking subsystem status:"

@@ -1,5 +1,6 @@
 #
-#	$OpenBSD: rpc,v 1.4 2007/04/26 20:28:38 espie Exp $
+# $FabBSD$
+# $OpenBSD: rpc,v 1.4 2007/04/26 20:28:38 espie Exp $
 # from: rpc 88/08/01 4.0 RPCSRC; from 1.12   88/02/07 SMI
 #
 portmapper	100000	portmap sunrpc

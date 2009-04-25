@@ -1,3 +1,4 @@
+# $FabBSD$
 # $OpenBSD: login.conf.in,v 1.2 2007/01/09 10:20:12 millert Exp $
 
 #
@@ -7,18 +8,12 @@
 #
 # Standard authentication styles:
 #
-# krb5-or-pwd	First try Kerberos V password, then local password file
 # passwd	Use only the local password file
-# krb5		Use only the Kerberos V password
 # chpass	Do not authenticate, but change users password (change
 #		the YP password if the user has one, else change the
 #		local password)
 # lchpass	Do not login; change user's local password instead
-# radius	Use radius authentication
 # skey		Use S/Key authentication
-# activ		ActivCard X9.9 token authentication
-# crypto	CRYPTOCard X9.9 token authentication
-# snk		Digital Pathways SecureNet Key authentication
 # token		Generic X9.9 token authentication
 #
 
@@ -38,7 +33,7 @@ auth-ftp-defaults:auth-ftp=passwd:
 # class.
 #
 default:\
-	:path=/usr/bin /bin /usr/sbin /sbin /usr/X11R6/bin /usr/local/bin:\
+	:path=/usr/bin /bin /usr/sbin /sbin /usr/local/bin:\
 	:umask=022:\
 	:datasize-max=@DEF_DATASIZE_MAX@:\
 	:datasize-cur=@DEF_DATASIZE_CUR@:\
@@ -77,10 +72,3 @@ staff:\
 	:requirehome@:\
 	:tc=default:
 
-#
-# Authpf accounts get a special motd and shell
-#
-authpf:\
-	:welcome=/etc/motd.authpf:\
-	:shell=/usr/sbin/authpf:\
-	:tc=default:
