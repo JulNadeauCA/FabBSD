@@ -1,5 +1,5 @@
+#	$FabBSD$
 #	$OpenBSD: Makefile,v 1.9 2005/11/24 20:49:20 deraadt Exp $
-
 
 RPCSRCS=	bootparam_prot.x klm_prot.x mount.x nfs_prot.x \
 		nlm_prot.x rex.x rnusers.x rusers.x rquota.x rstat.x rwall.x \
@@ -9,7 +9,6 @@ HDRS=           ${RPCSRCS:R:S/$/.h/g}
 CLEANFILES+=	${SRCS} ${HDRS}
 
 LIB=		rpcsvc
-WANTLINT=
 NOMAN=
 
 all:		${HDRS}

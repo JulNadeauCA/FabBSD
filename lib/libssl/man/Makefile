@@ -1,8 +1,9 @@
+# $FabBSD$
 # $OpenBSD: Makefile,v 1.13 2008/07/28 23:44:10 jsg Exp $
 
 .include <bsd.own.mk>		# for NOMAN
 
-POD2MAN=pod2man --official --release="OpenBSD ${OSREV}" --center=OpenSSL
+POD2MAN=pod2man --official --release="FabBSD ${OSREV}" --center=OpenSSL
 
 .ifndef NOMAN
 MANALL=	\

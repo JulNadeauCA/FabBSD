@@ -1,7 +1,7 @@
+#	$FabBSD$
 #	$OpenBSD: Makefile,v 1.28 2008/05/02 09:18:26 jmc Exp $
 
 LIB=	event
-WANTLINT=
 SRCS=	buffer.c evbuffer.c evdns.c event.c event_tagging.c kqueue.c \
 	log.c poll.c select.c signal.c
 HDRS=	event.h evdns.h

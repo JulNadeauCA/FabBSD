@@ -1,7 +1,7 @@
+#	$FabBSD$
 #	$OpenBSD: Makefile,v 1.14 2005/11/24 20:49:23 deraadt Exp $
 
 LIB=	z
-WANTLINT=
 HDRS=	zconf.h zlib.h
 SRCS=	adler32.c compress.c crc32.c deflate.c gzio.c infback.c \
 	inffast.c inflate.c inftrees.c trees.c uncompr.c zutil.c
