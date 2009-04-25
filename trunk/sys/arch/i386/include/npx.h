@@ -1,3 +1,4 @@
+/*	$FabBSD$	*/
 /*	$OpenBSD: npx.h,v 1.10 2006/10/01 18:07:56 kettenis Exp $	*/
 /*	$NetBSD: npx.h,v 1.11 1994/10/27 04:16:11 cgd Exp $	*/
 
@@ -137,6 +138,7 @@ struct	emcsts {
 #define	__iBCS_NPXCW__		0x262
 #define __BDE_NPXCW__		0x1272		/* FreeBSD */
 #define	__OpenBSD_NPXCW__	0x37f
+#define	__FabBSD_NPXCW__	0x37f
 
 /*
  * The default MXCSR value at reset is 0x1f80, IA-32 Instruction
@@ -157,7 +159,7 @@ struct	emcsts {
  * trapping denormals.
  */
 
-#define	__INITIAL_NPXCW__	__OpenBSD_NPXCW__
+#define	__INITIAL_NPXCW__	__FabBSD_NPXCW__
 
 void    process_xmm_to_s87(const struct savexmm *, struct save87 *);
 void    process_s87_to_xmm(const struct save87 *, struct savexmm *);
