@@ -1,3 +1,4 @@
+.\"	$FabBSD$
 .\"	$OpenBSD: link.5,v 1.15 2007/05/31 19:19:58 jmc Exp $
 .\"	$NetBSD: link.5,v 1.5 1996/01/09 00:14:32 pk Exp $
 .\"
@@ -136,8 +137,7 @@ implementation.
 The current version numbers understood by ld and
 .Xr ld.so 1
 are LD_VERSION_SUN(3), which is used by the SunOS 4.x releases,
-and LD_VERSION_BSD(8), which is currently in use by
-.Ox .
+and LD_VERSION_BSD(8), which is currently in use by FabBSD.
 .It Fa d_un
 Refers to a
 .Em d_version
@@ -515,9 +515,7 @@ was loaded by
 On SunOS systems, this field contains an open file descriptor to
 .Pa /dev/zero
 used to get demand paged zeroed pages.
-On
-.Ox
-systems it contains \-1.
+On FabBSD systems it contains \-1.
 .It Fa crt_ldfd
 Contains an open file descriptor that was used by
 .Em crt0

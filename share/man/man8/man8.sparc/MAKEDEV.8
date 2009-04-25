@@ -23,7 +23,7 @@
 .\" ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 .\" OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 .\"
-.Dd April  1, 2009
+.Dd April  6, 2009
 .Dt MAKEDEV 8 sparc
 .Os
 .Sh NAME
@@ -106,6 +106,16 @@ Xylogic 450/451 disks, see
 .Xr xy 4 .
 .El
 .Pp
+.Sy Tapes
+.Bl -tag -width tenletters -compact
+.It Ar ch*
+SCSI media changers, see
+.Xr ch 4 .
+.It Ar st*
+SCSI tape drives, see
+.Xr st 4 .
+.El
+.Pp
 .Sy Terminal ports
 .Bl -tag -width tenletters -compact
 .It Ar cua[a-z]*
@@ -139,6 +149,20 @@ Set of 62 slave pseudo terminals, see
 .Xr tty 4 .
 .El
 .Pp
+.Sy Printers
+.Bl -tag -width tenletters -compact
+.It Ar bpp*
+Parallel port, see
+.Xr bpp 4 .
+.It Ar bppmag[mno]
+Magma parallel port, see
+.Xr magma 4 .
+.It Ar bpp[jkl]
+.Dq spif
+parallel port, see
+.Xr spif 4 .
+.El
+.Pp
 .Sy Console ports
 .Bl -tag -width tenletters -compact
 .It Ar wscons
@@ -150,6 +174,16 @@ wscons display devices, see
 .It Ar wskbd*
 wscons keyboards, see
 .Xr wskbd 4 .
+.It Ar wsmux
+wscons keyboard/mouse mux devices, see
+.Xr wsmux 4 .
+.El
+.Pp
+.Sy Pointing devices
+.Bl -tag -width tenletters -compact
+.It Ar wsmouse*
+wscons mice, see
+.Xr wsmouse 4 .
 .El
 .Pp
 .Sy Special purpose devices

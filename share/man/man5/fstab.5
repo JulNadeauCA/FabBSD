@@ -1,3 +1,4 @@
+.\"	$FabBSD$
 .\"	$OpenBSD: fstab.5,v 1.41 2007/09/08 09:03:43 henning Exp $
 .\"	$NetBSD: fstab.5,v 1.5.2.1 1995/11/16 20:11:11 pk Exp $
 .\"
@@ -149,30 +150,6 @@ or
 .Ic mount -a ,
 or at system boot time).
 .Pp
-If the options
-.Dq userquota
-and/or
-.Dq groupquota
-are specified, the filesystem is automatically processed by the
-.Xr quotacheck 8
-command, and user and/or group disk quotas are enabled with
-.Xr quotaon 8 .
-By default, filesystem quotas are maintained in files named
-.Pa quota.user
-and
-.Pa quota.group
-which are located at the root of the associated filesystem.
-These defaults may be overridden by putting an equal sign
-and an alternative absolute pathname following the quota option.
-Thus, if the user quota file for
-.Pa /tmp
-is stored in
-.Pa /var/quotas/tmp.user ,
-this location can be specified as:
-.Bd -literal -offset indent
-userquota=/var/quotas/tmp.user
-.Ed
-.Pp
 The type of the mount is extracted from the first parameter of the
 .Fa fs_mntops
 field and stored separately in the
@@ -282,12 +259,9 @@ swap /tmp mfs rw,nodev,nosuid,-s=153600 0 0
 server:/export/ports /usr/ports nfs rw,nodev,nosuid,soft,intr 0 0
 .Ed
 .Sh SEE ALSO
-.Xr quota 1 ,
 .Xr getfsent 3 ,
 .Xr fsck 8 ,
-.Xr mount 8 ,
-.Xr quotacheck 8 ,
-.Xr quotaon 8
+.Xr mount 8
 .Sh HISTORY
 The
 .Nm

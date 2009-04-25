@@ -23,7 +23,7 @@
 .\" ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 .\" OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 .\"
-.Dd April  1, 2009
+.Dd April  6, 2009
 .Dt MAKEDEV 8 i386
 .Os
 .Sh NAME
@@ -104,6 +104,16 @@ disk drives (ST506, IDE, ESDI, RLL, ...), see
 .Xr wd 4 .
 .El
 .Pp
+.Sy Tapes
+.Bl -tag -width tenletters -compact
+.It Ar ch*
+SCSI media changers, see
+.Xr ch 4 .
+.It Ar st*
+SCSI tape drives, see
+.Xr st 4 .
+.El
+.Pp
 .Sy Terminal ports
 .Bl -tag -width tenletters -compact
 .It Ar tty[0-7][0-9a-f]
@@ -138,6 +148,26 @@ Minimal wscons devices, see
 .It Ar wskbd*
 wscons keyboards, see
 .Xr wskbd 4 .
+.It Ar wsmux
+wscons keyboard/mouse mux devices, see
+.Xr wsmux 4 .
+.El
+.Pp
+.Sy Pointing devices
+.Bl -tag -width tenletters -compact
+.It Ar wsmouse*
+wscons mice, see
+.Xr wsmouse 4 .
+.El
+.Pp
+.Sy Printers
+.Bl -tag -width tenletters -compact
+.It Ar lpa*
+Polled printer port, see
+.Xr lpt 4 .
+.It Ar lpt*
+IEEE 1284 centronics printer, see
+.Xr lpt 4 .
 .El
 .Pp
 .Sy USB devices
@@ -154,6 +184,9 @@ Generic USB devices, see
 .It Ar uhid*
 Generic HID devices, see
 .Xr uhid 4 .
+.It Ar ulpt*
+Printer devices, see
+.Xr ulpt 4 .
 .It Ar usb*
 Bus control devices used by usbd for attach/detach, see
 .Xr usb 4 .

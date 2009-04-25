@@ -92,11 +92,7 @@ control facilities.
 .Pp
 .It libcompat Pq Fl lcompat
 Functions which are obsolete but are available for compatibility with
-.Bx 4.3 .
-In particular, a number of system call interfaces provided in previous
-releases of
-.Bx
-have been included for source code compatibility.
+previous FabBSD releases.
 Use of these routines should, for the most part, be avoided.
 The manual page entry for each compatibility routine
 indicates the proper interface to use.
@@ -194,9 +190,6 @@ Collection of subroutines missing in other operating systems,
 as well as the C++ demangler and other functions used by
 the GNU toolchain.
 .Pp
-.It libasn1 Pq Fl lasn1
-.It libcom_err Pq Fl lcom_err
-.It libhdb Pq Fl lhdb
 .It libkvm Pq Fl lkvm
 Kernel memory interface library.
 Provides a uniform interface for accessing kernel virtual memory images,
@@ -522,11 +515,9 @@ See
 for more details.
 .Sh FILES
 .Bl -tag -width /usr/lib/libotermcap.a -compact
-.It Pa /usr/lib/libasn1.a
 .It Pa /usr/lib/libbfd.a
 .It Pa /usr/lib/libc.a
 .It Pa /usr/lib/libcnc.a
-.It Pa /usr/lib/libcom_err.a
 .It Pa /usr/lib/libcompat.a
 .It Pa /usr/lib/libcrypto.a
 .It Pa /usr/lib/libcurses.a
@@ -539,7 +530,6 @@ for more details.
 .It Pa /usr/lib/libfrtbegin.a
 .It Pa /usr/lib/libg2c.a
 .It Pa /usr/lib/gcc-lib/${ARCH}-unknown-fabbsd${OSREV}/${GCCREV}/fpic/libgcc.a
-.It Pa /usr/lib/libhdb.a
 .It Pa /usr/lib/libiberty.a
 .It Pa /usr/lib/libkvm.a
 .It Pa /usr/lib/libl.a
