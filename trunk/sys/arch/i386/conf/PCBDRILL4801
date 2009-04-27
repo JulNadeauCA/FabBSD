@@ -1,0 +1,167 @@
+#	$FabBSD$
+#	$OpenBSD: GENERIC,v 1.633 2008/08/02 16:09:29 oga Exp $
+#
+# PCBDRILL4801: Soekris net4801 controlling a PCB drilling machine.
+#
+
+machine		i386
+include		"../../../conf/GENERIC"
+maxusers	80			# estimated number of users
+
+option		USER_PCICONF		# User-space PCI configuration
+option		KVM86			# Kernel Virtual 8086 emulation
+option		USER_LDT		# User-settable LDT; see i386_set_ldt(2)
+
+# or use		root on nfs swap on nfs
+config		bsd	swap generic
+
+mainbus0 at root
+
+cpu0	at mainbus?
+bios0	at mainbus0
+apm0	at bios0 flags 0x0000	# flags 0x0101 to force protocol version 1.1
+pcibios0 at bios0 flags 0x0000	# use 0x30 for a total verbose
+ipmi0	at mainbus? disable	# IPMI
+esm0	at mainbus? 		# Dell Embedded Server Management
+amdmsr0	at mainbus?		# MSR access for AMD Geode LX CPUs with GP
+
+option		PCIVERBOSE
+option		EISAVERBOSE
+option		USBVERBOSE
+
+isa0	at mainbus0
+isa0	at pcib?
+isa0	at amdpcib?
+isa0	at ichpcib?
+isa0	at piixpcib?
+isa0	at gscpcib?
+isa0	at glxpcib?
+pci*	at mainbus0
+
+pchb*	at pci?			# PCI-Host bridges
+ppb*	at pci?			# PCI-PCI bridges
+pci*	at ppb?
+pci*	at pchb?
+pcib*	at pci?			# PCI-ISA bridge
+amdpcib* at pci?		# AMD 8111 LPC bridge 
+ichpcib* at pci?		# Intel ICHx/ICHx-M LPC bridges
+piixpcib* at pci?		# Intel PIIX4 PCI-ISA bridge
+gscpcib* at pci?		# NS Geode SC1100 PCI-ISA bridge
+gpio0	at gscpcib?
+glxpcib* at pci?		# AMD CS5536 PCI-ISA bridge
+gpio*	at glxpcib?
+
+# power management and other environmental stuff
+elansc*	at pci?			# AMD Elan SC520 System Controller
+gpio*	at elansc?
+geodesc* at pci?		# Geode SC1100/SCx200 IAOC
+#gscpm*	at pci?			# NS Geode SC1100 SMI/ACPI module
+#ichwdt* at pci?		# Intel 6300ESB ICH watchdog timer
+
+# National Semiconductor LM7[89] and compatible hardware monitors
+nsclpcsio* at isa? port 0x2e		# NS PC87366 LPC Super I/O
+nsclpcsio* at isa? port 0x4e
+gpio1	at nsclpcsio?
+#gscsio*	at isa?	port 0x2e		# NS Geode SC1100 Super I/O
+#gscsio*	at isa?	port 0x15c
+
+# USB Controllers
+ehci*	at pci?				# Enhanced Host Controller
+ohci*	at pci?				# Open Host Controller
+
+# USB bus support
+usb*	at ehci?
+usb*	at ohci?
+
+# USB devices
+uhub*	at usb?			# USB Hubs
+uhub*	at uhub?		# USB Hubs
+umass*	at uhub?		# USB Mass Storage devices
+scsibus* at umass?
+atapiscsi* at umass?
+ugen*	at uhub?		# USB Generic driver
+uow*	at uhub?		# Maxim/Dallas DS2490 1-Wire adapter
+onewire* at uow?
+
+npx0	at isa? port 0xf0 irq 13	# math coprocessor
+isadma0	at isa?
+
+option	WSDISPLAY_COMPAT_USL		# VT handling
+option	WSDISPLAY_COMPAT_RAWKBD		# provide raw scancodes; needed for X11
+option	WSDISPLAY_DEFAULTSCREENS=6	# initial number of text consoles
+option	WSDISPLAY_COMPAT_PCVT		# emulate some ioctls; needed for X11
+
+pcppi0		at isa?
+
+com0	at isa? port 0x3f8 irq 4	# standard PC serial ports
+#com1	at isa? port 0x2f8 irq 3	# (reserve for cnclcd)
+#com2	at isa? port 0x3e8 irq 5
+
+sd*	at scsibus?		# SCSI disk drives
+cd*	at scsibus?		# SCSI CD-ROM drives
+#uk*	at scsibus?		# unknown SCSI
+
+# IDE controllers
+pciide* at pci? flags 0x0000
+
+# IDE hard drives
+wd*	at pciide? flags 0x0000
+
+# ATAPI<->SCSI
+atapiscsi* at pciide?
+scsibus* at atapiscsi?
+
+# Networking devices
+vr*	at pci?				# VIA Rhine ethernet
+sis*	at pci?				# SiS 900/7016 ethernet
+
+# Media Independent Interface (mii) drivers
+nsphy*	at mii?				# NS and compatible PHYs
+icsphy*	at mii?
+nsphyter* at mii?			# NS and compatible PHYs
+rlphy*	at mii?
+amphy*	at mii?
+sqphy*	at mii?
+ukphy*	at mii?				# "unknown" PHYs
+
+spkr0	at pcppi?		# PC speaker
+
+# crypto support
+#hifn*	at pci?			# Hi/fn 7751 crypto card
+
+# I2O
+#iop*	at pci?			# I2O processor
+#ioprbs*	at iop?			# I2O arrays
+#scsibus* at ioprbs?
+#iopsp*	at iop?			# I2O SCSI pass-through
+#scsibus* at iopsp?
+
+# GPIO ``pin bus'' drivers
+#gpioiic* at gpio? offset 0 mask 0x3	# I2C bus bit-banging
+#iic*	at gpioiic?
+#gpioow* at gpio? offset 0 mask 0x1	# 1-Wire bus bit-banging
+#onewire* at gpioow?
+
+# 1-Wire devices
+option ONEWIREVERBOSE
+owid*	at onewire?		# ID
+owsbm*	at onewire?		# Smart Battery Monitor
+owtemp* at onewire?		# Temperature
+
+# Motion control devices
+option MOTIONCONTROL			# Real-time motion control extensions
+servo0 at gpio1 offset 4 mask 0x3	# Servo / stepper motor controller
+servo1 at gpio1 offset 16 mask 0x3	# Servo / stepper motor controller
+servo2 at gpio1 offset 18 mask 0x3	# Servo / stepper motor controller
+estop0 at gpio1 offset 23 mask 0x1	# Software emergency stop (e-stop)
+#mpg0 at gpio1 offset 18 mask 0x1f	# Manual pulse generator
+#encoder0 at gpio1 offset 6 mask 0x3	# Position-sensing encoder (quadrature)
+#cncstatled0 at gpio2 offset 6 mask 0x1	# Status LED (net5501 error LED)
+#cnclcd0 at isa? port 0x2f8 irq 3	# LCD display (via NS16450/NS16550 UART)
+
+pseudo-device	pctr		1
+pseudo-device	mtrr		1	# Memory range attributes control
+pseudo-device	nvram		1
+pseudo-device	sequencer	1
+pseudo-device	hotplug		1	# devices hot plugging
+
