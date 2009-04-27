@@ -100,6 +100,7 @@ struct mpg_softc        *cnc_mpgs[CNC_MAX_MPGS];
 struct cnclcd_softc     *cnc_lcds[CNC_MAX_LCDS];
 struct cncstatled_softc *cnc_status_led = NULL;
 
+int cnc_simulate = 0;
 int cnc_capture = 0;
 int cnc_nservos = 0;
 int cnc_nspindles = 0;
@@ -297,17 +298,19 @@ cnc_calibrate_move_jog(void)
 	vp.F = 10000;
 	vp.Amax = 1234;
 	vp.Jmax = 1234;
-	for (i = 0; i < CNC_NAXES; i++)
+	for (i = 0; i < CNC_NAXES; i++) {
 		cnc_pos.v[i] = 0.0;
-
+	}
 	/* Benchmark the routine using the system clock. */
 	s = splhigh();
+	cnc_simulate = 1;
 	nanotime(&tv1);
 #if 0
 	/* TODO */
 	sys_cncjog(NULL, &insn, 1);
 #endif
 	nanotime(&tv2);
+	cnc_simulate = 0;
 	splx(s);
 
 	r = (cnc_utime_t)(tv2.tv_sec - tv1.tv_sec)*1e12 +
@@ -662,7 +665,7 @@ sys_cncjog(struct proc *p, void *v, register_t *retval)
 
 			if (!moving) {
 				moving = 1;
-				if (!simulate) {
+				if (!cnc_simulate) {
 					printf("%s: JOG: Moving to %s=%lld\n",
 					    ((struct device *)mpg)->dv_xname,
 					    cnc_axis_names[axis], vTgt.v[axis]);
@@ -732,7 +735,7 @@ sys_cncjog(struct proc *p, void *v, register_t *retval)
 				if ((Telapsed += cnc_timings.move_jog) >
 				    1000000000UL/v) {
 					Telapsed = 0;
-					if (!simulate) {
+					if (!cnc_simulate) {
 						cnc_inc_axis(axis, dir);
 					} else {
 						cnc_pos.v[axis] += dir;
@@ -740,7 +743,7 @@ sys_cncjog(struct proc *p, void *v, register_t *retval)
 					t += dt;
 				}
 			} else {
-				if (!simulate) {
+				if (!cnc_simulate) {
 					printf("%s: JOG: Reached target %s=%lld ",
 					    ((struct device *)mpg)->dv_xname,
 					    cnc_axis_names[axis], cnc_pos.v[axis]);
@@ -751,7 +754,7 @@ sys_cncjog(struct proc *p, void *v, register_t *retval)
 			}
 		}
 
-		if (simulate)
+		if (cnc_simulate)
 			break;
 	}
 	splx(s);
