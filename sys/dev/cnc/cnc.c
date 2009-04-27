@@ -723,7 +723,7 @@ sys_cncjog(struct proc *p, void *v, register_t *retval)
 				}
 				if (v < Q.v0) {
 					v = Q.v0;
-					clipped = =1;
+					clipped = 1;
 				}
 #if NCNCSTATLED > 0
 				cncstatled_set(clipped);
