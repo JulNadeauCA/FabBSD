@@ -1,0 +1,37 @@
+#
+# This file specifies configurations for generating IDE project files. There
+# are too many possible combinations, so we bundle a few commonly used ones,
+# and you can define new configurations by simply appending a line here.
+#
+# To create a new set of project files, simply append your configuration
+# to ${PROJFILES} and use "make proj" to rebuild the project files.
+# 
+# The syntax for ${PROJFILES} entries is:
+# <OS>:<ARCH>:<IDE>:<FLAVOR>:<CONFIGURE-OPTIONS>
+# 
+# You need perl, BSDBuild and Premake on your system to use "make proj".
+# BSDBuild is available from: http://hypertriton.com/bsdbuild and
+# Premake is available from http://premake.sourceforge.net/.
+#
+
+PROJFILES=	bsd:cb-gcc:: \
+		linux:cb-gcc:: \
+		macosx:cb-gcc:: \
+		windows:vs2005:: \
+		windows:vs2005:-nofreetype:--without-freetype \
+		windows:vs2005:-nothreads:--disable-threads \
+		windows:vs2005:-nogl:--without-gl\
+		windows:vs2005:-nofreetype,nothreads,nogl:--without-freetype,--disable-threads,--without-gl \
+		windows:cb-gcc:: \
+		windows:cb-gcc:-nofreetype:--without-freetype \
+		windows:cb-gcc:-nothreads:--disable-threads \
+		windows:cb-gcc:-nogl:--without-gl \
+		windows:cb-gcc:-nofreetype,nothreads,nogl:--without-freetype,--disable-threads,--without-gl \
+		windows:cb-ow:: \
+		windows:vs2003:: \
+		windows:vs2003:-nofreetype,nothreads,nogl:--without-freetype,--disable-threads,--without-gl \
+		windows:vs2002:: \
+		windows:vs2002:-nofreetype,nothreads,nogl:--without-freetype,--disable-threads,--without-gl \
+		windows:vs6:: \
+		windows:vs6:-nofreetype,nothreads,nogl:--without-freetype,--disable-threads,--without-gl \
+

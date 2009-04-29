@@ -1,0 +1,412 @@
+.\" Copyright (c) 2002-2007 Hypertriton, Inc. <http://hypertriton.com/>
+.\" All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 
+.\" THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
+.\" INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+.\" (INCLUDING BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+.\" SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+.\" STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+.\" IN ANY WAY OUT OF THE USE OF THIS SOFTWARE EVEN IF ADVISED OF THE
+.\" POSSIBILITY OF SUCH DAMAGE.
+.\"
+.Dd August 21, 2002
+.Dt AG_LABEL 3
+.Os
+.ds vT Agar API Reference
+.ds oS Agar 1.0
+.Sh NAME
+.Nm AG_Label
+.Nd agar label widget
+.Sh SYNOPSIS
+.Bd -literal
+#include <agar/core.h>
+#include <agar/gui.h>
+.Ed
+.Sh DESCRIPTION
+The
+.Nm
+widget displays single-line or multi-line text.
+In the case of
+.Sq polled
+labels, the text can contain elements which are going to be dereferenced
+on rendering.
+.Sh INHERITANCE HIERARCHY
+.Xr AG_Object 3 ->
+.Xr AG_Widget 3 ->
+.Nm .
+.Sh INITIALIZATION
+.nr nS 1
+.Ft "AG_Label *"
+.Fn AG_LabelNew "AG_Widget *parent" "Uint flags" "const char *fmt" "..."
+.Pp
+.Ft "AG_Label *"
+.Fn AG_LabelNewString "AG_Widget *parent" "Uint flags" "const char *text"
+.Pp
+.Ft "AG_Label *"
+.Fn AG_LabelNewPolled "AG_Widget *parent" "Uint flags" "const char *fmt" "..."
+.Pp
+.Ft "AG_Label *"
+.Fn AG_LabelNewPolledMT "AG_Widget *parent" "Uint flags" "AG_Mutex *mutex" "const char *fmt" "..."
+.Pp
+.Ft "void"
+.Fn AG_LabelSetPadding "AG_Label *label" "int left" "int right" "int top" "int bottom"
+.Pp
+.Ft "void"
+.Fn AG_LabelJustify "AG_Label *label" "enum ag_text_justify justify"
+.Pp
+.Ft "void"
+.Fn AG_LabelValign "AG_Label *label" "enum ag_text_valign valign"
+.Pp
+.Ft "void"
+.Fn AG_LabelSizeHint "AG_Label *label" "Uint nlines" "const char *text"
+.Pp
+.Ft "void"
+.Fn AG_RegisterLabelFormat "const char *fmt" "void (*fn)(AG_Label *label, char *s, size_t len, int fPos)"
+.Pp
+.Ft "void"
+.Fn AG_LABEL_ARG "AG_Label *label" "TYPE type"
+.Pp
+.nr nS 0
+The
+.Fn AG_LabelNew
+function allocates, initializes and attaches a
+.Nm
+widget initially displaying the given text.
+The
+.Fn AG_LabelNewString
+variant accepts a non-formatted string.
+See the
+.Dq STATIC LABELS
+section for more details.
+.Pp
+The
+.Fn AG_LabelNewPolled
+function creates a new
+.Nm
+widget displaying a string of text which contains references to variables.
+The
+.Fn AG_LabelNewPolledMT
+variant accepts a pointer to a mutex that will be automatically acquired
+and release as the widget accesses the referenced data.
+See the
+.Dq POLLED LABELS
+section for more details.
+.Pp
+See
+.Dq LABEL FLAGS
+section for a the accepted
+.Fa flags
+values.
+.Pp
+The
+.Fn AG_LabelSetPadding
+function sets the label padding parameters in pixels.
+If a parameter is -1, its current value is preserved.
+.Pp
+The
+.Fn AG_LabelJustify
+function sets the text justification:
+.Pp
+.Bd -literal
+enum ag_text_justify {
+	AG_TEXT_LEFT,
+	AG_TEXT_CENTER,
+	AG_TEXT_RIGHT
+};
+.Ed
+.Pp
+.Fn AG_LabelValign
+sets the vertical text alignment:
+.Pp
+.Bd -literal
+enum ag_text_valign {
+	AG_TEXT_TOP,
+	AG_TEXT_MIDDLE,
+	AG_TEXT_BOTTOM
+};
+.Ed
+.Pp
+The
+.Fn AG_LabelSizeHint
+function arranges for the minimum scaling of the label to accomodate at
+least
+.Fa nlines
+lines of the given text string.
+If
+.Fa nlines
+is 0, the number of lines will be based on the contents of the text string.
+.Sh STATIC LABELS
+.nr nS 1
+.Ft void
+.Fn AG_LabelText "AG_Label *label" "const char *fmt" "..."
+.Pp
+.Ft void
+.Fn AG_LabelString "AG_Label *label" "const char *s"
+.Pp
+.nr nS 0
+The functions
+.Fn AG_LabelText
+and
+.Fn AG_LabelString
+change the text displayed by the label.
+.Pp
+.Sh POLLED LABELS
+Polled labels are specified to
+.Fn AG_LabelNewPolled
+and
+.Fn AG_LabelNewPolledMT
+as a format string containing regular text
+with zero or more
+.Xr printf 3
+like directives.
+Arguments following the format string are expected to be pointers to the
+actual variables, which
+.Nm
+will dereference at the time of rendering using either built-in methods
+or user-specified functions.
+.Pp
+Due to memory alignment and format issues, the format string for polled labels
+is non-standard.
+Built-in format specifiers include:
+.Pp
+.Bl -tag -compact -width "%llu, %llo, %llx "
+.It %d, %i
+.Ft "int"
+.It %ld, %li
+.Ft "long int"
+.It %lld, %lli
+.Ft "long long int"
+or
+.Ft "Sint64"
+.It %o, %u, %x, %X
+.Ft "unsigned int"
+.It %lu, %lo, %lx
+.Ft "long unsigned int"
+.It %llu, %llo, %llx
+.Ft "long long unsigned int"
+or
+.Ft "Uint64"
+.It %c
+.Ft "char"
+.It %s
+.Ft "char *"
+.It %p
+.Ft "void *"
+.It %f, %g
+.Ft "float *"
+.It %lf, %lg
+.Ft "double *"
+.It %llf, %llg
+.Ft "long double *"
+.It %[u8]
+.Ft "Uint8 *"
+.It %[s8]
+.Ft "Sint8 *"
+.It %[u16]
+.Ft "Uint16 *"
+.It %[s16]
+.Ft "Sint16 *"
+.It %[u32]
+.Ft "Uint32 *"
+.It %[s32]
+.Ft "Sint32 *"
+.It %[flags]
+.Ft "Uint *"
+.It %[flags8]
+.Ft "Uint8 *"
+.It %[flags16]
+.Ft "Uint16 *"
+.It %[flags32]
+.Ft "Uint32 *"
+.El
+.Pp
+The
+.Sq %[flags*]
+directives require that bit (or bitmask) descriptions be provided using the
+.Fn AG_LabelFlag*
+functions (see
+.Dq FLAG DESCRIPTIONS
+section below).
+.Pp
+It is possible to register custom format specifiers (%[foo]) with the
+.Fn AG_RegisterLabelFormat
+function.
+The callback function provided is expected to fill the contents
+of fixed-size buffer
+.Fa s
+with a string.
+The argument is retrieved using the
+.Fn AG_LABEL_ARG
+macro.
+.Pp
+Note that a call to
+.Fn AG_LabelSizeHint
+(or
+.Xr AG_ExpandHoriz 3 )
+is usually recommended in the case of polled labels, since the exact size of
+the string cannot be known until rendering.
+.Pp
+The following specifiers should be considered reserved for use by the
+developer's preferred math library.
+The Agar-Math library, which is included in the Agar sources, does implement
+them (they are registered as soon as the library is initialized
+with
+.Fn M_InitSubsystem ) .
+.Pp
+.Bl -tag -compact -width "%[M44] "
+.It %[C]
+Complex number
+.It %[V]
+Vector in R^n
+.It %[Vn]
+Vector in R^n
+.It %[M]
+Matrix (m*n)
+.It %[Mmn]
+Matrix (m*n)
+.It %[T]
+Time (seconds)
+.It %[R]
+Rectangular coordinates
+.It %[Po]
+Polar coordinates
+.It %[Pa]
+Parabolic coordinates
+.It %[Sp]
+Spherical coordinates
+.It %[Cy]
+Cylindrical coordinates
+.El
+.Sh FLAG DESCRIPTIONS
+.nr nS 1
+.Ft "void"
+.Fn AG_LabelFlag "AG_Label *label" "Uint index" "const char *descr" "Uint bitmask"
+.Pp
+.Ft "void"
+.Fn AG_LabelFlag8 "AG_Label *label" "Uint index" "const char *descr" "Uint8 bitmask"
+.Pp
+.Ft "void"
+.Fn AG_LabelFlag16 "AG_Label *label" "Uint index" "const char *descr" "Uint16 bitmask"
+.Pp
+.Ft "void"
+.Fn AG_LabelFlag32 "AG_Label *label" "Uint index" "const char *descr" "Uint32 bitmask"
+.Pp
+.nr nS 0
+The
+.Fn AG_LabelFlag ,
+.Fn AG_LabelFlag8 ,
+.Fn AG_LabelFlag16
+and
+.Fn AG_LabelFlag32
+functions register a new bit "flag" description for the variable at
+.Fa index .
+If the pointed value AND'ed with
+.Fa bitmask
+is true, the
+.Fa descr
+text will be displayed by the label.
+.Sh EVENTS
+The
+.Nm
+widget neither reacts to nor generates any event.
+.Sh LABEL FLAGS
+The following
+.Nm
+.Fa flags
+are defined:
+.Bl -tag -width "AG_LABEL_NOMINSIZE "
+.It AG_LABEL_FRAME
+Draw a visible frame around the label.
+.It AG_LABEL_NOMINSIZE
+Don't enforce a minimum size on the label.
+If the label becomes partially hidden, the text will be truncated with a
+.Sq ...
+string.
+.It AG_LABEL_PARTIAL
+The label is partially hidden (read-only).
+.It AG_LABEL_REGEN
+Force re-rendering of the text at next draw (used internally by
+.Fn AG_LabelString ,
+etc.)
+.El
+.Sh EXAMPLES
+The following code snippet creates a window containing both a static label
+and a polled label:
+.Pp
+.Bd -literal
+{
+	AG_Window *win;
+	int myInt = 1234;
+	AG_Label *myLbl;
+
+	win = AG_WindowNew(0);
+	AG_LabelNew(win, 0, "Foo");
+	myLbl = AG_LabelNewPolled(win, 0, "myInt=%i", &myInt);
+	AG_LabelSizeHint(myLbl, 1, "myInt=0000");
+}
+.Ed
+.Pp
+Thread-safe code can associate polled labels with mutexes protecting
+the data to access:
+.Bd -literal
+{
+	int myInt = 1234;
+	AG_Mutex myMutex = AG_MUTEX_INITIALIZER;
+
+	AG_LabelNewPolledMT(win, 0, &myMutex, "myInt=%i", &myInt);
+}
+.Ed
+.Pp
+It is frequently useful to display bit values in textual format.
+The following example would display
+.Sq FOO_FLAG, BAR_FLAG .
+.Bd -literal
+{
+	Uint MyFlags = FOO_FLAG|BAR_FLAG;
+	AG_Label *lbl;
+
+	lbl = AG_LabelNewPolled(win, 0, "MyFlags=%[flags]", &MyFlags);
+	AG_LabelFlag(lbl, 0, "FOO_FLAG", FOO_FLAG);
+	AG_LabelFlag(lbl, 0, "BAR_FLAG", BAR_FLAG);
+}
+.Ed
+.Pp
+The following code fragment defines a custom format specifier for use
+in polled labels:
+.Bd -literal
+void
+PrintMyVector(AG_Label *label, char *s, size_t len, int fPos)
+{
+	struct my_vector *my = AG_LABEL_ARG(label, void *);
+	snprintf(s, len, "[%f,%f]", my->x, my->y);
+}
+
+{
+	struct my_vector v;
+	AG_RegisterLabelFormat("myVec", PrintMyVector);
+	AG_LabelNewPolled(parent, 0, "%[myVec]", &v);
+}
+.Ed
+.Sh SEE ALSO
+.Xr AG_Intro 3 ,
+.Xr AG_Pixmap 3 ,
+.Xr AG_Widget 3 ,
+.Xr AG_Window 3 ,
+.Xr printf 3
+.Sh HISTORY
+The
+.Nm
+widget first appeared in Agar 1.0.
