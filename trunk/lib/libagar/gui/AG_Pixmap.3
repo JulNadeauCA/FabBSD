@@ -1,0 +1,248 @@
+.\" Copyright (c) 2006-2007 Hypertriton, Inc. <http://hypertriton.com/>
+.\" All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 
+.\" THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
+.\" INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+.\" (INCLUDING BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+.\" SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+.\" STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+.\" IN ANY WAY OUT OF THE USE OF THIS SOFTWARE EVEN IF ADVISED OF THE
+.\" POSSIBILITY OF SUCH DAMAGE.
+.\"
+.Dd August 20, 2002
+.Dt AG_PIXMAP 3
+.Os
+.ds vT Agar API Reference
+.ds oS Agar 1.0
+.Sh NAME
+.Nm AG_Pixmap
+.Nd agar pixmap display widget
+.Sh SYNOPSIS
+.Bd -literal
+#include <agar/core.h>
+#include <agar/gui.h>
+.Ed
+.Sh DESCRIPTION
+The
+.Nm
+widget displays an image in pixmap format.
+It is frequently used along with
+.Xr AG_Fixed 3
+to display interface decorations.
+.Pp
+In OpenGL mode, the image surfaces are uploaded to the texture unit as
+they are mapped or updated.
+.Pp
+Small animations can be efficiently displayed by mapping one surface per frame
+and invoking
+.Fn AG_PixmapSetSurface
+from a timer with
+.Xr AG_Timeout 3 .
+.Sh INHERITANCE HIERARCHY
+.Xr AG_Object 3 ->
+.Xr AG_Widget 3 ->
+.Nm .
+.Sh INITIALIZATION
+.nr nS 1
+.Ft "AG_Pixmap *"
+.Fn AG_PixmapNew "AG_Widget *parent" "Uint flags" "Uint width" "Uint height"
+.Pp
+.Ft "AG_Pixmap *"
+.Fn AG_PixmapFromSurface "AG_Widget *parent" "Uint flags" "AG_Surface *src"
+.Pp
+.Ft "AG_Pixmap *"
+.Fn AG_PixmapFromSurfaceCopy "AG_Widget *parent" "Uint flags" "AG_Surface *src"
+.Pp
+.Ft "AG_Pixmap *"
+.Fn AG_PixmapFromSurfaceScaled "AG_Widget *parent" "Uint flags" "AG_Surface *src" "int width" "int height"
+.Pp
+.nr nS 0
+The
+.Fn AG_PixmapNew
+function creates a new
+.Nm
+not linked to any surface.
+The initial geometry of the widget is defined by the
+.Fa width
+and
+.Fa height
+parameters.
+The following
+.Fa flags
+are accepted:
+.Pp
+.Bl -tag -width "AG_PIXMAP_RESCALE "
+.Dv AG_PIXMAP_RESCALE
+Rescale image to fit widget size.
+.El
+.Pp
+The following functions create a new
+.Nm
+with an image obtained from the given source.
+When using these constructors, the geometry of the widget is set to
+that of the source image.
+.Pp
+.Fn AG_PixmapFromSurface
+maps an existing
+.Xr AG_Surface 3
+to surface 0.
+The surface must remain valid until the widget is destroyed.
+The
+.Fn AG_PixmapFromSurfaceCopy
+variant instead creates and manages a copy of the surface.
+.Fn AG_PixmapFromSurfaceScaled
+uses rescaled copy of the surface.
+.Sh CHANGING SURFACES
+.nr nS 1
+.Ft "int"
+.Fn AG_PixmapAddSurface "AG_Pixmap *pixmap" "AG_Surface *surface"
+.Pp
+.Ft "int"
+.Fn AG_PixmapAddSurfaceCopy "AG_Pixmap *pixmap" "AG_Surface *surface"
+.Pp
+.Ft "int"
+.Fn AG_PixmapAddSurfaceScaled "AG_Pixmap *pixmap" "AG_Surface *surface" "int width" "int height"
+.Pp
+.Ft "void"
+.Fn AG_PixmapSetSurface "AG_Pixmap *pixmap" "int surface_name"
+.Pp
+.Ft "void"
+.Fn AG_PixmapReplaceSurface "AG_Pixmap *pixmap" "int surface_name" "AG_Surface *surfaceNew"
+.Pp
+.Ft "void"
+.Fn AG_PixmapReplaceCurrentSurface "AG_Pixmap *pixmap" "AG_Surface *surfaceNew"
+.Pp
+.Ft "void"
+.Fn AG_PixmapReplaceSurfaceScaled "AG_Pixmap *pixmap" "int surface_name" "AG_Surface *surfaceNew" "Uint width" "Uint height"
+.Pp
+.Ft "void"
+.Fn AG_PixmapReplaceCurrentSurfaceScaled "AG_Pixmap *pixmap" "AG_Surface *surfaceNew" "Uint width" "Uint height"
+.Pp
+.Ft "void"
+.Fn AG_PixmapUpdateSurface "AG_Pixmap *pixmap" "int surface_name"
+.Pp
+.Ft "void"
+.Fn AG_PixmapUpdateCurrentSurface "AG_Pixmap *pixmap"
+.Pp
+.Ft "void"
+.Fn AG_PixmapSetCoords "AG_Pixmap *pixmap" "int s" "int t"
+.Pp
+.nr nS 0
+The
+.Nm
+widget can map multiple surfaces and switch between them.
+To add a new surface, use
+.Fn AG_PixmapAddSurface ,
+.Fn AG_PixmapAddSurfaceCopy
+or
+.Fn AG_PixmapAddSurfaceScaled .
+.Pp
+.Fn AG_PixmapSetSurface
+changes the currently visible surface to another surface that has been
+previously mapped with
+.Fn AG_PixmapAddSurface* .
+To replace an existing mapped surface, use
+.Fn AG_PixmapReplaceSurface
+or
+.Fn AG_PixmapReplaceSurfaceScaled
+with the name of the surface.
+.Pp
+If you need to modify the contents of a previously mapped surface, it is
+necessary to call
+.Fn AG_PixmapUpdateSurface
+afterwards.
+It has no effect in direct video mode, but it causes the texture to be
+re-uploaded to the graphics hardware in OpenGL mode.
+.Pp
+The
+.Fn AG_PixmapReplaceCurrentSurface ,
+.Fn AG_PixmapReplaceCurrentSurfaceScaled
+and
+.Fn AG_PixmapUpdateCurrentSurface
+variants operate on the currently selected (visible) surface.
+.Pp
+The
+.Fn AG_PixmapSetCoords
+function changes the source coordinates of the active surface.
+The default is [0,0].
+.Sh EVENTS
+The
+.Nm
+widget neither reacts to nor generates any event.
+.Sh STRUCTURE DATA
+For the
+.Ft AG_Pixmap
+object:
+.Pp
+.Bl -tag -width "int s, t "
+.It Ft int s, t
+Source surface coordinates.
+Can be set using
+.Fn AG_PixmapSetCoords .
+.El
+.Sh EXAMPLES
+The following code fragment displays an existing
+.Xr AG_Surface 3 .
+It packs
+.Nm
+in a
+.Xr AG_Scrollview 3
+widget, allowing the user to pan the view:
+.Bd -literal
+AG_Scrollview *sv;
+AG_Pixmap *px;
+
+sv = AG_ScrollviewNew(window, AG_SCROLLVIEW_BY_MOUSE);
+AG_Expand(sv);
+px = AG_PixmapFromSurface(sv, 0, mySurface);
+.Ed
+.Pp
+Assuming Agar was compiled with support for the SDL library, the following
+code fragment displays an
+.Xr SDL_Surface 3 .
+It uses
+.Dv AG_PIXMAP_RESCALE
+to scale the image to fit the widget geometry:
+.Bd -literal
+AG_Pixmap *px;
+SDL_Surface *sSDL;
+AG_Surface *s;
+
+sSDL = SDL_LoadBMP("foo.bmp");
+s = AG_SurfaceFromSDL(sSDL);
+px = AG_PixmapFromSurface(sv, AG_PIXMAP_RESCALE,
+    AG_SurfaceFromSDL(sSDL));
+.Ed
+.Sh SEE ALSO
+.Xr AG_Intro 3 ,
+.Xr AG_Fixed 3 ,
+.Xr AG_Scrollview 3 ,
+.Xr AG_Surface 3 ,
+.Xr AG_View 3 ,
+.Xr AG_Widget 3 ,
+.Xr AG_Window 3
+.Pp
+The
+.Pa demos/fixedres
+demo in the Agar distribution illustrates the use of
+.Xr AG_Fixed 3
+and
+.Nm
+in a game-style interface.
+.Sh HISTORY
+The
+.Nm
+widget first appeared in Agar 1.0.

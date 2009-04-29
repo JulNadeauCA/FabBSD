@@ -1,0 +1,194 @@
+.\" Copyright (c) 2001-2007 Hypertriton, Inc. <http://hypertriton.com/>
+.\" All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 
+.\" THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
+.\" INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+.\" (INCLUDING BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+.\" SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+.\" STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+.\" IN ANY WAY OUT OF THE USE OF THIS SOFTWARE EVEN IF ADVISED OF THE
+.\" POSSIBILITY OF SUCH DAMAGE.
+.\"
+.\"	$OpenBSD: mdoc.template,v 1.6 2001/02/03 08:22:44 niklas Exp $
+.\"
+.Dd NOVEMBER 26, 2001
+.Dt AG_CORE 3
+.Os
+.ds vT Agar API Reference
+.ds oS Agar 1.0
+.Sh NAME
+.Nm AG_Core
+.Nd agar core initialization and globals
+.Sh SYNOPSIS
+.Bd -literal
+#include <agar/core.h>
+.Ed
+.Sh DESCRIPTION
+These functions are responsible for the initialization of Agar's internals
+and subsystems.
+.Pp
+.nr nS 1
+.Ft "void"
+.Fn AG_GetVersion "AG_AgarVersion *ver"
+.Pp
+.Ft "int"
+.Fn AG_InitCore "const char *progname" "Uint flags"
+.Pp
+.Ft "int"
+.Fn AG_InitVideo "int w" "int h" "int depth" "Uint flags"
+.Pp
+.Ft "int"
+.Fn AG_InitVideoSDL "SDL_Surface *display" "Uint flags"
+.Pp
+.Ft "int"
+.Fn AG_InitGUI "Uint flags"
+.Pp
+.Ft "void"
+.Fn AG_AtExitFunc "void (*fn)(void)"
+.Pp
+.Ft "void"
+.Fn AG_Quit "void"
+.Pp
+.Ft "void"
+.Fn AG_QuitGUI "void"
+.Pp
+.Ft "void"
+.Fn AG_Destroy "void"
+.Pp
+.Ft "void"
+.Fn AG_DestroyGUI "void"
+.Pp
+.nr nS 0
+The
+.Fn AG_InitCore
+function initializes the internal data structures of the Agar-Core library.
+It must be invoked before any other
+.Sq AG_
+routine.
+The
+.Fa progname
+argument is an arbitrary name for the application.
+Available
+.Fa flags
+options include:
+.Bl -tag -width "AG_NO_CFG_AUTOLOAD "
+.It AG_VERBOSE
+Allow errors and warning output on console.
+.It AG_CREATE_DATADIR
+If it does not exist, automatically create a
+.Pa ~/.<progname>
+data directory on startup.
+.It AG_NO_CFG_AUTOLOAD
+Skip loading of
+.Xr AG_Config 3
+configuration data on startup.
+.El
+.Pp
+The
+.Fn AG_InitVideo
+function sets the video mode, initializes the font engine and GUI system.
+The graphics backend is auto-selected.
+.Pp
+Assuming Agar was compiled with support for SDL,
+.Fn AG_InitVideoSDL
+initializes the GUI system to use an existing SDL display surface.
+If the specified surface has the
+.Dv SDL_OPENGL
+flag set, it is assumed that Agar should render itself using OpenGL
+primitives, otherwise plain framebuffer mode is used.
+.Pp
+The
+.Fn AG_InitGUI
+function initializes the Agar GUI system.
+This involves registering the widget classes, initializing the global tables
+(e.g., colors, primitives, cursors, icons), the themes, as well as the font
+engine and the input devices.
+.Fn AG_InitVideo
+and
+.Fn AG_InitVideoSDL
+invoke
+.Fn AG_InitGUI ,
+so it is rarely used directly.
+.Pp
+The
+.Fn AG_AtExitFunc
+registers a function that will be invoked automatically by
+.Fn AG_Destroy .
+.Pp
+.Fn AG_Quit
+immediately terminates the application by releasing resources allocated by
+Agar-Core and invoking
+.Xr exit 2 .
+.Pp
+If Agar-GUI is in use, the
+.Fn AG_QuitGUI
+function should be used instead as it requests the termination of the
+application through the event system, leaving an opportunity for the
+termination to be interrupted or aborted (e.g., by confirmation dialogs).
+.Pp
+The
+.Fn AG_Destroy
+function immediately frees all resources allocated by Agar.
+.Pp
+.Fn AG_DestroyGUI
+frees all resources allocated by the Agar GUI system.
+Being implicitely invoked from
+.Fn AG_Destroy ,
+it is rarely used directly.
+.Pp
+.Sh AGAR VERSION INFORMATION
+.nr nS 1
+.Ft void
+.Fn AG_GetVersion "AG_AgarVersion *ver"
+.Pp
+.Ft bool
+.Fn AG_VERSION_ATLEAST "int major" "int minor" "int patchlevel"
+.Pp
+.nr nS 0
+The
+.Fn AG_GetVersion
+function fills an
+.Ft AG_AgarVersion
+structure with version information:
+.Bd -literal
+typedef struct ag_agar_version {
+	int major;
+	int minor;
+	int patch;
+	const char *release;
+} AG_AgarVersion;
+.Ed
+.Pp
+Agar does not need to have been previously initialized for
+.Fn AG_GetVersion
+to work.
+.Pp
+The
+.Fn AG_VERSION_ATLEAST
+macro evaluates to true if the current Agar version is equal to, or exceeds
+the given version number.
+.Sh SEE ALSO
+.Xr AG_Object 3 ,
+.Xr AG_View 3 ,
+.Xr AG_Widget 3 ,
+.Xr AG_Window 3
+.Pp
+.Bd -literal
+http://www.libsdl.org/
+http://www.opengl.org/
+.Ed
+.Sh BUGS
+Routines related to Agar-GUI should be documented in a separate manual page.

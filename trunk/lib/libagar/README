@@ -1,0 +1,73 @@
+    _       _       _     ___  
+  / _ \   / _ \   / _ \  |  _ \ 
+ | |_| | | (_| | | |_| | | |_) |
+ |_| |_|  \__, | |_| |_| |_| |_|
+          |___/                 
+
+What is it?
+-----------
+Agar is a type of sugar polymer obtained from seaweed and red algae. Agar
+becomes gelatinous in water and is primarly used as a culture medium for
+microbiological work. Agar is also the name of an open source GUI toolkit
+designed to work in an unobtrusive way, under a great variety of platforms.
+
+As of this release, Agar provides rendering backends for SDL and OpenGL.
+The OpenGL mode is preferred when hardware acceleration is available as
+it makes efficient use of it. The SDL mode is more efficient when only
+plain a framebuffer is available. The appearance of the GUI is completely
+customizable, and Agar's object system simplifies the task of creating
+new widgets.
+
+The Agar-Core library provides a simple object system which allows for a
+lightweight, consistent and portable form of object-oriented programming
+under multiple languages (the standard Agar libraries use ANSI C; bindings
+to Perl and Ada are provided for the Core and GUI libraries). The main
+features of the object system are inheritance, serialization, virtual
+functions / events and per-object management of resources such as timers
+and threads. A number of portability interfaces are also provided.
+
+In addition to these two main libraries, this distribution also includes
+Agar-VG, Agar-RG, Agar-DEV and Agar-MATH (see below).
+
+Documentation
+-------------
+API documentation is provided in the form of traditional Unix manual pages
+and HTML. You can read the manual online or download the pages in HTML or
+printable format from the Agar website at http://libagar.org/docs/.
+
+Availability
+------------
+Download the most recent Agar version from the Agar home page at:
+http://libagar.org/download.html.
+
+Portability
+-----------
+Agar is portable to many different platforms, including FreeBSD, IRIX,
+Linux, MacOS Classic, MacOS X, NetBSD, OpenBSD, Solaris and Windows. It
+has even been ported to various consoles such as the GP2x, Nintendo
+Gamecube/Wii, Sony Playstation2 and Nintendo DS. For the list of official
+ports, see: http://libagar.org/portable.html.
+
+License
+-------
+Agar is freely distributable under the terms the "new" BSD license:
+http://libagar.org/license.html.
+
+How to contribute
+-----------------
+See: http://libagar.org/contribute.html.
+
+Other libraries based on Agar
+-----------------------------
+There are a number of useful libraries based on Agar. Some of them are
+bundled with this source distribution (Agar-VG, etc), but you will need
+to explicitely link your application against them in order to use them.
+
+Agar-MATH	General-purpose math library (bundled, use `agar-math-config`)
+Agar-VG		Vector graphics library (bundled, use `agar-vg-config`)
+Agar-RG		Raster graphics library (bundled, use `agar-rg-config`)
+Agar-DEV	Developer/debugging tools (bundled, use `agar-dev-config`)
+FreeSG		2D/3D graphics engine (http://freesg.org/)
+Edacious	Electronics design (http://edacious.hypertriton.com/)
+CADTools	Computer-aided design (http://cadtools.hypertriton.com/)
+

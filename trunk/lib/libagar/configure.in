@@ -1,0 +1,517 @@
+# Public domain
+#
+# This is a BSDBuild configure script source. The ./configure script is
+# generated from this file via mkconfigure(1). For more information, see:
+# http://bsdbuild.hypertriton.com/.
+#
+
+REGISTER("--enable-<library>",	"Libraries (gui|vg|rg|math|dev) [default: all]")
+
+REGISTER("--enable-warnings",	"Suggested compiler warnings [default: no]")
+REGISTER("--enable-threads",	"Thread safety [default: check]")
+
+REGISTER("--enable-debug",	"General debugging [default: no]")
+REGISTER("--enable-<type>debug","Debugging (obj|class|event) [default: none]")
+REGISTER("--enable-legacy",	"Deprecated interfaces [default: yes]")
+
+REGISTER("--enable-network",	"CORE: Network support [default: check]")
+
+REGISTER("--with-sdl",		"GUI: SDL rendering support [default: check]")
+REGISTER("--with-gl",		"GUI: OpenGL rendering support [default: check]")
+REGISTER("--enable-<depth>bpp", "GUI: FB depths (8|16|24|32) [default: all]")
+REGISTER("--with-jpeg",		"GUI: JPEG screenshot support [default: check]")
+REGISTER("--with-freetype",	"GUI: Enable FreeType support [default: check]")
+REGISTER("--enable-utf8",	"GUI: UTF8 text support [default: yes]")
+
+REGISTER("--with-sse",		"M: SSE[123] optimizations [default: no]")
+REGISTER("--with-altivec",	"M: AltiVec optimizations [default: check]")
+REGISTER("--with-<opt>-inline",	"M: Inline ops (sse2|sse3|altivec) [default: no]")
+REGISTER("--with-<mode>-fp",    "M: Mode (single|double|quad) [default: double]")
+
+# Agar version
+HDEFINE(VERSION, "1.3.4-beta")
+HDEFINE(RELEASE, "Pandemonic Incantation")
+
+# Installation directories
+MDEFINE(SHAREDIR, "\${PREFIX}/share/agar")
+HDEFINE(SHAREDIR, "$PREFIX/share/agar")
+MDEFINE(LOCALEDIR, "\${PREFIX}/share/agar/locale")
+HDEFINE(LOCALEDIR, "$PREFIX/share/agar/locale")
+MDEFINE(TTFDIR, "\${PREFIX}/share/agar/fonts")
+HDEFINE(TTFDIR, "$PREFIX/share/agar/fonts")
+MDEFINE(INCLDIR, "\${PREFIX}/include/agar")
+HDEFINE(INCLDIR, "$PREFIX/include/agar")
+
+CHECK(cc)
+CHECK(sys_types)
+CHECK(stdlib_h)
+CHECK(unistd_h)
+CHECK(limits_h)
+CHECK(float_h)
+CHECK(progname)
+CHECK(free_null)
+CHECK(math)
+CHECK(math_c99)
+CHECK(getpwuid)
+CHECK(getuid)
+CHECK(strsep)
+CHECK(snprintf)
+CHECK(vsnprintf)
+CHECK(vasprintf)
+CHECK(md5)
+CHECK(sha1)
+CHECK(rmd160)
+CHECK(x11)
+CHECK(signal)
+CHECK(setjmp)
+CHECK(strtoll)
+CHECK(strtold)
+CHECK(altivec)
+CHECK(byte_order)
+CHECK(dlopen)
+CHECK(dyld)
+CHECK(shl_load)
+CHECK(gettimeofday)
+
+C_DEFINE(_AGAR_INTERNAL)
+C_DEFINE(_BSD_SOURCE)
+C_NO_SECURE_WARNINGS()
+#C_EXTRA_WARNINGS()
+#C_FATAL_WARNINGS()
+
+if [ "${enable_warnings}" = "yes" ]; then
+	C_OPTION(-Wall)
+	C_OPTION(-Werror)
+	C_OPTION(-Wmissing-prototypes)
+	MDEFINE(WNO_UNINITIALIZED, "-Wno-uninitialized")
+else
+	MDEFINE(WNO_UNINITIALIZED, "")
+fi
+
+if [ "${enable_debug}" = "yes" ]; then
+	HDEFINE(AG_DEBUG, "yes")
+	echo "LDFLAGS+=-g" >> Makefile.config
+else
+	HUNDEF(AG_DEBUG)
+fi
+if [ "${enable_lockdebug}" = "yes" ]; then
+	HDEFINE(AG_LOCKDEBUG, "yes")
+else
+	HUNDEF(AG_LOCKDEBUG)
+fi
+if [ "${enable_objdebug}" = "yes" ]; then
+	HDEFINE(AG_OBJDEBUG, "yes")
+else
+	HUNDEF(AG_OBJDEBUG)
+fi
+if [ "${enable_classdebug}" = "yes" ]; then
+	HDEFINE(AG_CLASSDEBUG, "yes")
+else
+	HUNDEF(AG_CLASSDEBUG)
+fi
+if [ "${enable_eventdebug}" = "yes" ]; then
+	HDEFINE(AG_EVENTDEBUG, "yes")
+else
+	HUNDEF(AG_EVENTDEBUG)
+fi
+if [ "${enable_legacy}" != "no" ]; then
+	HDEFINE(AG_LEGACY, "yes")
+else
+	HUNDEF(AG_LEGACY)
+fi
+
+#
+# Options specific to the Agar-GUI library.
+#
+if [ "${enable_gui}" != "no" ]; then
+	HDEFINE(ENABLE_GUI, "yes")
+	MDEFINE(SUBDIR_GUI, "gui agar-config")
+
+	# SDL is currently required for the event system.
+	CHECK(sdl, 1.2.0)
+	if [ "${HAVE_SDL}" != "yes" ]; then
+		echo "*"
+		echo "* Agar-GUI requires the SDL library. You can download it "
+		echo "* from: http://www.libsdl.org/"
+		echo "*"
+		exit 1
+	fi
+
+	# Enable Freetype support if the Freetype library is found. Otherwise
+	# fall back to the bitmap font engine.
+	if [ "${with_freetype}" != "no" ]; then
+		CHECK(freetype, 7.0.1)
+		if [ "${HAVE_FREETYPE}" != "yes" ]; then
+			echo "*"
+			echo "* Agar needs FreeType to display vector fonts"
+			echo "* (http://www.freetype.org/)."
+			echo "*"
+			echo "* If you really want to use Agar's built-in"
+			echo "* monospace bitmap font engine (not recommended),"
+			echo "* please use: ./configure --without-freetype"
+			echo "*"
+			exit 1
+		fi
+	else
+		HUNDEF(HAVE_FREETYPE)
+		MDEFINE(FREETYPE_CFLAGS, "")
+		MDEFINE(FREETYPE_LIBS, "")
+	fi
+
+	# Enable OpenGL support if an OpenGL library is found.
+	if [ "${with_gl}" != "no" ]; then
+		CHECK(opengl)
+		if [ "${HAVE_OPENGL}" = "yes" ]; then
+			MDEFINE(SDL_CFLAGS, "$SDL_CFLAGS $OPENGL_CFLAGS")
+		else
+			if [ "${with_gl}" = "yes" ]; then
+				echo "*"
+				echo "* --with-gl was requested, but no OpenGL"
+				echo "* library was found. Try running the"
+				echo "* configure script again without this"
+				echo "* option."
+				echo "*"
+				exit 1
+			else
+				HUNDEF(HAVE_OPENGL)
+			fi
+		fi
+	else
+		HUNDEF(HAVE_OPENGL)
+		MDEFINE(OPENGL_CFLAGS, "")
+		MDEFINE(OPENGL_LIBS, "")
+	fi
+
+	# Enable JPEG support if libjpeg is found (only used for screenshots).
+	if [ "${with_jpeg}" != "no" ]; then
+		CHECK(jpeg)
+		if [ "${HAVE_JPEG}" != "yes" ]; then
+			if [ "${with_jpeg}" = "yes" ]; then
+				echo "*"
+				echo "* --with-jpeg was requested, but libjpeg"
+				echo "* was not found. Try running configure"
+				echo "* again without this option."
+				echo "*"
+				exit 1
+			else
+				HUNDEF(HAVE_JPEG)
+			fi
+		fi
+	else
+		HUNDEF(HAVE_JPEG)
+		MDEFINE(JPEG_CFLAGS, "")
+		MDEFINE(JPEG_LIBS, "")
+	fi
+else
+	HUNDEF(ENABLE_GUI)
+	MDEFINE(SUBDIR_GUI, "")
+
+	HUNDEF(HAVE_FREETYPE)
+	MDEFINE(FREETYPE_CFLAGS, "")
+	MDEFINE(FREETYPE_LIBS, "")
+	HUNDEF(HAVE_OPENGL)
+	MDEFINE(OPENGL_CFLAGS, "")
+	MDEFINE(OPENGL_LIBS, "")
+	HUNDEF(HAVE_JPEG)
+	MDEFINE(JPEG_CFLAGS, "")
+	MDEFINE(JPEG_LIBS, "")
+fi
+
+# Enable network support if system supports getaddrinfo().
+# XXX Should enable check by default
+if [ "${enable_network}" = "yes" ]; then
+	CHECK(getaddrinfo)
+	if [ "${HAVE_GETADDRINFO}" = "yes" ]; then
+		HDEFINE(AG_NETWORK, "yes")
+	else
+		if [ "${enable_network}" = "yes" ]; then
+			echo "*"
+			echo "* --enable-network was requested, but this system"
+			echo "* does not support getaddrinfo(). Try running the"
+			echo "* configure script again without this option."
+			echo "*"
+			exit 1
+		else
+			HUNDEF(AG_NETWORK)
+		fi
+	fi
+else
+	HUNDEF(AG_NETWORK)
+	HUNDEF(HAVE_GETADDRINFO)
+fi
+
+# Enable threads support if POSIX threads are available.
+if [ "${enable_threads}" != "no" ]; then
+	CHECK(pthreads)
+	if [ "${HAVE_PTHREADS}" = "yes" ];
+	then
+		HDEFINE(AG_THREADS, "yes")
+		if [ "${HAVE_PTHREADS_XOPEN}" = "no" ]; then
+		if [ "${HAVE_PTHREAD_MUTEX_RECURSIVE}" = "no" ]; then
+		if [ "${HAVE_PTHREAD_MUTEX_RECURSIVE_NP}" = "no" ]; then
+			HUNDEF(AG_THREADS)
+			if [ "${enable_threads}" = "yes" ]; then
+				echo "*"
+				echo "* --enable-threads was given, but your"
+				echo "* pthreads library lacks support for"
+				echo "* recursive mutexes. Try running the"
+				echo "* configure script again without this"
+				echo "* option."
+				echo "*"
+				exit 1
+			fi
+		fi
+		fi
+		fi
+	else
+		HUNDEF(AG_THREADS)
+		if [ "${enable_threads}" = "yes" ]; then
+			echo "*"
+			echo "* --enable-threads was given, but no pthreads"
+			echo "* library was found on your system. Try running"
+			echo "* the configure script again without this option."
+			echo "*"
+			exit 1
+		fi
+	fi
+else
+	HUNDEF(AG_THREADS)
+	HUNDEF(HAVE_PTHREADS)
+	HUNDEF(HAVE_PTHREADS_XOPEN)
+	MDEFINE(PTHREADS_CFLAGS, "")
+	MDEFINE(PTHREADS_LIBS, "")
+	MDEFINE(PTHREADS_XOPEN_CFLAGS, "")
+	MDEFINE(PTHREADS_XOPEN_LIBS, "")
+	#
+	# Lock macros expand to no-ops when compiled !AG_THREADS, which may
+	# result in unused variables in some places.
+	#
+	if [ "${enable_warnings}" = "yes" ]; then
+		C_OPTION(-Wno-unused)
+	fi
+fi
+
+# Enable UTF8 support by default.
+if [ "${enable_utf8}" != "no" ]; then
+	HDEFINE(UTF8, "yes")
+else
+	HUNDEF(UTF8)
+fi
+
+# Disable astronomical units (constants are too large for some compilers).
+# TODO test
+HUNDEF(ASTRONOMICAL_UNITS)
+
+# Enable conversion of historical units.
+HDEFINE(HISTORICAL_UNITS, "yes")
+
+# Support 8/16/24/32bpp video displays by default.
+# Disable unused modes to reduce code size and gain some cycles.
+if [ "${enable_8bpp}" != "no" ]; then
+	HDEFINE(VIEW_8BPP, "yes")
+else
+	HUNDEF(VIEW_8BPP)
+fi
+if [ "${enable_16bpp}" != "no" ]; then
+	HDEFINE(VIEW_16BPP, "yes")
+else
+	HUNDEF(VIEW_16BPP)
+fi
+if [ "${enable_24bpp}" != "no" ]; then
+	HDEFINE(VIEW_24BPP, "yes")
+else
+	HUNDEF(VIEW_24BPP)
+fi
+if [ "${enable_32bpp}" != "no" ]; then
+	HDEFINE(VIEW_32BPP, "yes")
+else
+	HUNDEF(VIEW_32BPP)
+fi
+
+# Enable NLS if requested explicitely.
+if [ "${enable_nls}" = "yes" ]; then
+	CHECK(gettext)
+	if [ "${HAVE_GETTEXT}" != "yes" ]; then
+		echo "*"
+		echo "* --enable-nls was given but gettext was not found. Try"
+		echo "* running configure again without this option."
+		echo "*"
+		exit 1
+	fi
+fi
+
+#
+# Options specific to the Agar-Math library
+#
+if [ "${enable_math}" != "no" ]; then
+	HDEFINE(ENABLE_MATH, "yes")
+	MDEFINE(SUBDIR_MATH, "math agar-math-config")
+else
+	HUNDEF(ENABLE_MATH)
+	MDEFINE(SUBDIR_MATH, "")
+fi
+# Enable optional SSE optimizations if compiler supports intrinsics.
+if [ "${with_sse}" = "yes" ]; then
+	CHECK(sse)
+	if [ "${HAVE_SSE}" != "yes" ]; then
+		if [ "${with_sse}" = "yes" ]; then
+			echo "*"
+			echo "* --with-sse was requested, but SSE "
+			echo "* intrinsics not supported by compiler"
+			echo "*"
+			exit 1
+		else
+			HUNDEF(HAVE_SSE)
+			HUNDEF(INLINE_SSE)
+			HUNDEF(INLINE_SSE2)
+			HUNDEF(INLINE_SSE3)
+		fi
+	else
+		if [ "${with_sse_inline}" = "yes" ]; then
+			HDEFINE(INLINE_SSE, "yes")
+		else
+			HUNDEF(INLINE_SSE)
+		fi
+		if [ "${HAVE_SSE2}" = "yes" ]; then
+			if [ "${with_sse2_inline}" = "yes" ]; then
+				HDEFINE(INLINE_SSE2, "yes")
+			else
+				HUNDEF(INLINE_SSE2)
+			fi
+		else
+			HUNDEF(INLINE_SSE2)
+		fi
+		if [ "${HAVE_SSE3}" = "yes" ]; then
+			if [ "${with_sse3_inline}" = "yes" ]; then
+				HDEFINE(INLINE_SSE3, "yes")
+			else
+				HUNDEF(INLINE_SSE3)
+			fi
+		else
+			HUNDEF(INLINE_SSE3)
+		fi
+	fi
+else
+	HUNDEF(HAVE_SSE)
+	HUNDEF(HAVE_SSE2)
+	HUNDEF(HAVE_SSE3)
+	HUNDEF(INLINE_SSE)
+	HUNDEF(INLINE_SSE2)
+	HUNDEF(INLINE_SSE3)
+fi
+
+# Enable optional AltiVec optimizations if compiler supports intrinsics.
+if [ "${with_altivec}" = "yes" ]; then
+	CHECK(altivec)
+	if [ "${HAVE_ALTIVEC}" != "yes" ]; then
+		if [ "${with_altivec}" = "yes" ]; then
+			echo "*"
+			echo "* --with-altivec was requested, but "
+			echo "* AltiVec is not supported by compiler"
+			echo "*"
+			exit 1
+		else
+			HUNDEF(HAVE_ALTIVEC)
+			HUNDEF(HAVE_ALTIVEC_H)
+			HUNDEF(INLINE_ALTIVEC)
+		fi
+	else
+		if [ "${with_altivec_inline}" = "yes" ]; then
+			HDEFINE(INLINE_ALTIVEC, "yes")
+		else
+			HUNDEF(INLINE_ALTIVEC)
+		fi
+	fi
+else
+	HUNDEF(HAVE_ALTIVEC)
+	HUNDEF(HAVE_ALTIVEC_H)
+	HUNDEF(INLINE_ALTIVEC)
+fi
+
+# Specify floating-point precision to use.
+if [ "${with_single_fp}" = "yes" ]; then
+	if [ "${HAVE_MATH_C99}" != "yes" ]; then
+		echo "*"
+		echo "* --with-single-fp was requested, but your compiler does"
+		echo "* not support the C99 math routines (sinf(), etc)."
+		echo "*"
+		exit 1
+	fi
+	HDEFINE(SINGLE_PRECISION, "yes")
+else
+	HUNDEF(SINGLE_PRECISION)
+fi
+if [ "${with_double_fp}" != "no" ]; then
+	HDEFINE(DOUBLE_PRECISION, "yes")
+else
+	HUNDEF(DOUBLE_PRECISION)
+fi
+if [ "${with_quad_fp}" = "yes" ]; then
+	if [ "${HAVE_LONG_DOUBLE}" != "yes" ]; then
+		echo "*"
+		echo "* --with-quad-fp was requested, but your compiler"
+		echo "* does not support the C99 long double type."
+		echo "*"
+		exit 1
+	fi
+	if [ "${HAVE_MATH_C99}" != "yes" ]; then
+		echo "*"
+		echo "* --with-quad-fp was requested, but the C99 math"
+		echo "* routines (sinl(), etc.) are not available."
+		echo "*"
+		exit 1
+	fi
+	HDEFINE(QUAD_PRECISION, "yes")
+else
+	HUNDEF(QUAD_PRECISION)
+fi
+
+#
+# Options specific to the Agar-VG library
+#
+if [ "${enable_vg}" != "no" -a "${enable_gui}" != "no" ]; then
+	HDEFINE(ENABLE_VG, "yes")
+	MDEFINE(SUBDIR_VG, "vg agar-vg-config")
+else
+	HUNDEF(ENABLE_VG)
+	MDEFINE(SUBDIR_VG, "")
+fi
+
+#
+# Options specific to the Agar-RG library
+#
+if [ "${enable_rg}" != "no" -a "${enable_gui}" != "no" ]; then
+	HDEFINE(ENABLE_RG, "yes")
+	MDEFINE(SUBDIR_RG, "rg agar-rg-config")
+else
+	HUNDEF(ENABLE_RG)
+	MDEFINE(SUBDIR_RG, "")
+fi
+
+#
+# Options specific to the Agar-DEV library
+#
+if [ "${enable_dev}" != "no" -a "${enable_gui}" != "no" ]; then
+	HDEFINE(ENABLE_DEV, "yes")
+	MDEFINE(SUBDIR_DEV, "dev agar-dev-config")
+else
+	HUNDEF(ENABLE_DEV)
+	MDEFINE(SUBDIR_DEV, "")
+fi
+
+# Generate includes into ./include/agar.
+C_INCPREP(include,agar)
+
+# We use both <foo.h> and <agar/foo.h> in the sources.
+C_INCDIR($BLD/include)
+C_INCDIR($BLD/include/agar)
+
+if [ -e "$BLD/include" ]; then
+	cp -fR config "$BLD/include/agar"
+fi
+
+echo "*"
+echo "* Configuration successful."
+echo "* Use \"make depend\" if you plan on editing the source code."
+echo "* Use \"make\" and \"make install\" to build and install Agar."
+echo "*"

@@ -1,0 +1,40 @@
+#	$FabBSD$
+
+.include <bsd.own.mk>
+
+all: Makefile.config
+	${MAKE}
+
+Makefile.config:
+	PATH="/bin:/usr/bin:/sbin:/usr/sbin" \
+	sh ${.CURDIR}/configure \
+	    --srcdir="${.CURDIR}" \
+	    --prefix=/usr \
+	    --disable-nls \
+	    --disable-gui
+
+install:
+	env DESTDIR="${DESTDIR}" ${MAKE} install
+
+includes:
+	# Nothing here so far...
+
+depend: Makefile.config
+	${MAKE} depend
+
+lint:
+	# Nothing here so far...
+
+tags:
+	# Nothing here so far...
+
+clean:
+	${MAKE} clean
+
+cleandir:
+	${MAKE} cleandir
+
+.PHONY: config
+
+.include <bsd.obj.mk>
+.include <bsd.subdir.mk>
