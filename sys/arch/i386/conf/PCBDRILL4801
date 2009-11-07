@@ -162,6 +162,5 @@ estop0 at gpio1 offset 23 mask 0x1	# Software emergency stop (e-stop)
 pseudo-device	pctr		1
 pseudo-device	mtrr		1	# Memory range attributes control
 pseudo-device	nvram		1
-pseudo-device	sequencer	1
 pseudo-device	hotplug		1	# devices hot plugging
 
