@@ -25,44 +25,56 @@
 .\" POSSIBILITY OF SUCH DAMAGE.
 .\"
 .Dd $Mdocdate: January 5 2010 $
-.Dt COORDINATES 7
+.Dt UNITS 7
 .Os
 .Sh NAME
-.Nm coordinates
-.Nd standard FabBSD coordinate format
+.Nm units
+.Nd standard FabBSD units
 .Sh DESCRIPTION
-Various commands such as
-.Xr move 1
-accept arguments describing real-valued coordinates in a given number of
-dimensions:
-.Pp
-    "x,y"        # Coordinate in 2 dimensions
-    "x,y,z,w"    # Coordinate in 4 dimensions
-.Pp
-The coordinates may be separated by ":", "," or spaces.
-Since coordinates are often specified on the command-line, the minus ("-")
-sign may be substituted for "m":
-.Pp
-    "-10:-20"
-    "m10:m20"    # Equivalent to -10:-20
-.Pp
-Units may be specified along with the coordinates:
-.Pp
-    "0.75in:0.50in"
-    "10mm,20mm"
-    "10,20mm"       # Equivalent to 10mm,20mm
-    "10,20"         # Use default ($UNITS environment variable)
-.Pp
-See
-.Xr units 7
-for the accepted units.
-When no units are specified with any of the coordinates, the default unit
-system given by the environment variable
+Standard FabBSD coordinates (see
+.Xr coordinates 7 ) ,
+as well as the
 .Dv UNITS
-is used.
+environment variable may take on the following values:
+.Sh SI UNITS
+.Bl -tag -compact -width "mm "
+.It m
+Metres
+.It km
+Kilometres (10^3 m)
+.It cm
+Centimetres (10^-2 m)
+.It mm
+Millimetres (10^-3 m)
+.It um
+Microns (10^-6 m)
+.It nm
+Nanometres (10^-9 m)
+.It pm
+Picometres (10^-12 m)
+.El
+.Sh US CUSTOMARY UNITS
+.Bl -tag -compact -width "in "
+.It in
+Inches
+.It ft
+Feet
+.It yd
+Yards
+.El
+.Sh UNITS OF ANGLE
+.Bl -tag -compact -width "rad "
+.It rad
+Radians
+.It deg
+Degrees
+.It rev
+Revolutions
+.El
 .Sh SEE ALSO
+.Xr coordinates 7 ,
 .Xr environ 7 ,
-.Xr units 7
+.Xr units 1
 .Sh HISTORY
 The
 .Nm
