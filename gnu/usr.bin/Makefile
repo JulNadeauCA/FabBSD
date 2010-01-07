@@ -4,7 +4,7 @@
 
 .include <bsd.own.mk>
 
-SUBDIR+=	gcc cxxfilt cvs groff lynx binutils
+SUBDIR+=	gcc cxxfilt groff lynx binutils
 
 # Do these last; texinfo builds the info 'dir' file, perl must be after binutils
 SUBDIR+=	perl texinfo
