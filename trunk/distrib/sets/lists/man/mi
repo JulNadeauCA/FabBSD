@@ -4,8 +4,6 @@
 ./usr/share/info/as.info
 ./usr/share/info/cpp.info
 ./usr/share/info/cppinternals.info
-./usr/share/info/cvs.info
-./usr/share/info/cvsclient.info
 ./usr/share/info/dir
 ./usr/share/info/g77.info
 ./usr/share/info/gcc.info
@@ -66,7 +64,6 @@
 ./usr/share/man/cat1/ctags.0
 ./usr/share/man/cat1/cu.0
 ./usr/share/man/cat1/cut.0
-./usr/share/man/cat1/cvs.0
 ./usr/share/man/cat1/date.0
 ./usr/share/man/cat1/dc.0
 ./usr/share/man/cat1/dd.0
@@ -1479,7 +1476,6 @@
 ./usr/share/man/cat5/changelist.0
 ./usr/share/man/cat5/core.0
 ./usr/share/man/cat5/crontab.0
-./usr/share/man/cat5/cvs.0
 ./usr/share/man/cat5/defaultdomain.0
 ./usr/share/man/cat5/dhclient.conf.0
 ./usr/share/man/cat5/dhclient.leases.0
@@ -1567,7 +1563,6 @@
 ./usr/share/man/cat5/wtmp.0
 ./usr/share/man/cat6
 ./usr/share/man/cat7/ascii.0
-./usr/share/man/cat7/cvsintro.0
 ./usr/share/man/cat7/environ.0
 ./usr/share/man/cat7/groff_char.0
 ./usr/share/man/cat7/groff_man.0
@@ -1642,7 +1637,6 @@
 ./usr/share/man/cat8/config.0
 ./usr/share/man/cat8/crash.0
 ./usr/share/man/cat8/cron.0
-./usr/share/man/cat8/cvsbug.0
 ./usr/share/man/cat8/daily.0
 ./usr/share/man/cat8/dev_mkdb.0
 ./usr/share/man/cat8/dhclient-script.0
