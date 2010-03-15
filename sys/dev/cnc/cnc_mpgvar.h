@@ -50,5 +50,6 @@ struct mpg_softc {
 
 int  mpg_get_axis(struct mpg_softc *);
 void mpg_jog_init(struct mpg_softc *);
-void mpg_jog(struct mpg_softc *, cnc_vec_t *, int);
+void mpg_jog_tgt(struct mpg_softc *, cnc_vec_t *, int);
+int  mpg_jog_vel(struct mpg_softc *, int *, int);
 

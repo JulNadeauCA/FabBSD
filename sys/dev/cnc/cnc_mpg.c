@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Hypertriton, Inc. <http://www.hypertriton.com/>
+ * Copyright (c) 2009-2010 Hypertriton, Inc. <http://www.hypertriton.com/>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -124,7 +124,7 @@ mpg_attach(struct device *parent, struct device *self, void *aux)
 
 	sc->sc_sel_axis = 0;
 	sc->sc_mult = 1000;
-	sc->sc_ppi = 4;
+	sc->sc_ppi = 2;
 
 	printf("\n");
 	return;
@@ -190,12 +190,11 @@ mpg_jog_init(struct mpg_softc *sc)
 
 /*
  * Scan the registered MPGs for changes in their quadrature signal states,
- * and decode the transitions into position changes. Move vTgt by an
- * amount dictated by the current pulse multiplier setting. The currently
- * selected axis is returned into a.
+ * and decode the transitions into position changes. Move vTgt by mult steps
+ * (use MPG default if mult = -1).
  */
 void
-mpg_jog(struct mpg_softc *sc, cnc_vec_t *vTgt, int mult)
+mpg_jog_tgt(struct mpg_softc *sc, cnc_vec_t *vTgt, int mult)
 {
 	int axisIdx;
 	struct mpg_axis *axis;
@@ -233,4 +232,53 @@ mpg_jog(struct mpg_softc *sc, cnc_vec_t *vTgt, int mult)
 
 	axis->Aprev = axis->A;
 	axis->Bprev = axis->B;
+}
+
+/*
+ * Scan the registered MPGs for changes in their quadrature signal states,
+ * and decode the transitions into a velocity change.
+ */
+int
+mpg_jog_vel(struct mpg_softc *sc, int *vel, int mult)
+{
+	int axisIdx;
+	struct mpg_axis *axis;
+	int rv = 0;
+
+	if (sc->sc_sel_axis != (axisIdx = mpg_get_axis(sc))) {
+		printf("%s: Selected axis%d -> axis%d\n",
+		    ((struct device *)sc)->dv_xname, sc->sc_sel_axis, axisIdx);
+		sc->sc_sel_axis = axisIdx;
+		*vel = 0;
+	}
+	axis = &sc->sc_axes[axisIdx];
+	axis->A = gpio_pin_read(sc->sc_gpio, &sc->sc_map, MPG_PIN_A);
+	axis->B = gpio_pin_read(sc->sc_gpio, &sc->sc_map, MPG_PIN_B);
+
+	if (axis->A == axis->Aprev &&
+	    axis->B == axis->Bprev)
+		return (0);
+
+	if (( axis->A && !axis->B && !axis->Aprev && !axis->Bprev) ||
+	    ( axis->A &&  axis->B &&  axis->Aprev && !axis->Bprev) ||
+	    (!axis->A &&  axis->B &&  axis->Aprev &&  axis->Bprev) ||
+	    (!axis->A && !axis->B && !axis->Aprev &&  axis->Bprev)) {
+		sc->sc_pulses[axisIdx]++;
+	} else {
+		sc->sc_pulses[axisIdx]--;
+	}
+	if (sc->sc_pulses[axisIdx] >= sc->sc_ppi) {
+		sc->sc_pulses[axisIdx] = 0;
+		(*vel) += mult;
+		rv = 1;
+	}
+	if (sc->sc_pulses[axisIdx] <= -sc->sc_ppi) {
+		sc->sc_pulses[axisIdx] = 0;
+		(*vel) -= mult;
+		rv = -1;
+	}
+
+	axis->Aprev = axis->A;
+	axis->Bprev = axis->B;
+	return (rv);
 }
