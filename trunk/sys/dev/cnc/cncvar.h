@@ -26,17 +26,18 @@ extern int cnc_nlcds;
 extern struct cnc_vector cnc_pos;
 extern struct cnc_timings cnc_timings;
 
-int cncopen(dev_t, int, int, struct proc *);
-int cncclose(dev_t, int, int, struct proc *);
-int cncioctl(dev_t, u_long, caddr_t, int, struct proc *);
-int cncwrite(dev_t, struct uio *, int);
+int  cncopen(dev_t, int, int, struct proc *);
+int  cncclose(dev_t, int, int, struct proc *);
+int  cncioctl(dev_t, u_long, caddr_t, int, struct proc *);
+int  cncwrite(dev_t, struct uio *, int);
 void cncattach(int);
-int cncdetach(struct device *, int);
-int cncactivate(struct device *, enum devact);
+int  cncdetach(struct device *, int);
+int  cncactivate(struct device *, enum devact);
 
 void cnc_message(const char *);
-int cnc_estop_raised(void);
+int  cnc_estop_raised(void);
 void cnc_inc_axis(enum cnc_axis, int);
+void cnc_clip_velocity(const struct cnc_quintic_profile *, cnc_real_t *);
 
 cnc_utime_t cnc_calibrate_hz(void);
 cnc_utime_t cnc_calibrate_move_jog(void);
