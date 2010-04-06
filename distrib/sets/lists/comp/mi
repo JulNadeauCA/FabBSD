@@ -1322,6 +1322,8 @@
 ./usr/lib/gcrt0.o
 ./usr/lib/libc.a
 ./usr/lib/libc_p.a
+./usr/lib/libcnc.a
+./usr/lib/libcnc_p.a
 ./usr/lib/libcrypto.a
 ./usr/lib/libcrypto_p.a
 ./usr/lib/libcurses.a
@@ -1483,6 +1485,9 @@
 ./usr/share/man/cat2/clock_settime.0
 ./usr/share/man/cat2/close.0
 ./usr/share/man/cat2/closefrom.0
+./usr/share/man/cat2/cncmove.0
+./usr/share/man/cat2/cncjog.0
+./usr/share/man/cat2/cncjogstep.0
 ./usr/share/man/cat2/connect.0
 ./usr/share/man/cat2/dup.0
 ./usr/share/man/cat2/dup2.0
@@ -2823,6 +2828,7 @@
 ./usr/share/man/cat3/closelog_r.0
 ./usr/share/man/cat3/clrtobot.0
 ./usr/share/man/cat3/clrtoeol.0
+./usr/share/man/cat3/cnc.0
 ./usr/share/man/cat3/color_content.0
 ./usr/share/man/cat3/color_set.0
 ./usr/share/man/cat3/compress.0
