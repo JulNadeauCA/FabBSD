@@ -1,0 +1,87 @@
+.\"	$FabBSD$
+.\"	Public domain
+.\"
+.Dd $Mdocdate: December 24 2009 $
+.Dt GERBDRILL 1
+.Os
+.Sh NAME
+.Nm gerbdrill
+.Nd execute CNC drilling program in Excellon format
+.Sh SYNOPSIS
+.Nm gerbdrill
+.Op Fl dv
+.Op Fl n Ar x.y
+.Op Fl S Ar startvel
+.Op Fl F Ar feedrate
+.Op Fl A Ar accel-lim
+.Op Fl J Ar jerk-lim
+.Op Ar file ...
+.Sh DESCRIPTION
+The
+.Nm
+command interprets a drilling pattern from an input program in Excellon
+format, and performs the CNC drilling motions necessary for producing
+the specified drill patterns, in a substrate of specified dimensions.
+.Pp
+Note: CNC drilling programs stored in RS-274/NGC format should be executed
+with the
+.Xr ngc 1
+command instead of
+.Nm .
+Photoplotter data in RS-274x format can also be converted to RS-274/NGC
+form with the
+.Xr gerb2ngc 1
+utility.
+.Pp
+The command-line options to
+.Nm
+are as follows:
+.Bl -tag -width Ds
+.It Fl d
+Dry run. The program is interpreted, but machine motions are not executed.
+.It Fl v
+Enable verbose mode.
+.It Fl n
+Specify the input number format in X.Y digits.
+For example, in 2.3 format,
+.Dq XXYYYY
+would be interpreted as
+.Dq XX.YYYY .
+The default format is 3.3 for metric units and 2.4 for imperial units.
+If the format is specified as 0.0,
+.Nm
+expects explicit decimal points.
+.It Fl S
+Specify an initial, starting velocity in steps/s.
+Default is 0.
+.It Fl F
+Specify an optimal feed rate in steps/s.
+The trajectory planner may or may not achieve this feed rate (depending on the
+other parameters and travel distance).
+Default is machine-dependent.
+.It Fl A
+Specify the limit on acceleration in steps/s^2.
+Default is machine-dependent.
+.It Fl J
+Specify the limit on jerk in steps/s^3.
+Default is machine-dependent.
+.El
+.Sh ENVIRONMENT
+.Bl -tag -width UNITS
+.It Ev UNITS
+Set to
+.Sq metric
+or
+.Sq inch .
+Defaults to
+.Sq metric .
+.El
+.Sh SEE ALSO
+.Xr gerb2ngc 1 ,
+.Xr ngc 1 ,
+.Xr coordinates 7 ,
+.Xr tools 8
+.Sh HISTORY
+The
+.Nm
+command first appeared in FabBSD 1.0.
