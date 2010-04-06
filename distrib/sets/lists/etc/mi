@@ -3,6 +3,7 @@
 ./etc/amd/master.sample
 ./etc/ccd.conf
 ./etc/changelist
+./etc/cnc.conf
 ./etc/csh.cshrc
 ./etc/csh.login
 ./etc/csh.logout
