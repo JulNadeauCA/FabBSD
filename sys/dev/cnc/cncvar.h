@@ -14,10 +14,14 @@ extern struct mpg_softc        *cnc_mpgs[CNC_MAX_MPGS];
 extern struct cnclcd_softc     *cnc_lcds[CNC_MAX_LCDS];
 extern struct cncstatled_softc *cnc_status_led;
 
+extern int cnc_ntools;
+extern struct cnc_tool cnc_tools[CNC_MAX_TOOLS];
+
 extern int cnc_simulate;
 extern int cnc_capture;
 extern int cnc_nservos;
 extern int cnc_nspindles;
+extern int cnc_natcs;
 extern int cnc_nestops;
 extern int cnc_nencoders;
 extern int cnc_nmpgs;

@@ -7,10 +7,12 @@
 
 #define CNC_BUF_SIZE		1024		/* size of instruction buffer */
 #define CNC_MAX_AXES		3
+#define CNC_MAX_TOOLS		64
 #define CNC_NAXES		CNC_MAX_AXES
 
 #define CNC_MAX_SERVOS		3
 #define CNC_MAX_SPINDLES	2
+#define CNC_MAX_ATCS		2
 #define CNC_MAX_ESTOPS		13
 #define CNC_MAX_ENCODERS	4
 #define CNC_MAX_MPGS		2
@@ -79,12 +81,17 @@ struct cnc_spindle_args {
 
 /* Toolchanger control - arguments to atcctl(2) */
 enum cnc_atc_op {
+	CNC_ATC_GET_NSLOTS,		/* return total number of slots */
+	CNC_ATC_GET_ACTIVE_TOOL,	/* return # of active tool */
+	CNC_ATC_GET_READY_TOOL,		/* return # of tool in ready position */
 	CNC_ATC_PREPARE,		/* move a tool to the ready position */
-	CNC_ATC_CHANGE,			/* change tool of specified spindle */
+	CNC_ATC_CHANGE,			/* change tool in target spindle */
 };
 struct cnc_atc_args {
-	int tool;			/* tool index */
-	int spindle;			/* target spindle */
+	int nslots;			/* for GET_NSLOTS */
+	int slot;			/* for GET_SLOT */
+	int tool;			/* tool for PREPARE, CHANGE */
+	int spindle;			/* target spindle for CHANGE */
 };
 
 /* Laser beam control - arguments to laserctl(2) */
@@ -141,9 +148,71 @@ struct cnc_timings {
 struct cnc_device_info {
 	int nservos;		/* servo(4) devices */
 	int nspindles;		/* spindle(4) devices */
+	int natcs;		/* atc(4) devices */
 	int nestops;		/* estop(4) devices */
 	int nencoders;		/* encoder(4) devices */
 	int nmpgs;		/* mpg(4) devices */
+};
+
+/*
+ * General tool class.
+ * Sync with libcnc cnc_tool_strings[].
+ */
+enum cnc_tool_type {
+	CNC_TOOL_NONE,
+	CNC_TOOL_DRILL,			/* Twist drill or countersink */
+	CNC_TOOL_HOLESAW,		/* Hole saw */
+	CNC_TOOL_ENDMILL,		/* Endmill or special milling cutter */
+	CNC_TOOL_SLITSAW,		/* Slitting saw */
+	CNC_TOOL_FACEMILL,		/* Face mill / fly cutter */
+	CNC_TOOL_GEARCUTTER,		/* Involute gear cutter */
+	CNC_TOOL_LAST
+};
+
+/*
+ * Milling cutter shape subtype
+ * Sync with libcnc cnc_endmill_nose_strings[].
+ */
+enum cnc_endmill_nose_type {
+	CNC_ENDMILL_FLAT,		/* Flat nose */
+	CNC_ENDMILL_ROUNDED,		/* Rounded-edge */
+	CNC_ENDMILL_TAPERED,		/* Taper degree end mill */
+	CNC_ENDMILL_BALL,		/* Ball-nose */
+	CNC_ENDMILL_CHAMFER,		/* For bevel/angle cuts */
+	CNC_ENDMILL_DOVETAIL,		/* Dovetail cutter */
+	CNC_ENDMILL_TSLOT,		/* T-slot cutter */
+	CNC_ENDMILL_CORNER_ROUNDING,	/* Corner rounding */
+	CNC_ENDMILL_CONVEX_RADIUS,	/* Produce hollow inward-curving shape */
+	CNC_ENDMILL_CONCAVE_RADIUS,	/* Produce rounded outward-curving shape */
+};
+
+/* For CNC_GETTOOLINFO/CNC_SETTOOLINFO */
+struct cnc_tool {
+	int idx;		/* Tool index */
+	int atc;		/* Associated atc(4) device (-1 = none) */
+	enum cnc_tool_type type; /* Tool class */
+	cnc_dist_t lenOffs;	/* Tool length offset */
+	cnc_dist_t wearFn;	/* Tool wear factor */
+	cnc_dist_t wearOffs;	/* Effective wear offset */
+	union {
+		struct {
+			cnc_dist_t dia;	/* Nominal diameter */
+			cnc_dist_t len;	/* Flute length */
+			int ptAngle;	/* Point / countersink angle (degs) */
+		} drill;
+		struct {
+			cnc_dist_t id;	/* Inside diameter */
+			cnc_dist_t od;	/* Outside diameter */
+			cnc_dist_t len;	/* Usable length */
+		} holesaw;
+		struct {
+			enum cnc_endmill_nose_type nose;	/* Shape */
+			cnc_dist_t dia;	/* Nominal dia (tip dia for TAPERED) */
+			cnc_dist_t len;	/* Length of cut (face wd. for TSLOT) */
+			cnc_dist_t r;	/* Radius (for ROUNDED/CORNER_ROUNDING/RADIUS) */
+			int angle;	/* Angle (for CHAMFER/DOVETAIL) */
+		} endmill;
+	} data;
 };
 
 /* For CNC_GETSTATS */
@@ -163,6 +232,9 @@ struct cnc_stats {
 #define CNC_SETCAPTUREMODE	_IOWR('C', 8, int)
 #define CNC_GETSTATS		_IOR('C', 9, struct cnc_stats)
 #define CNC_CLRSTATS		_IO('C', 10)
+#define CNC_GETNTOOLS		_IOR('C', 11, int)
+#define CNC_GETTOOLINFO		_IOR('C', 12, struct cnc_tool)
+#define CNC_SETTOOLINFO		_IOWR('C', 13, struct cnc_tool)
 
 #if !defined(_KERNEL)
 

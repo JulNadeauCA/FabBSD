@@ -9,6 +9,7 @@ file	dev/cnc/cnc_capture.c		cnc needs-flag
 file	dev/cnc/cnc_device.c		cnc needs-flag
 file	dev/cnc/cnc_math.c		cnc needs-flag
 file	dev/cnc/cnc_quintic.c		cnc needs-flag
+file	dev/cnc/cnc_tools.c		cnc needs-flag
 
 # Servo or stepping motor with clock/direction interface.
 device	servo
