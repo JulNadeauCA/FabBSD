@@ -44,7 +44,7 @@
 #include "pathnames.h"
 
 static const char *showopt_list[] = {
-	"devices", "info", "limits", "position", NULL
+	"devices", "info", "limits", "position", "tools", NULL
 };
 static const char *flushopt_list[] = {
 	"info", NULL
@@ -73,8 +73,8 @@ printusage(const char *optlist[])
 		fputc('\n', stderr);
 	} else {
 		fprintf(stderr, "usage: %s [-qCc] [-c timingfile] "
-		                "[-s modifier] [-F modifier] [-p coords]\n",
-				__progname);
+		                "[-s modifier] [-F modifier] [-p coords]"
+				"\n", __progname);
 	}
 	exit(1);
 }
@@ -194,6 +194,7 @@ main(int argc, char *argv[])
 			{
 				struct cnc_vector pos;
 				char pb[128];
+
 				if (ioctl(devfd, CNC_GETPOS, &pos) == -1) {
 					errx(1, "CNC_GETPOS");
 				}
@@ -205,6 +206,7 @@ main(int argc, char *argv[])
 		case 'd':
 			{
 				struct cnc_device_info di;
+
 				if (ioctl(devfd, CNC_GETDEVICEINFO, &di) == -1) {
 					errx(1, "CNC_GETDEVICEINFO");
 				}
@@ -219,6 +221,7 @@ main(int argc, char *argv[])
 		case 'i':
 			{
 				struct cnc_stats st;
+
 				if (ioctl(devfd, CNC_GETSTATS, &st) == -1) {
 					errx(1, "CNC_GETSTATS");
 				}
@@ -237,6 +240,27 @@ main(int argc, char *argv[])
 				printf("  max-velocity %lu\n", (u_long)kl.Fmax);
 				printf("  max-accel    %lu\n", (u_long)kl.Amax);
 				printf("  max-jerk     %lu\n", (u_long)kl.Jmax);
+			}
+			break;
+		case 't':
+			{
+
+				struct cnc_tool t;
+				int i, ntools;
+
+				if (ioctl(devfd, CNC_GETNTOOLS, &ntools)
+				    == -1) {
+					errx(1, "CNC_GETNTOOLS");
+				}
+				printf("%d tools:\n", ntools);
+				for (i = 0; i < ntools; i++) {
+					t.idx = i;
+					if (ioctl(devfd, CNC_GETTOOLINFO, &t)
+					    == -1) {
+						errx(1, "CNC_GETTOOLINFO(%d)", t.idx);
+					}
+					cnc_tool_print(&t);
+				}
 			}
 			break;
 		}
