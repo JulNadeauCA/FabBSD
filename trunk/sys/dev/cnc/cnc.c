@@ -1,6 +1,6 @@
 /*	$FabBSD$	*/
 /*
- * Copyright (c) 2007-2009 Hypertriton, Inc. <http://www.hypertriton.com/>
+ * Copyright (c) 2007-2010 Hypertriton, Inc. <http://www.hypertriton.com/>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -70,8 +70,9 @@
 #include "cnclcd.h"
 #include "cncstatled.h"
 
+/* For cnc_pos_t (uint64), /STEPDIV */
+#define STEPLEN 20336
 #define STEPMAX	(INT64_MAX-1)
-#define STEPLEN 20336			/* 20336 units = 1 step */
 #define MAXSTEPS (STEPMAX/STEPLEN)
 
 struct cnc_kinlimits cnc_kinlimits = {
@@ -94,6 +95,7 @@ struct cnc_stats cnc_stats;
 
 struct servo_softc      *cnc_servos[CNC_MAX_SERVOS];
 struct spindle_softc    *cnc_spindles[CNC_MAX_SPINDLES];
+struct atc_softc        *cnc_atcs[CNC_MAX_ATCS];
 struct estop_softc      *cnc_estops[CNC_MAX_ESTOPS];
 struct encoder_softc    *cnc_encoders[CNC_MAX_ENCODERS];
 struct mpg_softc        *cnc_mpgs[CNC_MAX_MPGS];
@@ -104,6 +106,7 @@ int cnc_simulate = 0;
 int cnc_capture = 0;
 int cnc_nservos = 0;
 int cnc_nspindles = 0;
+int cnc_natcs = 0;
 int cnc_nestops = 0;
 int cnc_nencoders = 0;
 int cnc_nmpgs = 0;
@@ -345,9 +348,12 @@ cncioctl(dev_t dev, u_long cmd, caddr_t data, int flag, struct proc *p)
 		return (0);
 	case CNC_GETDEVICEINFO:
 		{
-			struct cnc_device_info *di = (struct cnc_device_info *)data;
+			struct cnc_device_info *di =
+			    (struct cnc_device_info *)data;
+
 			di->nservos = cnc_nservos;
 			di->nspindles = cnc_nspindles;
+			di->natcs = cnc_natcs;
 			di->nestops = cnc_nestops;
 			di->nencoders = cnc_nencoders;
 			di->nmpgs = cnc_nmpgs;
@@ -390,6 +396,33 @@ cncioctl(dev_t dev, u_long cmd, caddr_t data, int flag, struct proc *p)
 		return (0);
 	case CNC_CLRSTATS:
 		bzero(&cnc_stats, sizeof(struct cnc_stats));
+		return (0);
+	case CNC_GETNTOOLS:
+		*(int *)data = cnc_ntools;
+		return (0);
+	case CNC_GETTOOLINFO:
+		{
+			struct cnc_tool *tool = (struct cnc_tool *)data;
+			int idx = tool->idx;
+
+			if (idx < 0 || idx >= cnc_ntools) {
+				return (EINVAL);
+			}
+			bcopy(&cnc_tools[idx], (void *)data,
+			    sizeof(struct cnc_tool));
+		}
+		return (0);
+	case CNC_SETTOOLINFO:
+		{
+			struct cnc_tool *tool = (struct cnc_tool *)data;
+			int idx = tool->idx;
+
+			if (idx < 0 || idx >= cnc_ntools) {
+				return (EINVAL);
+			}
+			bcopy((void *)data, &cnc_tools[idx],
+			    sizeof(struct cnc_tool));
+		}
 		return (0);
 	default:
 		break;
