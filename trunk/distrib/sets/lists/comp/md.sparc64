@@ -228,6 +228,7 @@
 ./usr/lib/libbfd.a
 ./usr/lib/libbfd.la
 ./usr/lib/libc_pic.a
+./usr/lib/libcnc_pic.a
 ./usr/lib/libcom_err_pic.a
 ./usr/lib/libcrypto_pic.a
 ./usr/lib/libcurses_pic.a

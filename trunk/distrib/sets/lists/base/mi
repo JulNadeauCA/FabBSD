@@ -180,6 +180,7 @@
 ./usr/bin/fstat
 ./usr/bin/ftp
 ./usr/bin/gencat
+./usr/bin/gerbdrill
 ./usr/bin/getcap
 ./usr/bin/getconf
 ./usr/bin/getent
