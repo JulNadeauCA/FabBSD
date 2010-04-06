@@ -9,24 +9,27 @@
 .Nd move machine axes
 .Sh SYNOPSIS
 .Nm move
-.Op Fl s Ar startvel
-.Op Fl f Ar feedrate
-.Op Fl a Ar accellim
-.Op Fl j Ar jerklim
+.Op Fl S Ar startvel
+.Op Fl F Ar feedrate
+.Op Fl A Ar accellim
+.Op Fl J Ar jerklim
 .Op Ar pos ...
 .Sh DESCRIPTION
 The
 .Nm
 command is the simplest interface to FabBSD's trajectory planner.
-It moves the registered machine axes (see
-.Xr servo 4 )
-from their current position to
-.Ar pos .
-If multiple
-.Ar pos
-are specified, the machine will move to each position successively.
 .Nm
-blocks and returns once the motions are complete.
+executes coordinated motion of the machine axes (e.g.,
+.Xr servo 4
+devices) from the current position (see
+.Xr cncctl 8 )
+to
+.Ar pos .
+If multiple position arguments are specified, the machine will move to
+each one successively.
+.Nm
+blocks and returns once the motions are complete (or an emergency stop
+raised).
 .Pp
 The options are as follows:
 .Bl -tag -width Ds
