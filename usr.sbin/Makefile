@@ -3,7 +3,7 @@
 
 .include <bsd.own.mk>
 
-SUBDIR=	adduser amd apm apmd arp \
+SUBDIR=	adduser apm apmd arp \
 	chroot cncctl config cron dev_mkdb fdformat \
 	gpioctl hotplugd ifstated inetd iostat \
 	kgmon kvm_mkdb lpr memconfig \
