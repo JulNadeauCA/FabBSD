@@ -218,6 +218,7 @@
 ./usr/bin/instmodsh
 ./usr/bin/ipcrm
 ./usr/bin/ipcs
+./usr/bin/jog
 ./usr/bin/join
 ./usr/bin/jot
 ./usr/bin/kdump
