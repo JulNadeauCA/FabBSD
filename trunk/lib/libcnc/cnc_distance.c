@@ -26,28 +26,60 @@
 
 #include <sys/limits.h>
 
+#include <limits.h>
 #include <cnc.h>
 #include <string.h>
+#include <stdlib.h>
 #include <errno.h>
 
-/*
- * Parse a string representing distance.
- * TODO conversions
- */
+/* Parse a string representing a distance. */
 int
 cnc_dist_parse(cnc_dist_t *dist, const char *s)
 {
+	const cnc_unit_t *unit;
 	char *ep;
 
 	errno = 0;
 	*dist = strtoul(s, &ep, 10);
-	if (s[0] == '\0' || *ep != '\0') {
+	if (s[0] == '\0') {
 		cnc_set_error("No numerical distance value");
 		return (-1);
 	}
 	if (errno == ERANGE || *dist == ULONG_MAX) {
 		cnc_set_error("Distance value out of range");
 		return (-1);
+	}
+	if (ep != '\0') {
+		if ((unit = cnc_find_unit(ep, cncLengthUnits)) == NULL) {
+			return (-1);
+		}
+		*dist *= unit->divider;
+	}
+	return (0);
+}
+
+/* Parse a string representing an angle. */
+int
+cnc_angle_parse(int *angle, const char *s)
+{
+	const cnc_unit_t *unit;
+	char *ep;
+
+	errno = 0;
+	*angle = strtoul(s, &ep, 10);
+	if (s[0] == '\0') {
+		cnc_set_error("No numerical angle value");
+		return (-1);
+	}
+	if (errno == ERANGE || *angle == ULONG_MAX) {
+		cnc_set_error("Angle value out of range");
+		return (-1);
+	}
+	if (ep != '\0') {
+		if ((unit = cnc_find_unit(ep, cncAngleUnits)) == NULL) {
+			return (-1);
+		}
+		*angle *= unit->divider;
 	}
 	return (0);
 }
