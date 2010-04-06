@@ -1,6 +1,6 @@
 /*	$FabBSD$	*/
 /*
- * Copyright (c) 2009 Hypertriton, Inc. <http://hypertriton.com/>
+ * Copyright (c) 2009-2010 Hypertriton, Inc. <http://hypertriton.com/>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -123,7 +123,7 @@ int	ngc_csys = 1;
  * interpreter mode.
  */
 static int
-readprogline(struct ngc_prog *prog, int nLine, char *pLine)
+ngc_parse_line(struct ngc_prog *prog, int nLine, char *pLine)
 {
 	struct ngc_block *blk;
 	struct ngc_word *word = NULL;
@@ -295,7 +295,7 @@ ngc_prog_del(struct ngc_prog *prog)
  * are separated by '%' and identified by 'O' or ':' directives.
  */
 static int
-readprogfile(const char *path)
+ngc_parse_file(const char *path)
 {
 	struct ngc_prog *prog = NULL;
 	char lineBuf[NGC_LINE_MAX+1], *pLine, *line;
@@ -375,7 +375,7 @@ readprogfile(const char *path)
 			goto next_line;
 
 		if (prog != NULL) {
-			if (readprogline(prog, nLine, line) == -1)
+			if (ngc_parse_line(prog, nLine, line) == -1)
 				goto fail;
 		}
 next_line:
@@ -586,7 +586,7 @@ main(int argc, char *argv[])
 	argv += optind;
 	argc -= optind;
 	for (i = 0; i < argc; i++) {
-		if (readprogfile(argv[i]) == -1)
+		if (ngc_parse_file(argv[i]) == -1)
 			errx(1, "%s:%s", argv[i], cnc_get_error());
 	}
 	for (prog = TAILQ_FIRST(&ngc_progs);
