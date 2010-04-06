@@ -26,9 +26,13 @@
 
 #include <sys/limits.h>
 
+#include <limits.h>
 #include <cnc.h>
 #include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
 #include <errno.h>
+#include <math.h>
 
 /*
  * Parse a string of the form "x,y,z" into a cnc_vec_t.
@@ -52,6 +56,9 @@ cnc_vec_parse(cnc_vec_t *V, const char *sarg)
 	     (sp = strsep(&s, ",: ")) && i < CNC_NAXES;
 	     i++) {
 		errno = 0;
+		if (*sp == 'm') {
+			*sp = '-';
+		}
 		V->v[i] = (cnc_pos_t)strtoull(sp, &ep, 10);
 		if (sp[0] == '\0' || *ep != '\0') {
 			cnc_set_error("No numerical velocity value");
