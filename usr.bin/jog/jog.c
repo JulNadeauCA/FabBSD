@@ -27,47 +27,54 @@
 #include <sys/cnc.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <cnc.h>
 
 extern char *__progname;
 
 static void
 printusage(void)
 {
-	printf("Usage: %s [-s startvel] [-f feedrate] [-a accellim] "
-	       "[-j jerklim]\n", __progname);
+	printf("Usage: %s [-m multiplier] [-S startvel] [-F feedrate] [-A accellim] "
+	       "[-J jerklim] [pos ...]\n", __progname);
 }
 
 int
 main(int argc, char *argv[])
 {
-	struct cnc_velocity Vp;
+	struct cnc_velocity vel;
 	int i, ch;
-
-	Vp.v0 = 0;
-	Vp.F = 100;
-	Vp.Amax = 10;
-	Vp.Jmax = 10;
-
-	while ((ch = getopt(argc, argv, "s:f:a:j:?h")) != -1) {
+	int mult = 1000;
+	
+	if (cnc_init() == -1) {
+		errx(1, "%s", cnc_get_error());
+	}
+	atexit(cnc_destroy);
+	vel = cnc_vel_default;
+	
+	while ((ch = getopt(argc, argv, "m:S:F:A:J:?hv")) != -1) {
 		switch (ch) {
-		case 's':
-			cnc_vel_parse(&Vp.v0, optarg);
+		case 'm':
+			mult = atoi(optarg);
+			break;
+		case 'S':
+			cnc_vel_parse(&vel.v0, optarg);
 			break;
 		case 'F':
-			cnc_vel_parse(&Vp.F, optarg);
+			cnc_vel_parse(&vel.F, optarg);
 			break;
 		case 'A':
-			cnc_vel_parse(&Vp.Amax, optarg);
+			cnc_vel_parse(&vel.Amax, optarg);
 			break;
 		case 'J':
-			cnc_vel_parse(&Vp.Jmax, optarg);
+			cnc_vel_parse(&vel.Jmax, optarg);
 			break;
 		default:
 			printusage();
 			return (1);
 		}
 	}
-	if (cncjog(&Vp) != 0) {
+
+	if (cncjog(&vel, mult) != 0) {
 		errx(1, "cncjog failed");
 	}
 	return (0);
