@@ -9,10 +9,11 @@
 .Nd move machine axes manually
 .Sh SYNOPSIS
 .Nm jog
-.Op Fl s Ar startvel
-.Op Fl f Ar feedrate
-.Op Fl a Ar accellim
-.Op Fl j Ar jerklim
+.Op Fl m Ar multiplier
+.Op Fl S Ar startvel
+.Op Fl F Ar feedrate
+.Op Fl A Ar accellim
+.Op Fl J Ar jerklim
 .Sh DESCRIPTION
 The
 .Nm
@@ -29,18 +30,24 @@ has been raised.
 .Pp
 The options are as follows:
 .Bl -tag -width Ds
-.It Fl s
+.It Fl m
+Specify a multiplier for MPG handwheel pulses.
+The meaning of this parameter is dependent on the style of jog routine in
+use.
+The multiplier may apply to the number of steps of movement to a target
+position, or it may control an acceleration / deceleration rate.
+.It Fl S
 Specify an initial, starting velocity in steps/s for the velocity profile.
 Default is 0.
-.It Fl f
+.It Fl F
 Specify a maximum feed rate in steps/s.
 The trajectory planner may or may not achieve this feed rate (depending on the
 other parameters and travel distance).
 Default is machine-dependent.
-.It Fl a
+.It Fl A
 Specify the limit on acceleration in steps/s^2.
 Default is machine-dependent.
-.It Fl j
+.It Fl J
 Specify the limit on jerk in steps/s^3.
 Default is machine-dependent.
 .El
