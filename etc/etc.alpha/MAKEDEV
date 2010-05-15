@@ -67,6 +67,7 @@
 #	usb*	Bus control devices used by usbd for attach/detach
 # Special purpose devices:
 #	cnc	Computer aided machining interface
+#	mpg*	Manual-pulse generator
 #	crypto	Hardware crypto access driver
 #	fd	fd/* nodes
 #	hotplug	devices hot plugging
@@ -281,7 +282,11 @@ crypto)
 	M crypto c 57 0
 	;;
 
-cnc*)
+mpg*)
+	M mpg$U c 91 $U 
+	;;
+
+cnc)
 	M cnc c 90 $U 
 	;;
 
@@ -459,14 +464,14 @@ local)
 	;;
 
 all)
-	R ccd0 ccd1 ccd2 ccd3 vnd0 vnd1 vnd2 vnd3 sd0 sd1 sd2 sd3 sd4
-	R cd0 cd1 rd0 tun0 tun1 tun2 tun3 pty0 fd1 fd1B fd1C fd1D fd1E
-	R fd1F fd1G fd1H fd0 fd0B fd0C fd0D fd0E fd0F fd0G fd0H ch0
-	R hotplug ptm local wscons pci0 pci1 pci2 pci3 iop0 iop1 uall
-	R speaker uk0 random lpa0 lpa1 lpa2 lpt0 lpt1 lpt2 lkm tty00
-	R tty01 tty02 tty03 ttyc0 ttyc1 ttyc2 ttyc3 ttyc4 ttyc5 ttyc6
-	R ttyc7 ttyB0 ttyB1 ttyB2 ttyB3 ttyB4 ttyB5 crypto wd0 wd1 wd2
-	R wd3 std st0 st1 fd
+	R mpg0 mpg1 mpg2 mpg3 cnc ccd0 ccd1 ccd2 ccd3 vnd0 vnd1 vnd2
+	R vnd3 sd0 sd1 sd2 sd3 sd4 cd0 cd1 rd0 tun0 tun1 tun2 tun3
+	R pty0 fd1 fd1B fd1C fd1D fd1E fd1F fd1G fd1H fd0 fd0B fd0C
+	R fd0D fd0E fd0F fd0G fd0H ch0 hotplug ptm local wscons pci0
+	R pci1 pci2 pci3 iop0 iop1 uall speaker uk0 random lpa0 lpa1
+	R lpa2 lpt0 lpt1 lpt2 lkm tty00 tty01 tty02 tty03 ttyc0 ttyc1
+	R ttyc2 ttyc3 ttyc4 ttyc5 ttyc6 ttyc7 ttyB0 ttyB1 ttyB2 ttyB3
+	R ttyB4 ttyB5 crypto wd0 wd1 wd2 wd3 std st0 st1 fd
 	;;
 
 wd*|sd*|ccd*)

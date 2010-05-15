@@ -23,11 +23,13 @@ __devitem(apm, apm, Power management device)dnl
 __devitem(amdmsr, amdmsr, AMD MSR access device)dnl
 __devitem(nvram, nvram, NVRAM access)dnl
 __devitem(cnc, cnc, Computer aided machining interface)dnl
+__devitem(mpg, mpg*, Manual-pulse generator)dnl
 _mkdev(agp, agp*, {-M agp$U c major_agp_c $U
 	MKlist[${#MKlist[*]}]=";[ -e agpgart ] || ln -s agp$U agpgart"-})dnl
 _mkdev(amdmsr, amdmsr*, {-M amdmsr c major_amdmsr_c $U -})dnl
 _mkdev(nvram, nvram, {-M nvram c major_nvram_c 0 440 kmem-})dnl
-_mkdev(cnc, cnc*, {-M cnc c major_cnc_c $U -})dnl
+_mkdev(cnc, cnc, {-M cnc c major_cnc_c $U -})dnl
+_mkdev(mpg, mpg*, {-M mpg$U c major_mpg_c $U -})dnl
 _TITLE(make)
 _DEV(all)
 _DEV(ramdisk)
@@ -71,6 +73,7 @@ _DEV(ulpt, 64)
 _DEV(usb, 61)
 _TITLE(spec)
 _DEV(cnc, 90)
+_DEV(mpg, 91)
 _DEV(agp, 87)
 _DEV(apm, 21)
 _DEV(amdmsr, 89)
@@ -128,3 +131,4 @@ target(all, amdmsr)dnl
 twrget(ramd, wsdisp, ttyC, 0)dnl
 target(ramd, mcd, 0)dnl
 target(all, cnc)dnl
+target(all, mpg, 0, 1, 2, 3)dnl

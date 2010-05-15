@@ -22,6 +22,7 @@ dnl
 __devitem(s64_tzs, tty[a-z]*, Zilog 8530 serial port,zs)dnl
 __devitem(s64_czs, cua[a-z]*, Zilog 8530 serial port,zs)dnl
 __devitem(cnc, cnc, Computer aided machining interface)dnl
+__devitem(mpg, mpg*, Manual-pulse generator)dnl
 _mkdev(s64_tzs, {-tty[a-z]-}, {-u=${i#tty*}
 	case $u in
 	a) n=0 ;;
@@ -43,7 +44,8 @@ _mkdev(s64_czs, cua[a-z], {-u=${i#cua*}
 dnl
 __devitem(uperf, uperf, Performance counters)dnl
 _mkdev(uperf, uperf, {-M uperf c major_uperf_c 0 664-})dnl
-_mkdev(cnc, cnc*, {-M cnc c major_cnc_c $U -})dnl
+_mkdev(cnc, cnc, {-M cnc c major_cnc_c $U -})dnl
+_mkdev(mpg, mpg*, {-M mpg$U c major_mpg_c $U -})dnl
 _TITLE(make)
 _DEV(all)
 _DEV(ramdisk)
@@ -93,6 +95,7 @@ _DEV(ulpt, 93)
 _DEV(usb, 90)
 _TITLE(spec)
 _DEV(cnc, 90)
+_DEV(mpg, 91)
 _DEV(cry, 75)
 _DEV(fdesc, 24)
 _DEV(hotplug, 124)
@@ -140,3 +143,4 @@ target(all, bpp, 0)dnl
 twrget(all, s64_tzs, tty, a, b, c, d)dnl
 twrget(all, s64_czs, cua, a, b, c, d)dnl
 target(all, cnc)dnl
+target(all, mpg, 0, 1, 2, 3)dnl

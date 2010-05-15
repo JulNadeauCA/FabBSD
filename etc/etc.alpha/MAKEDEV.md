@@ -19,7 +19,9 @@ dnl OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 dnl
 dnl
 __devitem(cnc, cnc, Computer aided machining interface)dnl
-_mkdev(cnc, cnc*, {-M cnc c major_cnc_c $U -})dnl
+__devitem(mpg, mpg*, Manual-pulse generator)dnl
+_mkdev(cnc, cnc, {-M cnc c major_cnc_c $U -})dnl
+_mkdev(mpg, mpg*, {-M mpg$U c major_mpg_c $U -})dnl
 _TITLE(make)
 _DEV(all)
 _DEV(ramdisk)
@@ -63,6 +65,7 @@ _DEV(ulpt, 47)
 _DEV(usb, 45)
 _TITLE(spec)
 _DEV(cnc, 90)
+_DEV(mpg, 91)
 _DEV(cry, 57)
 _DEV(fdesc, 10)
 _DEV(hotplug, 56)
@@ -109,3 +112,5 @@ target(all, sd, 0, 1, 2, 3, 4)dnl
 target(all, vnd, 0, 1, 2, 3)dnl
 target(all, ccd, 0, 1, 2, 3)dnl
 target(ramd, ttyB, 0, 1)dnl
+target(all, cnc)dnl
+target(all, mpg, 0, 1, 2, 3)dnl

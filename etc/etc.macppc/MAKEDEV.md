@@ -21,6 +21,7 @@ dnl
 __devitem(s64_tzs, tty[a-z]*, Zilog 8530 serial ports,zs)dnl
 __devitem(s64_czs, cua[a-z]*, Zilog 8530 serial ports,zs)dnl
 __devitem(cnc, cnc, Computer aided machining interface)dnl
+__devitem(mpg, mpg*, Manual-pulse generator)dnl
 _mkdev(s64_tzs, {-tty[a-z]-}, {-u=${i#tty*}
 	case $u in
 	a) n=0 ;;
@@ -36,7 +37,8 @@ _mkdev(s64_czs, cua[a-z], {-u=${i#cua*}
 	esac
 	M cua$u c major_s64_czs_c Add($n, 128) 660 dialer uucp-})dnl
 __devitem(apm, apm, Power management device)dnl
-_mkdev(cnc, cnc*, {-M cnc c major_cnc_c $U -})dnl
+_mkdev(cnc, cnc, {-M cnc c major_cnc_c $U -})dnl
+_mkdev(mpg, mpg*, {-M mpg$U c major_mpg_c $U -})dnl
 _TITLE(make)
 _DEV(all)
 _DEV(ramd)
@@ -76,6 +78,7 @@ _DEV(ulpt, 64)
 _DEV(usb, 61)
 _TITLE(spec)
 _DEV(cnc, 90)
+_DEV(mpg, 91)
 _DEV(apm, 25)
 _DEV(bthub, 81)
 _DEV(cry, 47)
@@ -118,3 +121,4 @@ target(ramd, ttya, 0, 1)dnl
 target(ramd, ttyb, 0, 1)dnl
 target(ramd, pty, 0)dnl
 target(all, cnc)dnl
+target(all, mpg, 0, 1, 2, 3)dnl
