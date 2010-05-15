@@ -24,6 +24,7 @@ dnl
 __devitem(s64_tzs, tty[a-z]*, Zilog 8530 serial ports,zs)dnl
 __devitem(s64_czs, cua[a-z]*, Zilog 8530 serial ports,zs)dnl
 __devitem(cnc, cnc, Computer aided machining interface)dnl
+__devitem(mpg, mpg*, Manual-pulse generator)dnl
 _mkdev(s64_tzs, {-tty[a-z]-}, {-u=${i#tty*}
 	case $u in
 	a) n=0 ;;
@@ -49,7 +50,8 @@ _mkdev(s64_czs, cua[a-z], {-u=${i#cua*}
 __devitem(presto, presto*, Prestoserve NVRAM memory)dnl
 disk_q(presto)dnl
 __devitem(apm, apm, Power management device, tctrl)dnl
-_mkdev(cnc, cnc*, {-M cnc c major_cnc_c $U -})dnl
+_mkdev(cnc, cnc, {-M cnc c major_cnc_c $U -})dnl
+_mkdev(mpg, mpg*, {-M mpg$U c major_mpg_c $U -})dnl
 _TITLE(make)
 _DEV(all)
 _DEV(ramdisk)
@@ -91,6 +93,7 @@ _TITLE(point)
 _DEV(wsmouse, 80)
 _TITLE(spec)
 _DEV(cnc, 90)
+_DEV(mpg, 91)
 _DEV(apm, 30)
 _DEV(fdesc, 24)
 _DEV(lkm, 112)
@@ -136,3 +139,4 @@ twrget(wscons, wscons, ttyG, cfg, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, a, b)dnl
 twrget(wscons, wscons, ttyH, cfg, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, a, b)dnl
 twrget(wscons, wscons, ttyI, cfg, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, a, b)dnl
 target(all, cnc)dnl
+target(all, mpg, 0, 1, 2, 3)dnl

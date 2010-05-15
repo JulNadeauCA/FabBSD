@@ -22,10 +22,12 @@ __devitem(agp, agp*, AGP bridge)dnl
 __devitem(apm, apm, Power Management Interface)dnl
 __devitem(nvram, nvram, NVRAM access)dnl
 __devitem(cnc, cnc, Computer aided machining interface)dnl
+__devitem(mpg, mpg*, Manual-pulse generator)dnl
 _mkdev(nvram, nvram, {-M nvram c major_nvram_c 0 440 kmem-})dnl
 _mkdev(agp, agp*, {-M agp$U c major_agp_c $U
 	MKlist[${#MKlist[*]}]=";[ -e agpgart ] || ln -s agp$U agpgart"-})dnl
-_mkdev(cnc, cnc*, {-M cnc c major_cnc_c $U -})dnl
+_mkdev(cnc, cnc, {-M cnc c major_cnc_c $U -})dnl
+_mkdev(mpg, mpg*, {-M mpg$U c major_mpg_c $U -})dnl
 _TITLE(make)
 _DEV(all)
 _DEV(ramdisk)
@@ -68,6 +70,7 @@ _DEV(ulpt, 64)
 _DEV(usb, 61)
 _TITLE(spec)
 _DEV(cnc, 90)
+_DEV(mpg, 91)
 _DEV(agp, 86)
 _DEV(apm, 83)
 _DEV(bthub, 84)
@@ -121,3 +124,5 @@ target(all, agp, 0)dnl
 twrget(ramd, wsdisp, ttyC, 0)dnl
 target(ramd, fd, 0)dnl
 dnl target(ramd, mcd, 0)dnl
+target(all, cnc)dnl
+target(all, mpg, 0, 1, 2, 3)dnl
