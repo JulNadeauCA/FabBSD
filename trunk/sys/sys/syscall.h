@@ -624,12 +624,8 @@
 /* syscall: "cncmove" ret: "int" args: "const struct cnc_velocity *" "const struct cnc_vector *" */
 #define	SYS_cncmove	310
 
-/* syscall: "cncjog" ret: "int" args: "const struct cnc_velocity *" */
-#define	SYS_cncjog	311
-
-/* syscall: "cncjogstep" ret: "int" args: */
-#define	SYS_cncjogstep	312
-
+				/* 311 is obsolete cncjog */
+				/* 312 is obsolete cncjogstep */
 /* syscall: "spinctl" ret: "int" args: "int" "int" "const struct cnc_spindle_args *" */
 #define	SYS_spinctl	313
 

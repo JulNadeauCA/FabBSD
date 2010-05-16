@@ -920,10 +920,6 @@ struct sys_cncmove_args {
 	syscallarg(const struct cnc_vector *) tgt;
 };
 
-struct sys_cncjog_args {
-	syscallarg(const struct cnc_velocity *) vel;
-};
-
 struct sys_spinctl_args {
 	syscallarg(int) spindle;
 	syscallarg(int) op;
@@ -1200,8 +1196,6 @@ int	sys_statfs(struct proc *, void *, register_t *);
 int	sys_fstatfs(struct proc *, void *, register_t *);
 int	sys_fhstatfs(struct proc *, void *, register_t *);
 int	sys_cncmove(struct proc *, void *, register_t *);
-int	sys_cncjog(struct proc *, void *, register_t *);
-int	sys_cncjogstep(struct proc *, void *, register_t *);
 int	sys_spinctl(struct proc *, void *, register_t *);
 int	sys_atcctl(struct proc *, void *, register_t *);
 int	sys_laserctl(struct proc *, void *, register_t *);

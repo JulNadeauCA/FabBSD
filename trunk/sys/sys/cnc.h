@@ -59,8 +59,8 @@ typedef struct cnc_vector {
 struct cnc_velocity {
 	cnc_vel_t v0;		 /* min steps/s */
 	cnc_vel_t F;		 /* max steps/s */
-	cnc_vel_t Amax;		 /* max steps/ms^2 */
-	cnc_vel_t Jmax;		 /* max steps/ms^3 */
+	cnc_vel_t Amax;		 /* max steps/us^2 */
+	cnc_vel_t Jmax;		 /* max steps/us^3 */
 };
 #define CNC_VELOCITY_INITIALIZER(v0,F,Amax,Jmax) \
 	{ (v0), (F), (Amax), (Jmax) }
@@ -141,7 +141,6 @@ struct cnc_kinlimits {
 /* Calibrated delay loop timings. */
 struct cnc_timings {
 	cnc_utime_t hz;		/* 1Hz reference */
-	cnc_utime_t move_jog;	/* Execution time of cnc_move_jog() */
 };
 
 /* For CNC_GETDEVICEINFO */
@@ -221,6 +220,12 @@ struct cnc_stats {
 	int estops;			/* emergency stop events */
 };
 
+/* For /dev/mpg* events */
+struct cnc_mpg_event {
+	int axis;			/* Selected axis */
+	int delta;			/* Pulses received */
+};
+
 #define CNC_GETPOS		_IOR('C', 0, struct cnc_vector)
 #define CNC_SETPOS		_IOWR('C', 1, struct cnc_vector)
 #define CNC_GETDEVICEINFO	_IOR('C', 2, struct cnc_device_info)
@@ -241,9 +246,7 @@ struct cnc_stats {
 #include <sys/cdefs.h>
 
 __BEGIN_DECLS
-int	cncmove(const struct cnc_velocity *, const cnc_vec_t *tgt);
-int	cncjog(const struct cnc_velocity *);
-int	cncjogstep(void);
+int	cncmove(const struct cnc_velocity *, const cnc_vec_t *);
 int	spinctl(int, enum cnc_spindle_op, const struct cnc_spindle_args *);
 int	atcctl(int, enum cnc_atc_op, const struct cnc_atc_args *);
 int	laserctl(int, enum cnc_laser_op, const struct cnc_laser_args *);
