@@ -88,7 +88,7 @@ cnc_vec_print(const cnc_vec_t *V, char *s, size_t len)
 	}
 	s[0] = '\0';
 	for (i = 0; i < CNC_NAXES; i++) {
-		snprintf(sn, sizeof(sn), "%llu", (unsigned long long)V->v[i]);
+		snprintf(sn, sizeof(sn), "%lld", (long long)V->v[i]);
 		if (strlcat(s, sn, len) >= len)
 			goto oflow;
 		if (i < CNC_NAXES-1 && strlcat(s, ",", len) >= len)
