@@ -25,7 +25,7 @@ ASM=	accept.o access.o adjfreq.o adjtime.o bind.o chdir.o chflags.o \
 	chmod.o \
 	chown.o chroot.o clock_gettime.o clock_settime.o clock_getres.o \
 	close.o closefrom.o \
-	cncmove.o cncjog.o cncjogstep.o cncpos.o \
+	cncmove.o cncpos.o \
 	connect.o dup.o dup2.o execve.o fchdir.o \
 	fchflags.o fchmod.o fchown.o fcntl.o fhopen.o fhstat.o fhstatfs.o \
 	flock.o fpathconf.o fstat.o \

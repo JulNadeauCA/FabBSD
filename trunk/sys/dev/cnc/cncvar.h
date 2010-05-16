@@ -44,12 +44,11 @@ void cnc_inc_axis(enum cnc_axis, int);
 void cnc_clip_velocity(const struct cnc_quintic_profile *, cnc_real_t *);
 
 cnc_utime_t cnc_calibrate_hz(void);
-cnc_utime_t cnc_calibrate_move_jog(void);
 
 static __inline__ int
 cnc_calibrated(void)
 {
-	if (cnc_timings.hz == 0 || cnc_timings.move_jog == 0) {
+	if (cnc_timings.hz == 0) {
 		printf("cnc: timings are not calibrated!\n");
 		return (-1);
 	}

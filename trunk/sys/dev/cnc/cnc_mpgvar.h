@@ -27,7 +27,7 @@ struct mpg_softc {
 	int sc_sel_axis;			/* Currently selected axis */
 	int sc_mult;				/* Current multiplier */
 	int sc_pulses[CNC_MAX_AXES];		/* Pulse counts */
-	int sc_ppi;				/* Pulses per increment */
+	int sc_open;				/* Device is open */
 };
 
 /*
@@ -49,7 +49,4 @@ struct mpg_softc {
      (!(axis)->A &&  (axis)->Aprev &&  (axis)->B &&  (axis)->Bprev))
 
 int  mpg_get_axis(struct mpg_softc *);
-void mpg_jog_init(struct mpg_softc *);
-void mpg_jog_tgt(struct mpg_softc *, cnc_vec_t *, int);
-int  mpg_jog_vel(struct mpg_softc *, int *, int);
 

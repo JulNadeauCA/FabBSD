@@ -48,6 +48,8 @@
 #include <dev/cnc/cncvar.h>
 #include <dev/cnc/cnc_mpgvar.h>
 
+#define MPGUNIT(x) minor(x)
+
 int	mpg_match(struct device *, void *, void *);
 void	mpg_attach(struct device *, struct device *, void *);
 int	mpg_detach(struct device *, int);
@@ -115,16 +117,18 @@ mpg_attach(struct device *parent, struct device *self, void *aux)
 	if (sc->sc_naxes >= 6) { CNC_MAP_INPUT(sc, MPG_PIN_SELC, "SELC"); }
 
 	for (i = 0; i < sc->sc_naxes; i++) {
-		sc->sc_axes[i].A = 0;
-		sc->sc_axes[i].B = 0;
-		sc->sc_axes[i].Aprev = 0;
-		sc->sc_axes[i].Bprev = 0;
+		struct mpg_axis *axis = &sc->sc_axes[i];
+
+		axis->A = 0;
+		axis->B = 0;
+		axis->Aprev = gpio_pin_read(sc->sc_gpio, &sc->sc_map, MPG_PIN_A);
+		axis->Bprev = gpio_pin_read(sc->sc_gpio, &sc->sc_map, MPG_PIN_B);
 		sc->sc_pulses[i] = 0;
 	}
 
 	sc->sc_sel_axis = 0;
 	sc->sc_mult = 1000;
-	sc->sc_ppi = 2;
+	sc->sc_open = 0;
 
 	printf("\n");
 	return;
@@ -175,110 +179,77 @@ mpg_get_axis(struct mpg_softc *sc)
 	return (CNC_X);
 }
 
-void
-mpg_jog_init(struct mpg_softc *sc)
-{
-	int j;
-
-	for (j = 0; j < sc->sc_naxes; j++) {
-		struct mpg_axis *axis = &sc->sc_axes[j];
-
-		axis->Aprev = gpio_pin_read(sc->sc_gpio, &sc->sc_map, MPG_PIN_A);
-		axis->Bprev = gpio_pin_read(sc->sc_gpio, &sc->sc_map, MPG_PIN_B);
-	}
-}
-
-/*
- * Scan the registered MPGs for changes in their quadrature signal states,
- * and decode the transitions into position changes. Move vTgt by mult steps
- * (use MPG default if mult = -1).
- */
-void
-mpg_jog_tgt(struct mpg_softc *sc, cnc_vec_t *vTgt, int mult)
-{
-	int axisIdx;
-	struct mpg_axis *axis;
-
-	if (sc->sc_sel_axis != (axisIdx = mpg_get_axis(sc))) {
-		printf("%s: Selected axis%d -> axis%d\n",
-		    ((struct device *)sc)->dv_xname, sc->sc_sel_axis, axisIdx);
-		sc->sc_sel_axis = axisIdx;
-		*vTgt = cnc_pos;			/* Reset position */
-	}
-	axis = &sc->sc_axes[axisIdx];
-	axis->A = gpio_pin_read(sc->sc_gpio, &sc->sc_map, MPG_PIN_A);
-	axis->B = gpio_pin_read(sc->sc_gpio, &sc->sc_map, MPG_PIN_B);
-
-	if (axis->A == axis->Aprev &&
-	    axis->B == axis->Bprev)
-		return;
-
-	if (( axis->A && !axis->B && !axis->Aprev && !axis->Bprev) ||
-	    ( axis->A &&  axis->B &&  axis->Aprev && !axis->Bprev) ||
-	    (!axis->A &&  axis->B &&  axis->Aprev &&  axis->Bprev) ||
-	    (!axis->A && !axis->B && !axis->Aprev &&  axis->Bprev)) {
-		sc->sc_pulses[axisIdx]++;
-	} else {
-		sc->sc_pulses[axisIdx]--;
-	}
-	if (sc->sc_pulses[axisIdx] >= sc->sc_ppi) {
-		sc->sc_pulses[axisIdx] = 0;
-		vTgt->v[axisIdx] += (mult != -1) ? mult : sc->sc_mult;
-	}
-	if (sc->sc_pulses[axisIdx] <= -sc->sc_ppi) {
-		sc->sc_pulses[axisIdx] = 0;
-		vTgt->v[axisIdx] -= (mult != -1) ? mult : sc->sc_mult;
-	}
-
-	axis->Aprev = axis->A;
-	axis->Bprev = axis->B;
-}
-
-/*
- * Scan the registered MPGs for changes in their quadrature signal states,
- * and decode the transitions into a velocity change.
- */
 int
-mpg_jog_vel(struct mpg_softc *sc, int *vel, int mult)
+mpgopen(dev_t dev, int flag, int mode, struct proc *p)
 {
-	int axisIdx;
-	struct mpg_axis *axis;
-	int rv = 0;
+	int unit = MPGUNIT(dev);
+	struct mpg_softc *sc;
 
-	if (sc->sc_sel_axis != (axisIdx = mpg_get_axis(sc))) {
-		printf("%s: Selected axis%d -> axis%d\n",
-		    ((struct device *)sc)->dv_xname, sc->sc_sel_axis, axisIdx);
-		sc->sc_sel_axis = axisIdx;
-		*vel = 0;
+	if (unit >= mpg_cd.cd_ndevs)
+		return (ENXIO);
+
+	sc = mpg_cd.cd_devs[unit];
+	if (sc == NULL) {
+		return (ENXIO);
 	}
-	axis = &sc->sc_axes[axisIdx];
+	if (sc->sc_open) {
+		return (EBUSY);
+	}
+	return (0);
+}
+
+int
+mpgclose(dev_t dev, int flag, int mode, struct proc *p)
+{
+	int unit = MPGUNIT(dev);
+	struct mpg_softc *sc = mpg_cd.cd_devs[unit];
+
+	sc->sc_open = 0;
+	return (0);
+}
+
+int
+mpgread(dev_t dev, struct uio *uio, int flag)
+{
+	int unit = MPGUNIT(dev);
+	struct mpg_softc *sc = mpg_cd.cd_devs[unit];
+	struct cnc_mpg_event me;
+	struct mpg_axis *axis;
+	int s;
+
+	s = splhigh();
+
+	me.axis = mpg_get_axis(sc);
+	me.delta = 0;
+	axis = &sc->sc_axes[me.axis];
+
 	axis->A = gpio_pin_read(sc->sc_gpio, &sc->sc_map, MPG_PIN_A);
 	axis->B = gpio_pin_read(sc->sc_gpio, &sc->sc_map, MPG_PIN_B);
-
 	if (axis->A == axis->Aprev &&
-	    axis->B == axis->Bprev)
-		return (0);
-
+	    axis->B == axis->Bprev) {
+		goto out;
+	}
 	if (( axis->A && !axis->B && !axis->Aprev && !axis->Bprev) ||
 	    ( axis->A &&  axis->B &&  axis->Aprev && !axis->Bprev) ||
 	    (!axis->A &&  axis->B &&  axis->Aprev &&  axis->Bprev) ||
 	    (!axis->A && !axis->B && !axis->Aprev &&  axis->Bprev)) {
-		sc->sc_pulses[axisIdx]++;
+		me.delta++;
 	} else {
-		sc->sc_pulses[axisIdx]--;
+		me.delta--;
 	}
-	if (sc->sc_pulses[axisIdx] >= sc->sc_ppi) {
-		sc->sc_pulses[axisIdx] = 0;
-		(*vel) += mult;
-		rv = 1;
-	}
-	if (sc->sc_pulses[axisIdx] <= -sc->sc_ppi) {
-		sc->sc_pulses[axisIdx] = 0;
-		(*vel) -= mult;
-		rv = -1;
-	}
-
 	axis->Aprev = axis->A;
 	axis->Bprev = axis->B;
-	return (rv);
+out:
+	splx(s);
+	return uiomove((caddr_t)&me, sizeof(struct cnc_mpg_event), uio);
+}
+
+int
+mpgioctl(dev_t dev, u_long cmd, caddr_t data, int flag, struct proc *p)
+{
+#if 0
+	int unit = MPGUNIT(dev);
+	struct mpg_softc *sc = mpg_cd.cd_devs[unit];
+#endif
+	return (ENXIO);
 }

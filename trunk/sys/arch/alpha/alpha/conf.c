@@ -117,6 +117,8 @@ cdev_decl(pci);
 #endif
 
 #include "hotplug.h"
+#include "cnc.h"
+#include "mpg.h"
 
 struct cdevsw	cdevsw[] =
 {
@@ -184,7 +186,9 @@ struct cdevsw	cdevsw[] =
 	cdev_crypto_init(NCRYPTO,crypto), /* 57: /dev/crypto */
 	cdev_notdef(),			/* 58: Bt848 (unimplemented) */
 	cdev_notdef(),			/* 59: Radio (unimplemented) */
-	cdev_mouse_init(NWSMUX, wsmux)	/* 60: ws multiplexor */
+	cdev_mouse_init(NWSMUX, wsmux),	/* 60: ws multiplexor */
+	cdev_cnc_init(NCNC,cnc),	/* 61: CNC interface */
+	cdev_mpg_init(NMPG,mpg),	/* 62: manual-pulse generator */
 };
 int	nchrdev = sizeof (cdevsw) / sizeof (cdevsw[0]);
 

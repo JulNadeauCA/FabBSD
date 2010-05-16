@@ -250,6 +250,8 @@ struct bdevsw bdevsw[] = {
 #define ptcioctl        ptyioctl
 
 #include "hotplug.h"
+#include "cnc.h"
+#include "mpg.h"
 
 #ifdef CONF_HAVE_GPIO
 #include "gpio.h"
@@ -358,8 +360,8 @@ struct cdevsw cdevsw[] = {
 	cdev_notdef(),
 #endif
 	cdev_notdef(),                          /* 89 */
-	cdev_notdef(),                          /* 90 */
-	cdev_notdef(),                          /* 91 */
+	cdev_cnc_init(NCNC,cnc),		/* 90: CNC interface */
+	cdev_mpg_init(NMPG,mpg),		/* 91: manual-pulse generator */
 	cdev_notdef(),                          /* 92 */
 	cdev_notdef(),                          /* 93 */
 	cdev_notdef(),                          /* 94 */

@@ -130,6 +130,9 @@ struct bdevsw	bdevsw[] =
 };
 int	nblkdev = sizeof(bdevsw) / sizeof(bdevsw[0]);
 
+#include "cnc.h"
+#include "mpg.h"
+
 struct cdevsw	cdevsw[] =
 {
 	cdev_cn_init(1,cn),		/* 0: virtual console */
@@ -218,8 +221,8 @@ struct cdevsw	cdevsw[] =
 	cdev_wsdisplay_init(NWSDISPLAY,	/* 78: frame buffers, etc. */
 	    wsdisplay),
 	cdev_mouse_init(NWSKBD, wskbd),	/* 79: keyboards */
-	cdev_notdef(),			/* 80 */
-	cdev_notdef(),			/* 81 */
+	cdev_cnc_init(NCNC,cnc),	/* 80: CNC interface */
+	cdev_mpg_init(NMPG,mpg),	/* 81: manual-pulse generator */
 	cdev_notdef(),			/* 82 */
 	cdev_notdef(),			/* 83 */
 	cdev_notdef(),			/* 84 */
