@@ -97,7 +97,6 @@ calibrate_timings(void)
 	FILE *f;
 
 	t.hz = 0;
-	t.move_jog = 0;
 	
 	if ((f = fopen(_PATH_TIMINGS, "r")) != NULL) {
 		char buf[128], *s = &buf[0];
@@ -107,28 +106,26 @@ calibrate_timings(void)
 		s1 = strsep(&s, "\n");
 		s2 = strsep(&s, "\n");
 		t.hz = (cnc_utime_t)strtoull(s1, (char **)NULL, 10);
-		t.move_jog = (cnc_utime_t)strtoull(s2, (char **)NULL, 10);
 		fclose(f);
 	}
 	if (ioctl(devfd, CNC_SETTIMINGS, &t) == -1) {
 		err(1, "CNC_SETTIMINGS");
 	}
-	if (t.hz == 0 || t.move_jog == 0) {
+	if (t.hz == 0) {
 		printf("Calibrating timings. This may take several minutes...\n");
 		if (ioctl(devfd, CNC_CALTIMINGS, &t) == -1) {
 			err(1, "CNC_CALTIMINGS");
 		}
 		printf("Saving timings to %s\n", _PATH_TIMINGS);
 		if ((f = fopen(_PATH_TIMINGS, "w")) != NULL) {
-			fprintf(f, "%llu\n%llu\n", t.hz, t.move_jog);
+			fprintf(f, "%llu\n", t.hz);
 			fclose(f);
 		} else {
 			warn("%s", _PATH_TIMINGS);
 		}
 	}
 	if (!quiet) {
-		printf("Timings calibrated successfully (1Hz=%llu, jog=%llu)\n",
-		    t.hz, t.move_jog);
+		printf("Timings calibrated successfully (1Hz=%llu)\n", t.hz);
 	}
 	return ioctl(devfd, CNC_SETTIMINGS, &t);
 }
