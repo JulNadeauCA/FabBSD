@@ -118,6 +118,8 @@ struct bdevsw	bdevsw[] =
 int	nblkdev = sizeof(bdevsw) / sizeof(bdevsw[0]);
 
 #include "tctrl.h"
+#include "cnc.h"
+#include "mpg.h"
 
 struct cdevsw	cdevsw[] =
 {
@@ -216,8 +218,8 @@ struct cdevsw	cdevsw[] =
 	cdev_notdef(),			/* 87 */
 	cdev_notdef(),			/* 88 */
 	cdev_notdef(),			/* 89 */
-	cdev_notdef(),			/* 90 */
-	cdev_notdef(),			/* 91 */
+	cdev_cnc_init(NCNC,cnc),	/* 90: CNC interface */
+	cdev_mpg_init(NMPG,mpg),	/* 91: manual-pulse generator */
 	cdev_notdef(),			/* 92 */
 	cdev_notdef(),			/* 93 */
 	cdev_notdef(),			/* 94 */

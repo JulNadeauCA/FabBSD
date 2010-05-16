@@ -156,6 +156,8 @@ cdev_decl(pci);
 #endif
 
 #include "hotplug.h"
+#include "cnc.h"
+#include "mpg.h"
 
 struct cdevsw	cdevsw[] =
 {
@@ -251,6 +253,10 @@ struct cdevsw	cdevsw[] =
 	cdev_nvram_init(NNVRAM,nvram),		/* 85: NVRAM interface */
 	cdev_agp_init(NAGP,agp),		/* 86: agp */
 	cdev_notdef(),				/* 87 */
+	cdev_notdef(),				/* 88 */
+	cdev_notdef(),				/* 89 */
+	cdev_cnc_init(NCNC,cnc),		/* 90: CNC interface */
+	cdev_mpg_init(NMPG,mpg),		/* 91: manual-pulse generator */
 };
 int	nchrdev = sizeof(cdevsw) / sizeof(cdevsw[0]);
 

@@ -9,6 +9,7 @@
 .Nd move machine axes manually
 .Sh SYNOPSIS
 .Nm jog
+.Op Fl d Ar mpgdevice
 .Op Fl m Ar multiplier
 .Op Fl S Ar startvel
 .Op Fl F Ar feedrate
@@ -17,19 +18,17 @@
 .Sh DESCRIPTION
 The
 .Nm
-command is places FabBSD's trajectory planner in "jog" mode, such that
-the machine axes (see
-.Xr servo 4 )
-may be controlled using controls such as
+command polls for events from a
 .Xr mpg 4
-handwheels.
-.Nm
-only returns after a software stop (see
-.Xr estop 4 )
-has been raised.
+(manual-pulse generator) device and moves a motorized axis accordingly.
 .Pp
 The options are as follows:
 .Bl -tag -width Ds
+.It Fl d
+Specify path to the
+.Xr mpg 4
+character device (i.e.,
+.Pa /dev/mpg0 ) .
 .It Fl m
 Specify a multiplier for MPG handwheel pulses.
 The meaning of this parameter is dependent on the style of jog routine in

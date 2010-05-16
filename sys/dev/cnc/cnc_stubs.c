@@ -46,8 +46,6 @@
 #if NCNC == 0
 
 int sys_cncmove(struct proc *p, void *v, register_t *retval) { return (ENODEV); }
-int sys_cncjog(struct proc *p, void *v, register_t *retval) { return (ENODEV); }
-int sys_cncjogstep(struct proc *p, void *v, register_t *retval) { return (ENODEV); }
 int sys_spinctl(struct proc *p, void *v, register_t *retval) { return (ENODEV); }
 int sys_atcctl(struct proc *p, void *v, register_t *retval) { return (ENODEV); }
 int sys_laserctl(struct proc *p, void *v, register_t *retval) { return (ENODEV); }

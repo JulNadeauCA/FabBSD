@@ -47,7 +47,6 @@
 #include <sys/cnc.h>
 
 #include <dev/gpio/gpiovar.h>
-
 #include <machine/bus.h>
 
 #include "cnc_devicevar.h"
@@ -74,6 +73,8 @@
 #define STEPLEN 20336
 #define STEPMAX	(INT64_MAX-1)
 #define MAXSTEPS (STEPMAX/STEPLEN)
+
+#define CNC_DEBOUNCE	/* Debounce estop, etc. in software */
 
 struct cnc_kinlimits cnc_kinlimits = {
 	20000,				/* Max steps/sec */
@@ -102,6 +103,7 @@ struct mpg_softc        *cnc_mpgs[CNC_MAX_MPGS];
 struct cnclcd_softc     *cnc_lcds[CNC_MAX_LCDS];
 struct cncstatled_softc *cnc_status_led = NULL;
 
+int cnc_debug = 1;
 int cnc_simulate = 0;
 int cnc_capture = 0;
 int cnc_nservos = 0;
@@ -126,7 +128,6 @@ cncattach(int num)
 		cnc_pos.v[i] = 0;
 	
 	cnc_timings.hz = 0;
-	cnc_timings.move_jog = 0;
 	cnc_stats.peak_velocity = 0;
 	cnc_stats.estops = 0;
 }
@@ -282,49 +283,6 @@ cnc_calibrate_hz(void)
 	return (r);
 }
 
-/* Benchmark cnc_move_jog(). */
-cnc_utime_t
-cnc_calibrate_move_jog(void)
-{
-#if NMPG > 0
-	struct timespec tv1, tv2;
-	struct cnc_velocity vp;
-	cnc_utime_t r;
-	int i, s;
-
-	if (cnc_nmpgs < 1)
-		return (1);
-	
-	printf("cnc: simulating cnc_move_jog()...");
-
-	vp.v0 = 100;
-	vp.F = 10000;
-	vp.Amax = 1234;
-	vp.Jmax = 1234;
-	for (i = 0; i < CNC_NAXES; i++) {
-		cnc_pos.v[i] = 0.0;
-	}
-	/* Benchmark the routine using the system clock. */
-	s = splhigh();
-	cnc_simulate = 1;
-	nanotime(&tv1);
-#if 0
-	/* TODO */
-	sys_cncjog(NULL, &insn, 1);
-#endif
-	nanotime(&tv2);
-	cnc_simulate = 0;
-	splx(s);
-
-	r = (cnc_utime_t)(tv2.tv_sec - tv1.tv_sec)*1e12 +
-	                 (tv2.tv_nsec - tv1.tv_nsec);
-	printf("...%lluns\n", r);
-	return (r);
-#else
-	return (1);
-#endif
-}
-
 int
 cncioctl(dev_t dev, u_long cmd, caddr_t data, int flag, struct proc *p)
 {
@@ -341,8 +299,10 @@ cncioctl(dev_t dev, u_long cmd, caddr_t data, int flag, struct proc *p)
 	case CNC_SETPOS:
 		pos = (cnc_vec_t *)data;
 		for (i = 0; i < CNC_NAXES; i++) {
-			printf("cnc: SETPOS axis#%d: %lu -> %lu\n", i,
-			    cnc_pos.v[i], (u_long)pos->v[i]);
+			if (cnc_debug) {
+				printf("cnc: SETPOS axis#%d: %lu -> %lu\n", i,
+				    cnc_pos.v[i], (u_long)pos->v[i]);
+			}
 			cnc_pos.v[i] = pos->v[i];
 		}
 		return (0);
@@ -374,9 +334,6 @@ cncioctl(dev_t dev, u_long cmd, caddr_t data, int flag, struct proc *p)
 	case CNC_CALTIMINGS:
 		if (cnc_timings.hz == 0) {
 			cnc_timings.hz = cnc_calibrate_hz();
-		}
-		if (cnc_timings.move_jog == 0) {
-			cnc_timings.move_jog = cnc_calibrate_move_jog();
 		}
 		bcopy(&cnc_timings, (void *)data, sizeof(struct cnc_timings));
 		return (0);
@@ -430,19 +387,38 @@ cncioctl(dev_t dev, u_long cmd, caddr_t data, int flag, struct proc *p)
 	return (ENODEV);
 }
 
-/* Return 1 if one of the registered e-stops are raised. */
+/* Return 1 if one of the registered e-stops is raised. */
 int
 cnc_estop_raised(void)
 {
 #if NESTOP > 0
 	int i;
+# ifdef CNC_DEBOUNCE
+	int j;
+	cnc_utime_t delay, k;
+# endif
+
 	for (i = 0; i < cnc_nestops; i++) {
-		if (estop_get_state(cnc_estops[i])) {
+		if (!estop_get_state(cnc_estops[i]))
+			continue;
+# ifdef CNC_DEBOUNCE
+		delay = (cnc_utime_t)cnc_timings.hz/100;	/* 10ms */
+		for (j = 0; j < 10; j++) {
+			if (!estop_get_state(cnc_estops[i])) {
+				break;
+			}
+			for (k = 0; k < delay; k++)
+				;;
+		}
+		if (j == 10) {
 			cnc_stats.estops++;
 			return (1);
 		}
+# else
+		return (1);
+# endif
 	}
-#endif
+#endif /* NESTOP > 0 */
 	return (0);
 }
 
@@ -487,11 +463,11 @@ int
 sys_cncmove(struct proc *p, void *v, register_t *retval)
 {
 	struct sys_cncmove_args /* {
-		syscallarg(const struct cnc_velocity *) pVp;
-		syscallarg(const cnc_vec_t *) pv2;
+		syscallarg(const struct cnc_velocity *) vel;
+		syscallarg(const cnc_vec_t *) tgt;
 	} */ *uap = v;
-	const struct cnc_velocity *Vp = SCARG(uap,pVp);
-	const cnc_vec_t *v2 = SCARG(uap,pv2);
+	const struct cnc_velocity *Vp = SCARG(uap,vel);
+	const cnc_vec_t *v2 = SCARG(uap,tgt);
 	cnc_real_t t, dt, L;
 	cnc_vec_t d, v1=cnc_pos;
 	cnc_pos_t inc, incMin, vMajor=0;
@@ -504,8 +480,10 @@ sys_cncmove(struct proc *p, void *v, register_t *retval)
 	if (Vp->F == 0.0 || Vp->Amax == 0.0 || Vp->Jmax == 0.0)
 		return (EINVAL);
 
-	printf("cncmove: v0=%lu, F=%lu Amax=%lu Jmax=%lu\n",
-	    Vp->v0, Vp->F, Vp->Amax, Vp->Jmax);
+	if (cnc_debug) {
+		printf("cncmove: v0=%lus/s, F=%lus/s Amax=%lus/us^2 "
+		       "Jmax=%lus/us^3\n", Vp->v0, Vp->F, Vp->Amax, Vp->Jmax);
+	}
 
 	/*
 	 * Compute the difference from the current to the new position,
@@ -535,10 +513,11 @@ sys_cncmove(struct proc *p, void *v, register_t *retval)
 	/* Compute the time constants for our quintic velocity profile. */
 	L = (cnc_real_t)d.v[axisMajor];
 	if (cnc_quintic_init(&Q, L,
-	    (cnc_real_t)Vp->v0,
-	    (cnc_real_t)Vp->F,
-	    (cnc_real_t)Vp->Amax,
-	    (cnc_real_t)Vp->Jmax) == -1) {
+	    (cnc_real_t)Vp->v0,			/* in steps/s */
+	    (cnc_real_t)Vp->F,			/* in steps/s */
+	    ((cnc_real_t)Vp->Amax)*1000.0,	/* ms -> us */
+	    ((cnc_real_t)Vp->Jmax)*1000.0)	/* ms -> us */
+	    == -1) {
 		return (EINVAL);
 	}
 	dt = (Q.Ta+Q.To)/L;
@@ -595,7 +574,7 @@ sys_cncmove(struct proc *p, void *v, register_t *retval)
 		 * enter the corresponding delay loop.
 		 */
 		vel = cnc_quintic_step(&Q, t);
-		cnc_clip_velocity(&Q, &vel);
+/*		cnc_clip_velocity(&Q, &vel); */
 
 		delay = (cnc_utime_t)(cnc_timings.hz/vel);
 		for (j = 0; j < delay; j++)
@@ -618,307 +597,6 @@ sys_cncmove(struct proc *p, void *v, register_t *retval)
 }
 
 #endif /* NSERVO > 0 */
-
-#if (NSERVO > 0) && (NMPG > 0)
-
-/*
- * Control the servos stepwise using an mpg(4) device. The kinematic limits
- * are not applied in this case.
- */
-int
-sys_cncjogstep(struct proc *p, void *v, register_t *retval)
-{
-	int i, s;
-
-	if (cnc_nmpgs < 1)
-		return (ENXIO);
-
-	/* Fetch the initial quadrature signal state. */
-	for (i = 0; i < cnc_nmpgs; i++)
-		mpg_jog_init(cnc_mpgs[i]);
-	
-	/*
-	 * Loop translating the quadrature signal to directly to step
-	 * by step motion.
-	 */
-	s = splhigh();
-	while (!cnc_estop_raised()) {
-		for (i = 0; i < cnc_nmpgs; i++) {
-			struct mpg_softc *mpg = cnc_mpgs[i];
-			struct mpg_axis *axis;
-			int axisIdx;
-
-			axisIdx = mpg_get_axis(mpg);
-			axis = &mpg->sc_axes[axisIdx];
-			axis->A = gpio_pin_read(mpg->sc_gpio, &mpg->sc_map,
-			    MPG_PIN_A);
-			axis->B = gpio_pin_read(mpg->sc_gpio, &mpg->sc_map,
-			    MPG_PIN_B);
-
-			if (axis->A == axis->Aprev &&
-			    axis->B == axis->Bprev)
-				continue;
-
-			if (MPG_TRANSITION_CW(axis)) { cnc_inc_axis(axisIdx, 1); }
-			if (MPG_TRANSITION_CCW(axis)) { cnc_inc_axis(axisIdx, -1); }
-			
-			axis->Aprev = axis->A;
-			axis->Bprev = axis->B;
-		}
-	}
-	splx(s);
-	return (0);
-}
-
-
-#if 0
-/*
- * Let the operator manually move to a target position using an mpg(4) device.
- * The position is moved by the specified multiplier and kinematic limits
- * are applied.
- *
- * TODO allow other types of input devices (buttons, joysticks)
- */
-int
-sys_cncjog(struct proc *p, void *v, register_t *retval)
-{
-	struct sys_cncjog_args /* {
-		syscallarg(const struct cnc_velocity *) pVp;
-		syscallarg(int) pmult;
-	} */ *uap = v;
-	const struct cnc_velocity *Vp = SCARG(uap,pVp);
-	int mult = SCARG(uap,pmult);
-	struct mpg_softc *mpg;
-	struct cnc_quintic_profile Q, Qprev;
-	cnc_vec_t vTgt, vTgtLast;
-	cnc_real_t t = 0.0, dt = 0.0, L;
-	int dir, axis, s;
-	cnc_utime_t Telapsed = 0;
-	int moving = 0;
-
-	if (cnc_calibrated()) {
-		return (ENXIO);
-	}
-	if (Vp->F == 0.0 || Vp->Amax == 0.0 ||
-	    Vp->Jmax == 0.0 || mult <= 0) {
-		return (EINVAL);
-	}
-	if (cnc_nmpgs < 1) {
-		printf("cnc: JOG: No MPGs\n");
-		return (ENXIO);
-	}
-	mpg = cnc_mpgs[0];		/* TODO allow multiple mpgs */
-	mpg_jog_init(mpg);
-
-	/* Initialize the target position. */
-	vTgt = cnc_pos;
-	vTgtLast = vTgt;
-	Q.Ta = 0.0;
-	Q.To = 0.0;
-
-	/* Enter the jog loop. */
-	s = splhigh();
-	while (!cnc_estop_raised()) {
-		/*
-		 * Use the MPG to control the target position, fetch
-		 * the currently selected axis.
-		 */
-		mpg_jog_tgt(mpg, &vTgt, mult);
-		axis = mpg->sc_sel_axis;
-
-		/* Compute direction and distance to target. */
-		L = (cnc_real_t)(vTgt.v[axis] - cnc_pos.v[axis]);
-		if (L < 0.0) { L = -L; }
-		dir = (vTgt.v[axis] > cnc_pos.v[axis]) ? +1 : -1;
-
-		/*
-		 * If the target position has changed, recompute the time
-		 * constants and time increment.
-		 */
-		if (!cnc_vec_same(&vTgtLast, &vTgt)) {
-			cnc_real_t t7prev;
-
-			if (!moving) {
-				moving = 1;
-				if (!cnc_simulate) {
-					printf("%s: JOG: Moving to %s=%lld\n",
-					    ((struct device *)mpg)->dv_xname,
-					    cnc_axis_names[axis], vTgt.v[axis]);
-					cnc_message("Moving ");
-					cnc_message(cnc_axis_names[axis]);
-					cnc_message("\n");
-				}
-			}
-			vTgtLast = vTgt;
-			Qprev = Q;
-			if (cnc_quintic_init(&Q, L,
-			    (cnc_real_t)Vp->v0,
-			    (cnc_real_t)Vp->F,
-			    (cnc_real_t)Vp->Amax,
-			    (cnc_real_t)Vp->Jmax) == -1) {
-				goto fail;
-			}
-			dt = (Q.Ta+Q.To)/L;
-
-			printf("cnc: Quintic: L=%s ", cnc_fmt_real(L));
-			printf("dt=%s ", cnc_fmt_real(dt));
-			printf("F=%s ", cnc_fmt_real(Q.F));
-			printf("v0=%s ", cnc_fmt_real(Q.v0));
-			printf("v1=%s ", cnc_fmt_real(Q.v1));
-			printf("v2=%s ", cnc_fmt_real(Q.v2));
-			printf("Aref=%s ", cnc_fmt_real(Q.Aref));
-			printf("[Ts=%s", cnc_fmt_real(Q.Ts));
-			printf(" Ta=%s", cnc_fmt_real(Q.Ta));
-			printf(" To=%s]\n", cnc_fmt_real(Q.To));
-
-			t = 0.0;
-			Telapsed = 0;
-			if (t7prev >= 1e-6) {
-				printf("cnc: Rescaling t for (Ta+To)=%s: ",
-				    cnc_fmt_real(Q.Ta+Q.To));
-				t = t/t7prev*(Q.Ta+Q.To); /* Rescale time */
-				printf("t=%ss\n", cnc_fmt_real(t));
-				Telapsed = 0;
-			}
-		}
-
-		/*
-		 * Move one step to the target position if the velocity profile
-		 * has determined that this iteration must move one step.
-		 */
-		if (moving) {
-			if (L > CNC_POS_ERROR) {
-				cnc_real_t vel;		/* Steps/second */
-
-				vel = cnc_quintic_step(&Q, t);
-				cnc_clip_velocity(&Q, &vel);
-
-				/*
-				 * Compare the estimated time elapsed (ns)
-				 * to the current velocity (steps/sec).
-				 */
-				if ((Telapsed += cnc_timings.move_jog) >
-				    1000000000UL/((cnc_utime_t)vel)) {
-					Telapsed = 0;
-					if (!cnc_simulate) {
-						cnc_inc_axis(axis, dir);
-					} else {
-						cnc_pos.v[axis] += dir;
-					}
-					t += dt;
-				}
-			} else {
-				if (!cnc_simulate) {
-					printf("%s: JOG: Reached target %s=%lld ",
-					    ((struct device *)mpg)->dv_xname,
-					    cnc_axis_names[axis], cnc_pos.v[axis]);
-					printf("in %s seconds\n", cnc_fmt_real(t));
-					goto out;
-				}
-				t = 0.0;
-				moving = 0;
-			}
-		}
-
-		if (cnc_simulate)
-			break;
-	}
-out:
-	splx(s);
-	return (0);
-fail:
-	splx(s);
-	return (EINVAL);
-}
-#endif
-
-/*
- * cncjog: Let the operator manually control the velocity of the
- * currently selected mpg(4) axes.
- */
-int
-sys_cncjog(struct proc *p, void *v, register_t *retval)
-{
-	struct sys_cncjog_args /* {
-		syscallarg(const struct cnc_velocity *) pVp;
-		syscallarg(int) pmult;
-	} */ *uap = v;
-	/* const struct cnc_velocity *Vp = SCARG(uap,pVp); */
-	int mult = SCARG(uap,pmult);
-	struct mpg_softc *mpg;
-	int velTgt[CNC_NAXES], vel[CNC_NAXES];
-	int i, axis = 0, s;
-	cnc_utime_t Telapsed = 0;
-	int decel = 0;
-
-	if (cnc_calibrated()) {
-		return (ENXIO);
-	}
-	if (cnc_nmpgs < 1) {
-		printf("cnc: JOG: No MPGs\n");
-		return (ENXIO);
-	}
-	mpg = cnc_mpgs[0];		/* TODO allow multiple mpgs */
-	mpg_jog_init(mpg);
-
-	for (i = 0; i < CNC_NAXES; i++) {
-		velTgt[i] = 0;
-		vel[i] = 0;
-	}
-
-	/* Enter the jog loop. */
-	s = splhigh();
-	while (!cnc_estop_raised()) {
-		mpg_jog_vel(mpg, &velTgt[axis], mult);
-		axis = mpg->sc_sel_axis;
-
-		for (i = 0; i < CNC_NAXES; i++) {
-			int v = vel[axis];
-			int dir;
-
-			if (decel++ > 150) {
-				decel = 0;
-				if (velTgt[axis] < vel[axis]) {
-					vel[axis]--;
-				} else if (velTgt[axis] > vel[axis]) {
-					vel[axis]++;
-				}
-			}
-			if (vel[axis] < 0) {
-				v = -vel[axis];
-				dir = -1;
-			} else if (vel[axis] > 0) {
-				v = vel[axis];
-				dir = +1;
-			} else {
-				continue;
-			}
-			if (Telapsed > 1000000000UL/v) {
-				Telapsed = 0;
-				cnc_inc_axis(axis, dir);
-			}
-		}
-		Telapsed += cnc_timings.move_jog;
-	}
-	splx(s);
-	return (0);
-}
-
-#else /* NMPG=0 or NSERVO=0 */
-
-int
-sys_cncjog(struct proc *p, void *v, register_t *retval)
-{
-	return (ENODEV);
-}
-
-int
-sys_cncjogstep(struct proc *p, void *v, register_t *retval)
-{
-	return (ENODEV);
-}
-
-#endif /* NMPG>0 and NSERVO>0 */
 
 int
 sys_spinctl(struct proc *p, void *v, register_t *retval)

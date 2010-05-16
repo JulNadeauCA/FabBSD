@@ -764,10 +764,10 @@ struct sysent sysent[] = {
 	    sys_fhstatfs },			/* 309 = fhstatfs */
 	{ 2, s(struct sys_cncmove_args), 0,
 	    sys_cncmove },			/* 310 = cncmove */
-	{ 1, s(struct sys_cncjog_args), 0,
-	    sys_cncjog },			/* 311 = cncjog */
 	{ 0, 0, 0,
-	    sys_cncjogstep },			/* 312 = cncjogstep */
+	    sys_nosys },			/* 311 = obsolete cncjog */
+	{ 0, 0, 0,
+	    sys_nosys },			/* 312 = obsolete cncjogstep */
 	{ 3, s(struct sys_spinctl_args), 0,
 	    sys_spinctl },			/* 313 = spinctl */
 	{ 3, s(struct sys_atcctl_args), 0,

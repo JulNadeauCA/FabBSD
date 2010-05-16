@@ -467,8 +467,8 @@
 ; FabBSD-specific
 ;
 310	STD		{ int sys_cncmove(const struct cnc_velocity *vel, const struct cnc_vector *tgt); }
-311	STD		{ int sys_cncjog(const struct cnc_velocity *vel); }
-312	STD		{ int sys_cncjogstep(void); }
+311	OBSOL		cncjog
+312	OBSOL		cncjogstep
 313	STD		{ int sys_spinctl(int spindle, int op, const struct cnc_spindle_args *args); }
 314	STD		{ int sys_atcctl(int atc, int op, const struct cnc_atc_args *args); }
 315	STD		{ int sys_laserctl(int laser, int op, const struct cnc_laser_args *args); }
