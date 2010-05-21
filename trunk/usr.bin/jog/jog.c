@@ -58,16 +58,10 @@ process_timeout(int signo)
 {
 	int save_errno = errno;
 	
-	if (verbose) {
-		printf("Calling trajectory planner...");
-		fflush(stdout);
-	}
-
 	if (!simulate &&
 	    cncmove(&vel, &pos) != 0)
 		err(1, "cncmove");
 
-	printf("\n");
 	errno = save_errno;
 }
 
@@ -77,7 +71,7 @@ main(int argc, char *argv[])
 	char pb[128];
 	struct cnc_mpg_event me;
 	int i, ch, mpgfd = -1, cncfd;
-	int mult = 3000;
+	int mult = 4000;
 	struct itimerval timeout;
 	ssize_t rv;
 
@@ -88,8 +82,8 @@ main(int argc, char *argv[])
 	vel = cnc_vel_default;
 	mpg_device[0] = '\0';
 	memset(&timeout, 0, sizeof(timeout));
-	timeout.it_value.tv_sec = 1;
-	timeout.it_value.tv_usec = 0;
+	timeout.it_value.tv_sec = 0;
+	timeout.it_value.tv_usec = 500000;
 	
 	while ((ch = getopt(argc, argv, "nqt:d:M:S:F:A:J:?hv")) != -1) {
 		switch (ch) {
