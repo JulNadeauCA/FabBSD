@@ -24,28 +24,33 @@
  */
 
 #include <sys/types.h>
+#include <sys/ioctl.h>
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <err.h>
 #include <cnc.h>
+#include <fcntl.h>
 
 extern char *__progname;
 int verbose = 0;
+int incremental = 0;
 
 static void
 printusage(void)
 {
-	printf("Usage: %s [-v] [-S startvel] [-F feedrate] [-A accellim] "
+	printf("Usage: %s [-vi] [-S startvel] [-F feedrate] [-A accellim] "
 	       "[-J jerklim] [pos ...]\n", __progname);
 }
 
 int
 main(int argc, char *argv[])
 {
+	struct cnc_vector pos;
 	struct cnc_velocity vel;
-	int i, ch;
+	int i, ch, cncfd;
+	int mult = 1000;
 
 	if (cnc_init() == -1) {
 		errx(1, "%s", cnc_get_error());
@@ -53,8 +58,14 @@ main(int argc, char *argv[])
 	atexit(cnc_destroy);
 	vel = cnc_vel_default;
 
-	while ((ch = getopt(argc, argv, "S:F:A:J:?hv")) != -1) {
+	while ((ch = getopt(argc, argv, "im:S:F:A:J:?hv")) != -1) {
 		switch (ch) {
+		case 'i':
+			incremental = 1;
+			break;
+		case 'm':
+			mult = atoi(optarg);
+			break;
 		case 'S':
 			cnc_vel_parse(&vel.v0, optarg);
 			break;
@@ -75,13 +86,26 @@ main(int argc, char *argv[])
 			return (1);
 		}
 	}
+
+	if (incremental) {
+		if ((cncfd = open("/dev/cnc", O_RDONLY)) == -1 ||
+		    ioctl(cncfd, CNC_GETPOS, &pos) == -1) {
+			err(1, "/dev/cnc");
+		}
+		close(cncfd);
+	}
+
 	argv += optind;
 	argc -= optind;
 	for (i = 0; i < argc; i++) {
 		cnc_vec_t v;
 
-		if (cnc_vec_parse(&v, argv[i]) == -1)
+		if (cnc_vec_parse(&v, argv[i]) == -1) {
 			errx(1, "parsing position: %s", cnc_get_error());
+		}
+		if (incremental) {
+			cnc_vec_add(&v, &pos, &v);
+		}
 		if (verbose) {
 			char vs[32];
 			cnc_vec_print(&v, vs, sizeof(vs));
