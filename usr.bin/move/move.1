@@ -9,6 +9,7 @@
 .Nd move machine axes
 .Sh SYNOPSIS
 .Nm move
+.Op Fl iv
 .Op Fl S Ar startvel
 .Op Fl F Ar feedrate
 .Op Fl A Ar accellim
@@ -33,6 +34,10 @@ raised).
 .Pp
 The options are as follows:
 .Bl -tag -width Ds
+.It Fl v
+Enable verbose output.
+.It Fl i
+Interpret the input position(s) as incremental instead of absolute.
 .It Fl s
 Specify an initial, starting velocity in steps/s.
 Default is 0.
