@@ -36,7 +36,6 @@ struct drillsize {
 	double v;
 };
 
-#include "drills_fractional.h"
 #include "drills_letter.h"
 #include "drills_wireno.h"
 
@@ -44,6 +43,7 @@ int Rflag = 0;
 int Pflag = 0;
 int Pangle = 0;
 double inches = 0.0;
+const int maxFrac = 64;
 
 static void
 printusage(void)
@@ -56,7 +56,7 @@ printusage(void)
 }
 
 static const char *
-lookup(double in, const struct drillsize *tbl, int n)
+lookuptbl(double in, const struct drillsize *tbl, int n)
 {
 	int i;
 
@@ -92,6 +92,44 @@ lookup_letter(const char *s)
 			return (ds->v);
 	}
 	return (0.0);
+}
+
+static char *
+nearest_fractional(double inches)
+{	
+	int ths = 2, thsNearest = 999, iNearest = 999, i;
+	double errNearest = HUGE_VAL;
+	double nearest = HUGE_VAL;
+	double d;
+	char *s;
+
+	if (inches == 1.0) {
+		return strdup("1");
+	}
+	s = malloc(64);
+	s[0] = '\0';
+	for (ths = 2; ths <= maxFrac; ths *= 2) {
+		for (i = 1; i < ths; i++) {
+			d = (double)i/(double)ths;
+			if (fabs(inches - d) < errNearest) {
+				errNearest = fabs(inches - d);
+				nearest = d;
+				iNearest = i;
+				thsNearest = ths;
+			}
+		}
+	}
+	if (errNearest < 0.0001) {
+		snprintf(s, 64, "%d/%d (%.04f)", iNearest, thsNearest,
+		    nearest);
+	} else if (nearest > inches) {
+		snprintf(s, 64, "%d/%d (%.04f) -%.04f",
+		    iNearest, thsNearest, nearest, errNearest);
+	} else {
+		snprintf(s, 64, "%d/%d (%.04f) +%.04f",
+		    iNearest, thsNearest, nearest, errNearest);
+	}
+	return (s);
 }
 
 int
@@ -155,9 +193,10 @@ main(int argc, char *argv[])
 			printusage();
 	}
 	printf("Inches:     %.4f\n", inches);
-	printf("Fractional: %s\n", lookup(inches, drills_fractional, ndrills_fractional));
-	printf("Wire no.:   %s\n", lookup(inches, drills_wireno, ndrills_wireno));
-	printf("Letter:     %s\n", lookup(inches, drills_letter, ndrills_letter));
+	printf("Fractional: %s\n", nearest_fractional(inches));
+	printf("Wire no.:   %s\n", lookuptbl(inches, drills_wireno, ndrills_wireno));
+	printf("Letter:     %s\n", lookuptbl(inches, drills_letter, ndrills_letter));
+	printf("Metric:     %.02f mm\n", inches*25.4);
 
 	return (0);
 }
