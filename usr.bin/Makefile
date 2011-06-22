@@ -7,7 +7,7 @@ SUBDIR= apply apropos arch asa asn1_compile awk banner basename bc \
 	cap_mkdb cdio chpass cmp col colcrt colrm \
 	column comm compile_et compress cpp crontab csplit ctags cut \
 	dc deroff diff diff3 dirname drillsize du encrypt env expand false \
-	file file2c find fmt fold fstat ftp gencat gerbdrill getcap \
+	file file2c find fmt fold frac fstat ftp gencat gerbdrill getcap \
 	getconf getent getopt grep gzsig head hexdump id \
 	indent infocmp ipcrm ipcs jog \
 	join jot kdump ktrace lam last lastcomm less lex lndir \
