@@ -1,0 +1,31 @@
+.\"	$FabBSD$
+.\"	Public domain
+.\"
+.Dd $Mdocdate: June 22 2011 $
+.Dt FRAC 1
+.Os
+.Sh NAME
+.Nm frac
+.Nd convert decimal to nearest fractional
+.Sh SYNOPSIS
+.Nm frac
+.Op Fl m
+.Op Fl M Ar maxdiv
+.Op Ar number ...
+.Sh DESCRIPTION
+The
+.Nm
+utility prints the nearest fractional number to the specified number(s).
+The options are as follows.
+.Bl -tag -width Ds
+.It Fl M
+Specify maximum division (defaults to 64).
+.It Fl m
+Convert metric input to inches.
+.El
+.Sh SEE ALSO
+.Xr drillsize 1
+.Sh HISTORY
+The
+.Nm
+command first appeared in FabBSD 1.0.
