@@ -110,6 +110,14 @@ cnc_device_attach(void *p, enum cnc_device_type type)
 			printf(": ignored (bump CNC_MAX_LCDS)\n");
 		}
 		break;
+	case CNC_DEVICE_SPOTWELDER:
+		if ((cnc_nspotwelders+1) <= CNC_MAX_SPOTWELDERS) {
+			printf(": spotwelder #%d\n", cnc_nspotwelders);
+			cnc_spotwelders[cnc_nspotwelders++] = (struct spotwelder_softc *)cd;
+		} else {
+			printf(": ignored (bump CNC_MAX_SPOTWELDERS)\n");
+		}
+		break;
 	default:
 		printf(": unimplemented\n");
 		break;

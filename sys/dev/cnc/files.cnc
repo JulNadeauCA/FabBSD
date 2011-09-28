@@ -51,3 +51,8 @@ device	cnclcd
 file	dev/cnc/cnc_lcd.c		cnclcd		needs-flag
 attach	cnclcd at isa with cnclcd_isa
 file	dev/cnc/cnc_lcd_isa.c		cnclcd_isa
+
+# Spot welder controller.
+device	spotwelder
+attach	spotwelder at gpio
+file	dev/cnc/cnc_spotwelder.c	spotwelder	needs-flag

@@ -9,7 +9,8 @@ enum cnc_device_type {
 	CNC_DEVICE_PICKPLACE,		/* Pick and place controller */
 	CNC_DEVICE_ENCODER,		/* Position-sensing encoder (general-purpose) */
 	CNC_DEVICE_MPG,			/* Manual pulse generator */
-	CNC_DEVICE_LCD			/* Serial interface to text-based LCD */
+	CNC_DEVICE_LCD,			/* Serial interface to text-based LCD */
+	CNC_DEVICE_SPOTWELDER		/* Spot welder */
 };
 
 struct cnc_device {

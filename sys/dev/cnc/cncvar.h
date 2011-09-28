@@ -12,6 +12,7 @@ extern struct estop_softc      *cnc_estops[CNC_MAX_ESTOPS];
 extern struct encoder_softc    *cnc_encoders[CNC_MAX_ENCODERS];
 extern struct mpg_softc        *cnc_mpgs[CNC_MAX_MPGS];
 extern struct cnclcd_softc     *cnc_lcds[CNC_MAX_LCDS];
+extern struct spotwelder_softc *cnc_spotwelders[CNC_MAX_SPOTWELDERS];
 extern struct cncstatled_softc *cnc_status_led;
 
 extern int cnc_ntools;
@@ -26,6 +27,7 @@ extern int cnc_nestops;
 extern int cnc_nencoders;
 extern int cnc_nmpgs;
 extern int cnc_nlcds;
+extern int cnc_nspotwelders;
 
 extern struct cnc_vector cnc_pos;
 extern struct cnc_timings cnc_timings;

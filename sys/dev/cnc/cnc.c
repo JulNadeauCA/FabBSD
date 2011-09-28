@@ -1,6 +1,6 @@
 /*	$FabBSD$	*/
 /*
- * Copyright (c) 2007-2010 Hypertriton, Inc. <http://www.hypertriton.com/>
+ * Copyright (c) 2007-2011 Hypertriton, Inc. <http://www.hypertriton.com/>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -57,6 +57,7 @@
 #include "cnc_mpgvar.h"
 #include "cnc_statledvar.h"
 #include "cnc_lcdvar.h"
+#include "cnc_spotweldervar.h"
 
 #include "cncvar.h"
 #include "cnc_capturevar.h"
@@ -68,13 +69,14 @@
 #include "mpg.h"
 #include "cnclcd.h"
 #include "cncstatled.h"
+#include "spotwelder.h"
 
 /* For cnc_pos_t (uint64), /STEPDIV */
 #define STEPLEN 20336
 #define STEPMAX	(INT64_MAX-1)
 #define MAXSTEPS (STEPMAX/STEPLEN)
 
-#define CNC_DEBOUNCE	/* Debounce estop, etc. in software */
+/* #define CNC_DEBOUNCE */
 
 struct cnc_kinlimits cnc_kinlimits = {
 	20000,				/* Max steps/sec */
@@ -102,8 +104,9 @@ struct encoder_softc    *cnc_encoders[CNC_MAX_ENCODERS];
 struct mpg_softc        *cnc_mpgs[CNC_MAX_MPGS];
 struct cnclcd_softc     *cnc_lcds[CNC_MAX_LCDS];
 struct cncstatled_softc *cnc_status_led = NULL;
+struct spotwelder_softc *cnc_spotwelders[CNC_MAX_SPOTWELDERS];
 
-int cnc_debug = 1;
+int cnc_debug = 0;
 int cnc_simulate = 0;
 int cnc_capture = 0;
 int cnc_nservos = 0;
@@ -113,6 +116,7 @@ int cnc_nestops = 0;
 int cnc_nencoders = 0;
 int cnc_nmpgs = 0;
 int cnc_nlcds = 0;
+int cnc_nspotwelders = 0;
 
 void
 cncattach(int num)
@@ -393,30 +397,27 @@ cnc_estop_raised(void)
 {
 #if NESTOP > 0
 	int i;
-# ifdef CNC_DEBOUNCE
-	int j;
-	cnc_utime_t delay, k;
-# endif
 
 	for (i = 0; i < cnc_nestops; i++) {
-		if (!estop_get_state(cnc_estops[i]))
+		struct estop_softc *estop = cnc_estops[i];
+
+		if (!estop_get_state(estop)) {
 			continue;
-# ifdef CNC_DEBOUNCE
-		delay = (cnc_utime_t)cnc_timings.hz/100;	/* 10ms */
-		for (j = 0; j < 10; j++) {
-			if (!estop_get_state(cnc_estops[i])) {
-				break;
-			}
-			for (k = 0; k < delay; k++)
-				;;
 		}
-		if (j == 10) {
+		if (estop->sc_open) {
+			cnc_stats.estops++;
+			estop->sc_queued = 1;
+			continue;
+		}
+		if (estop->sc_flags & ESTOP_DEBOUNCE) {
+			if (estop_debounce(estop)) {
+				cnc_stats.estops++;
+				return (1);
+			}
+		} else {
 			cnc_stats.estops++;
 			return (1);
 		}
-# else
-		return (1);
-# endif
 	}
 #endif /* NESTOP > 0 */
 	return (0);
@@ -522,16 +523,18 @@ sys_cncmove(struct proc *p, void *v, register_t *retval)
 	}
 	dt = (Q.Ta+Q.To)/L;
 
-	printf("cnc: Linear Move: L=%s ", cnc_fmt_real(L));
-	printf("dt=%s ", cnc_fmt_real(dt));
-	printf("F=%s ", cnc_fmt_real(Q.F));
-	printf("v0=%s ", cnc_fmt_real(Q.v0));
-	printf("v1=%s ", cnc_fmt_real(Q.v1));
-	printf("v2=%s ", cnc_fmt_real(Q.v2));
-	printf("Aref=%s ", cnc_fmt_real(Q.Aref));
-	printf("[Ts=%s", cnc_fmt_real(Q.Ts));
-	printf(" Ta=%s", cnc_fmt_real(Q.Ta));
-	printf(" To=%s]\n", cnc_fmt_real(Q.To));
+	if (cnc_debug) {
+		printf("cnc: Linear Move: L=%s ", cnc_fmt_real(L));
+		printf("dt=%s ", cnc_fmt_real(dt));
+		printf("F=%s ", cnc_fmt_real(Q.F));
+		printf("v0=%s ", cnc_fmt_real(Q.v0));
+		printf("v1=%s ", cnc_fmt_real(Q.v1));
+		printf("v2=%s ", cnc_fmt_real(Q.v2));
+		printf("Aref=%s ", cnc_fmt_real(Q.Aref));
+		printf("[Ts=%s", cnc_fmt_real(Q.Ts));
+		printf(" Ta=%s", cnc_fmt_real(Q.Ta));
+		printf(" To=%s]\n", cnc_fmt_real(Q.To));
+	}
 
 	/*
 	 * Enter the signal generation loop. We iterate over the displacement
@@ -584,7 +587,9 @@ sys_cncmove(struct proc *p, void *v, register_t *retval)
 	return (0);
 stop:
 	if (!cnc_capture) { splx(s); }
-	printf("cnc: emergency stop!\n");
+	if (cnc_debug) {
+		printf("cnc: emergency stop!\n");
+	}
 	return (EINTR);
 }
 
@@ -597,6 +602,79 @@ sys_cncmove(struct proc *p, void *v, register_t *retval)
 }
 
 #endif /* NSERVO > 0 */
+
+
+#if NSPOTWELDER > 0
+
+/* Return spot welding trigger status */
+int
+sys_cncspotweldtrig(struct proc *p, void *v, register_t *retval)
+{
+	struct sys_cncspotweldtrig_args /* {
+		syscallarg(int) welder;
+	} */ *uap = v;
+	int welder = SCARG(uap,welder);
+
+	if (welder < 0 || welder >= cnc_nspotwelders) {
+		return (ENODEV);
+	}
+	return spotwelder_trig(cnc_spotwelders[welder]);
+}
+
+/* Return spot welding select switch status */
+int
+sys_cncspotweldselect(struct proc *p, void *v, register_t *retval)
+{
+	struct sys_cncspotweldselect_args /* {
+		syscallarg(int) welder;
+	} */ *uap = v;
+	int welder = SCARG(uap,welder);
+
+	if (welder < 0 || welder >= cnc_nspotwelders) {
+		return (ENODEV);
+	}
+	return spotwelder_select(cnc_spotwelders[welder]);
+}
+
+/* Spot weld */
+int
+sys_cncspotweld(struct proc *p, void *v, register_t *retval)
+{
+	struct sys_cncspotweld_args /* {
+		syscallarg(int) welder;
+		syscallarg(int) cycles;
+	} */ *uap = v;
+	int welder = SCARG(uap,welder);
+	int cycles = SCARG(uap,cycles);
+
+	if (welder < 0 || welder >= cnc_nspotwelders) {
+		return (ENODEV);
+	}
+	if (cycles < 0 || cycles > SPOTWELDER_MAXCYCLES) {
+		return (EINVAL);
+	}
+	return spotwelder_weld(cnc_spotwelders[welder], cycles);
+}
+
+#else /* NSPOTWELDER == 0 */
+
+int
+sys_cncspotweldtrig(struct proc *p, void *v, register_t *retval)
+{
+	return (ENODEV);
+}
+int
+sys_cncspotweldselect(struct proc *p, void *v, register_t *retval)
+{
+	return (ENODEV);
+}
+int
+sys_cncspotweld(struct proc *p, void *v, register_t *retval)
+{
+	return (ENODEV);
+}
+
+#endif /* NSPOTWELDER > 0 */
 
 int
 sys_spinctl(struct proc *p, void *v, register_t *retval)
