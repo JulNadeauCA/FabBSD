@@ -48,6 +48,8 @@
 #include <dev/cnc/cncvar.h>
 #include <dev/cnc/cnc_estopvar.h>
 
+#define ESTOPUNIT(x) minor(x)
+
 int	estop_match(struct device *, void *, void *);
 void	estop_attach(struct device *, struct device *, void *);
 int	estop_detach(struct device *, int);
@@ -79,12 +81,12 @@ estop_attach(struct device *parent, struct device *self, void *aux)
 {
 	struct estop_softc *sc = (struct estop_softc *)self;
 	struct gpio_attach_args *ga = aux;
-	
+
 	/* Generic CNC device initialization. */
 	if (cnc_device_attach(sc, CNC_DEVICE_ESTOP) == -1)
 		return;
 	
-	sc->sc_flags = 0;
+	sc->sc_flags = sc->sc_cdev.cd_dev.dv_cfdata->cf_flags;
 
 	if (gpio_npins(ga->ga_mask) != ESTOP_NPINS) {
 		printf(": invalid pin mask\n");
@@ -101,6 +103,12 @@ estop_attach(struct device *parent, struct device *self, void *aux)
 	/* Map the input signal. */
 	CNC_MAP_INPUT(sc, ESTOP_PIN, "ESTOP");
 
+	sc->sc_open = 0;
+	sc->sc_queued = 0;
+	
+	if (sc->sc_flags & ESTOP_DEBOUNCE) {
+		printf(" debounce");
+	}
 	printf("\n");
 	return;
 fail:
@@ -126,3 +134,82 @@ estop_get_state(struct estop_softc *sc)
 	return (gpio_pin_read(sc->sc_gpio, &sc->sc_map, ESTOP_PIN));
 }
 
+/* Return e-stop status with software debounce. */
+int
+estop_debounce(struct estop_softc *sc)
+{
+	int j;
+	cnc_utime_t delay, k;
+
+	delay = (cnc_utime_t)cnc_timings.hz/100;    /* 10ms */
+	for (j = 0; j < 10; j++) {
+		if (!estop_get_state(sc)) {
+			break;
+		}
+		for (k = 0; k < delay; k++)
+			;;
+	}
+	if (j == 10) {
+		return (1);
+	}
+	return (0);
+}
+
+int
+estopopen(dev_t dev, int flag, int mode, struct proc *p)
+{
+	int unit = ESTOPUNIT(dev);
+	struct estop_softc *sc;
+
+	if (unit >= estop_cd.cd_ndevs)
+		return (ENXIO);
+
+	sc = estop_cd.cd_devs[unit];
+	if (sc == NULL) {
+		return (ENXIO);
+	}
+	if (sc->sc_open) {
+		return (EBUSY);
+	}
+	sc->sc_open = 1;
+	return (0);
+}
+
+int
+estopclose(dev_t dev, int flag, int mode, struct proc *p)
+{
+	int unit = ESTOPUNIT(dev);
+	struct estop_softc *sc = estop_cd.cd_devs[unit];
+
+	sc->sc_open = 0;
+	sc->sc_queued = 0;
+	return (0);
+}
+
+int
+estopread(dev_t dev, struct uio *uio, int flag)
+{
+	int unit = ESTOPUNIT(dev);
+	struct estop_softc *sc = estop_cd.cd_devs[unit];
+	struct cnc_input_event ev;
+	int s;
+	
+	ev.type = CNC_EVENT_BUTTONDOWN;
+	ev.which = 0;
+
+	if (sc->sc_queued) {
+		sc->sc_queued = 0;
+		ev.data = 1;
+	} else {
+		s = splhigh();
+		ev.data = estop_get_state(sc);
+		splx(s);
+	}
+	return uiomove((caddr_t)&ev, sizeof(struct cnc_input_event), uio);
+}
+
+int
+estopioctl(dev_t dev, u_long cmd, caddr_t data, int flag, struct proc *p)
+{
+	return (ENXIO);
+}
