@@ -487,6 +487,18 @@ void	randomattach(void);
 	(dev_type_poll((*))) enodev, \
 	(dev_type_mmap((*))) enodev }
 
+/* open, close, read, ioctl */
+#define cdev_estop_init(c,n) { \
+	dev_init(c,n,open), \
+	dev_init(c,n,close), \
+	dev_init(c,n,read), \
+	(dev_type_write((*))) enodev, \
+	dev_init(c,n,ioctl), \
+	(dev_type_stop((*))) enodev, \
+	0, \
+	(dev_type_poll((*))) enodev, \
+	(dev_type_mmap((*))) enodev }
+
 #endif /* _KERNEL */
 
 /*
@@ -615,6 +627,7 @@ cdev_decl(gpio);
 cdev_decl(amdmsr);
 cdev_decl(cnc);
 cdev_decl(mpg);
+cdev_decl(estop);
 
 #endif /* _KERNEL */
 
