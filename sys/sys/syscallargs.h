@@ -954,6 +954,19 @@ struct sys_cncpos_args {
 	syscallarg(struct cnc_vector *) vec;
 };
 
+struct sys_cncspotweld_args {
+	syscallarg(int) welder;
+	syscallarg(int) cycles;
+};
+
+struct sys_cncspotweldtrig_args {
+	syscallarg(int) welder;
+};
+
+struct sys_cncspotweldselect_args {
+	syscallarg(int) welder;
+};
+
 /*
  * System call prototypes.
  */
@@ -1203,3 +1216,6 @@ int	sys_pickplacectl(struct proc *, void *, register_t *);
 int	sys_coolantctl(struct proc *, void *, register_t *);
 int	sys_estop(struct proc *, void *, register_t *);
 int	sys_cncpos(struct proc *, void *, register_t *);
+int	sys_cncspotweld(struct proc *, void *, register_t *);
+int	sys_cncspotweldtrig(struct proc *, void *, register_t *);
+int	sys_cncspotweldselect(struct proc *, void *, register_t *);

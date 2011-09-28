@@ -647,4 +647,13 @@
 /* syscall: "cncpos" ret: "int" args: "struct cnc_vector *" */
 #define	SYS_cncpos	319
 
-#define	SYS_MAXSYSCALL	320
+/* syscall: "cncspotweld" ret: "int" args: "int" "int" */
+#define	SYS_cncspotweld	320
+
+/* syscall: "cncspotweldtrig" ret: "int" args: "int" */
+#define	SYS_cncspotweldtrig	321
+
+/* syscall: "cncspotweldselect" ret: "int" args: "int" */
+#define	SYS_cncspotweldselect	322
+
+#define	SYS_MAXSYSCALL	323
