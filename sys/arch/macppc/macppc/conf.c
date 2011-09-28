@@ -124,6 +124,7 @@ cdev_decl(pci);
 #include "gpio.h"
 #include "cnc.h"
 #include "mpg.h"
+#include "estop.h"
 
 struct cdevsw cdevsw[] = {
 	cdev_cn_init(1,cn),		/* 0: virtual console */
@@ -217,6 +218,7 @@ struct cdevsw cdevsw[] = {
 	cdev_openprom_init(1,openprom),	/* 82: /dev/openprom */
 	cdev_cnc_init(NCNC,cnc),	/* 83: CNC interface */
 	cdev_mpg_init(NMPG,mpg),	/* 84: manual-pulse generator */
+	cdev_estop_init(NESTOP,estop),	/* 85: emergency-stop switch */
 };
 int nchrdev = sizeof cdevsw / sizeof cdevsw[0];
 

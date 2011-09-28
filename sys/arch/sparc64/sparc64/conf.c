@@ -132,6 +132,7 @@ int	nblkdev = sizeof(bdevsw) / sizeof(bdevsw[0]);
 
 #include "cnc.h"
 #include "mpg.h"
+#include "estop.h"
 
 struct cdevsw	cdevsw[] =
 {
@@ -223,7 +224,7 @@ struct cdevsw	cdevsw[] =
 	cdev_mouse_init(NWSKBD, wskbd),	/* 79: keyboards */
 	cdev_cnc_init(NCNC,cnc),	/* 80: CNC interface */
 	cdev_mpg_init(NMPG,mpg),	/* 81: manual-pulse generator */
-	cdev_notdef(),			/* 82 */
+	cdev_estop_init(NESTOP,estop),	/* 82: emergency-stop switch */
 	cdev_notdef(),			/* 83 */
 	cdev_notdef(),			/* 84 */
 	cdev_notdef(),			/* 85 */

@@ -119,6 +119,7 @@ cdev_decl(pci);
 #include "hotplug.h"
 #include "cnc.h"
 #include "mpg.h"
+#include "estop.h"
 
 struct cdevsw	cdevsw[] =
 {
@@ -189,6 +190,7 @@ struct cdevsw	cdevsw[] =
 	cdev_mouse_init(NWSMUX, wsmux),	/* 60: ws multiplexor */
 	cdev_cnc_init(NCNC,cnc),	/* 61: CNC interface */
 	cdev_mpg_init(NMPG,mpg),	/* 62: manual-pulse generator */
+	cdev_estop_init(NESTOP,estop),	/* 63: emergency stop switch */
 };
 int	nchrdev = sizeof (cdevsw) / sizeof (cdevsw[0]);
 

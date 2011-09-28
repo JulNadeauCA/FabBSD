@@ -121,8 +121,8 @@ servo0 at gpio1 offset 4 mask 0x3	# Servo / stepper motor controller
 servo1 at gpio1 offset 10 mask 0x3	# Servo / stepper motor controller
 servo2 at gpio1 offset 16 mask 0x3	# Servo / stepper motor controller
 mpg0 at gpio1 offset 18 mask 0x1f	# Manual pulse generator
+estop0 at gpio1 offset 23 mask 0x1 flags 0x0001	# Emergency stop
 #encoder0 at gpio1 offset 6 mask 0x3	# Position-sensing encoder (quadrature)
-estop0 at gpio1 offset 23 mask 0x1	# Software emergency stop (e-stop)
 #cncstatled0 at gpio2 offset 6 mask 0x1	# Status LED (net5501 error LED)
 #cnclcd0 at isa? port 0x2f8 irq 3	# LCD display (via NS16450/NS16550 UART)
 

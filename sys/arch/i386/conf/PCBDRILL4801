@@ -105,7 +105,7 @@ cd*	at scsibus?		# SCSI CD-ROM drives
 pciide* at pci? flags 0x0000
 
 # IDE hard drives
-wd*	at pciide? flags 0x0000
+wd*	at pciide? flags 0x0fac
 
 # ATAPI<->SCSI
 atapiscsi* at pciide?
