@@ -17,6 +17,7 @@
 #define CNC_MAX_ENCODERS	4
 #define CNC_MAX_MPGS		2
 #define CNC_MAX_LCDS		4
+#define CNC_MAX_SPOTWELDERS	4
 
 /* Allowed position error (steps) */
 #define CNC_POS_ERROR		1e-6
@@ -216,8 +217,26 @@ struct cnc_tool {
 
 /* For CNC_GETSTATS */
 struct cnc_stats {
-	cnc_vel_t peak_velocity;	/* maximum velocity reached (steps/s) */
-	int estops;			/* emergency stop events */
+	cnc_vel_t peak_velocity;	/* Peak velocity reached (steps/s) */
+	int estops;			/* # of emergency stop events */
+};
+
+enum cnc_input_event_type {
+	CNC_EVENT_KEYDOWN,		/* Keyboard event */
+	CNC_EVENT_KEYUP,
+	CNC_EVENT_BUTTONDOWN,		/* Button event */
+	CNC_EVENT_BUTTONUP,
+	CNC_EVENT_WHEELDOWN,		/* Wheel (e.g., MPG) motion */
+	CNC_EVENT_WHEELUP,
+	CNC_EVENT_SELECTOR,		/* Selector switch event */
+	CNC_EVENT_LAST
+};
+
+/* General input-device event. */
+struct cnc_input_event {
+	enum cnc_input_event_type type;	/* Event type */
+	int which;			/* Device index */
+	int data;			/* Per-device data */
 };
 
 /* For /dev/mpg* events */
@@ -247,6 +266,9 @@ struct cnc_mpg_event {
 
 __BEGIN_DECLS
 int	cncmove(const struct cnc_velocity *, const cnc_vec_t *);
+int	cncspotweld(int, int);
+int	cncspotweldtrig(int);
+int	cncspotweldselect(int);
 int	spinctl(int, enum cnc_spindle_op, const struct cnc_spindle_args *);
 int	atcctl(int, enum cnc_atc_op, const struct cnc_atc_args *);
 int	laserctl(int, enum cnc_laser_op, const struct cnc_laser_args *);
