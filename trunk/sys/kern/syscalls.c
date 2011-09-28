@@ -414,4 +414,7 @@ char *syscallnames[] = {
 	"coolantctl",			/* 317 = coolantctl */
 	"estop",			/* 318 = estop */
 	"cncpos",			/* 319 = cncpos */
+	"cncspotweld",			/* 320 = cncspotweld */
+	"cncspotweldtrig",			/* 321 = cncspotweldtrig */
+	"cncspotweldselect",			/* 322 = cncspotweldselect */
 };
