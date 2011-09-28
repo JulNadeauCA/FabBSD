@@ -345,12 +345,12 @@ com*	at cardbus?
 #mms0	at isa? port 0x23c irq 5	# Microsoft InPort mouse
 #mms1	at isa? port 0x238 irq 5
 
-lptgpio0 at isa? port 0x378 		# standard PC parallel ports (gpio)
-lptgpio1 at isa? port 0x278
+#lptgpio0 at isa? port 0x378 		# standard PC parallel ports (gpio)
+#lptgpio1 at isa? port 0x278
 #lptgpio2 at isa? port 0x3bc
 #lptgpio* at puc?
-gpio0 at lptgpio0
-gpio1 at lptgpio1
+#gpio0 at lptgpio0
+#gpio1 at lptgpio1
 
 #wsmouse*	at lms? mux 0
 #wsmouse*	at mms? mux 0
@@ -641,11 +641,15 @@ owsbm*	at onewire?		# Smart Battery Monitor
 owtemp* at onewire?		# Temperature
 
 # Motion control devices
-servo0 at gpio0 offset 0 mask 0x3	# Servo / stepper motor controller
-servo1 at gpio0 offset 2 mask 0x3	# Servo / stepper motor controller
-servo2 at gpio0 offset 4 mask 0x3	# Servo / stepper motor controller
-#estop0 at gpio1 offset 0 mask 0x1	# Software emergency stop (e-stop)
-#encoder0 at gpio1 offset 0 mask 0x3	# Position-sensing encoder (quadrature)
+servo0 at gpio? offset 0 mask 0x3		# Motor controller
+servo1 at gpio? offset 2 mask 0x3		# Motor controller
+servo2 at gpio? offset 4 mask 0x3		# Motor controller
+#estop0 at gpio? offset 0 mask 0x1 flags 0x0000	# Emergency stop (e-stop)
+#estop0 at gpio? offset 0 mask 0x1 flags 0x0001	# E-stop with software debounce
+#encoder0 at gpio? offset 0 mask 0x3	# Position-sensing encoder (quadrature)
+
+# Welding equipment
+spotwelder0 at gpio? offset 5 mask 0xf		# Spot welder
 
 pseudo-device	pctr		1
 pseudo-device	mtrr		1	# Memory range attributes control
