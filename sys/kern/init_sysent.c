@@ -782,5 +782,11 @@ struct sysent sysent[] = {
 	    sys_estop },			/* 318 = estop */
 	{ 1, s(struct sys_cncpos_args), 0,
 	    sys_cncpos },			/* 319 = cncpos */
+	{ 2, s(struct sys_cncspotweld_args), 0,
+	    sys_cncspotweld },			/* 320 = cncspotweld */
+	{ 1, s(struct sys_cncspotweldtrig_args), 0,
+	    sys_cncspotweldtrig },		/* 321 = cncspotweldtrig */
+	{ 1, s(struct sys_cncspotweldselect_args), 0,
+	    sys_cncspotweldselect },		/* 322 = cncspotweldselect */
 };
 
