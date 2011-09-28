@@ -44,6 +44,8 @@
 #include "cnc_devicevar.h"
 #include "cncvar.h"
 
+/* #define CNC_QUINTIC_DEBUG */
+
 /*
  * Initialize constants to values that will yield an optimal time-energy
  * velocity profile under acceleration and jerk constraints.
@@ -73,7 +75,9 @@ cnc_quintic_init(struct cnc_quintic_profile *q, cnc_real_t L, cnc_real_t v0,
 			/*
 			 * Feedrate F is achievable at Amax acceleration.
 			 */
+#ifdef CNC_QUINTIC_DEBUG
 			printf("cnc: F achievable at Amax (#1.1)\n");
+#endif
 			q->Ts = CNC_PI_2*(Amax/Jmax);
 			q->Ta = q->Ts + (F/Amax);
 			q->To = L/F;
@@ -81,7 +85,9 @@ cnc_quintic_init(struct cnc_quintic_profile *q, cnc_real_t L, cnc_real_t v0,
 			/*
 			 * Feedrate F is unachievable, Amax is achievable.
 			 */
+#ifdef CNC_QUINTIC_DEBUG
 			printf("cnc: F is unachievable, but Amax is (#1.2)\n");
+#endif
 			q->Ts = CNC_PI_2*(Amax/Jmax);
 			q->Ta = ( (-CNC_PI*AmaxP2 + sqrt(CNC_PI_P2*AmaxP4 + 16.0*Amax*JmaxP2*L) ) /
 			        (4.0*Jmax*Amax) ) + q->Ts;
@@ -90,7 +96,9 @@ cnc_quintic_init(struct cnc_quintic_profile *q, cnc_real_t L, cnc_real_t v0,
 			/*
 			 * Neither F nor Amax are achievable.
 			 */
+#ifdef CNC_QUINTIC_DEBUG
 			printf("cnc: neither F nor Amax are achievable (#1.3)\n");
+#endif
 			q->Ts = cbrt( (CNC_PI*L)/(4.0*Jmax) );
 			q->Ta = 2.0*q->Ts;
 			q->To = q->Ta;
@@ -105,7 +113,9 @@ cnc_quintic_init(struct cnc_quintic_profile *q, cnc_real_t L, cnc_real_t v0,
 			/*
 			 * F is achievable, Amax is unachievable.
 			 */
+#ifdef CNC_QUINTIC_DEBUG
 			printf("cnc: F is achievable, but Amax is not (#2.1)\n");
+#endif
 			q->Ts = sqrt( (CNC_PI*F)/(2.0*Jmax) );
 			q->Ta = 2.0*q->Ts;
 			q->To = L/F;
@@ -113,7 +123,9 @@ cnc_quintic_init(struct cnc_quintic_profile *q, cnc_real_t L, cnc_real_t v0,
 			/*
 			 * Neither F nor Amax are achievable.
 			 */
+#ifdef CNC_QUINTIC_DEBUG
 			printf("cnc: neither F nor Amax are achievable (#2.2)\n");
+#endif
 			q->Ts = cbrt( (CNC_PI*L)/(4.0*Jmax) );
 			q->Ta = 2.0*q->Ts;
 			q->To = q->Ta;
