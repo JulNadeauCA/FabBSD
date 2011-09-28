@@ -213,15 +213,15 @@ mpgread(dev_t dev, struct uio *uio, int flag)
 {
 	int unit = MPGUNIT(dev);
 	struct mpg_softc *sc = mpg_cd.cd_devs[unit];
-	struct cnc_mpg_event me;
+	struct cnc_input_event ev;
 	struct mpg_axis *axis;
 	int s;
 
 	s = splhigh();
 
-	me.axis = mpg_get_axis(sc);
-	me.delta = 0;
-	axis = &sc->sc_axes[me.axis];
+	ev.which = mpg_get_axis(sc);
+	ev.data = 0;
+	axis = &sc->sc_axes[ev.which];
 
 	axis->A = gpio_pin_read(sc->sc_gpio, &sc->sc_map, MPG_PIN_A);
 	axis->B = gpio_pin_read(sc->sc_gpio, &sc->sc_map, MPG_PIN_B);
@@ -233,23 +233,21 @@ mpgread(dev_t dev, struct uio *uio, int flag)
 	    ( axis->A &&  axis->B &&  axis->Aprev && !axis->Bprev) ||
 	    (!axis->A &&  axis->B &&  axis->Aprev &&  axis->Bprev) ||
 	    (!axis->A && !axis->B && !axis->Aprev &&  axis->Bprev)) {
-		me.delta++;
+		ev.data++;
+		ev.type = CNC_EVENT_WHEELUP;
 	} else {
-		me.delta--;
+		ev.data--;
+		ev.type = CNC_EVENT_WHEELDOWN;
 	}
 	axis->Aprev = axis->A;
 	axis->Bprev = axis->B;
 out:
 	splx(s);
-	return uiomove((caddr_t)&me, sizeof(struct cnc_mpg_event), uio);
+	return uiomove((caddr_t)&ev, sizeof(struct cnc_input_event), uio);
 }
 
 int
 mpgioctl(dev_t dev, u_long cmd, caddr_t data, int flag, struct proc *p)
 {
-#if 0
-	int unit = MPGUNIT(dev);
-	struct mpg_softc *sc = mpg_cd.cd_devs[unit];
-#endif
 	return (ENXIO);
 }
