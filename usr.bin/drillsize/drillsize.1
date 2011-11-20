@@ -9,6 +9,8 @@
 .Nd convert between drill bit numbering systems
 .Sh SYNOPSIS
 .Nm drillsize
+.Op Fl o
+.Op Fl u
 .Op Fl R
 .Op Fl p Ar angle
 .Op Fl i Ar inches
@@ -23,8 +25,12 @@ The
 .Nm
 utility prints the standard drill bit sizes most closely matching a specified
 diameter.
-The options are as follows.
+The options are as follows:
 .Bl -tag -width Ds
+.It Fl o
+Print the nearest oversize standard drill size.
+.It Fl u
+Print the nearest undersize standard drill size.
 .It Fl i
 Specify diameter in fractional or decimal inches.
 .It Fl l
