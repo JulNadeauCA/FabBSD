@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Hypertriton, Inc. <http://hypertriton.com/>
+ * Copyright (c) 2009-2011 Hypertriton, Inc. <http://hypertriton.com/>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -44,28 +44,64 @@ int Pflag = 0;
 int Pangle = 0;
 double inches = 0.0;
 const int maxFrac = 64;
+int undersize = 0;
+int oversize = 0;
 
 static void
 printusage(void)
 {
 	extern char *__progname;
-	printf("Usage: %s [-R] [-p angle] "
+	printf("Usage: %s [-ouR] [-p angle] "
 	       "[-i inches] | [-l letter] | [-m mm] | [-w wireno]\n",
 	       __progname);
 	exit(1);
 }
 
-static const char *
+static char *
 lookuptbl(double in, const struct drillsize *tbl, int n)
 {
+	const struct drillsize *ds, *dsNear;
+	char *s;
 	int i;
-
-	for (i = 0; i < n; i++) {
-		const struct drillsize *ds = &tbl[i];
-		if (ds->v == in)
-			return (ds->name);
+	
+	if ((s = malloc(64)) == NULL) {
+		return (NULL);
 	}
-	return ("-");
+	s[0] = '-';
+	s[1] = '\0';
+
+	if (undersize) {
+		for (i = 0; i < n; i++) {
+			ds = &tbl[i];
+			if (i > 0 && ds->v >= in) {
+				dsNear = &tbl[i-1];
+				snprintf(s, 64, "%s (%.04f) -%.04f (undersize)",
+				    dsNear->name, dsNear->v,
+				    fabs(in - dsNear->v));
+				break;
+			}
+		}
+	} else if (oversize) {
+		for (i = n-1; i > 0; i--) {
+			ds = &tbl[i];
+			if (i < n-1 && ds->v <= in) {
+				dsNear = &tbl[i+1];
+				snprintf(s, 64, "%s (%.04f) +%.04f (oversize)",
+				    dsNear->name, dsNear->v,
+				    fabs(dsNear->v - in));
+				break;
+			}
+		}
+	} else {
+		for (i = 0; i < n; i++) {
+			ds = &tbl[i];
+			if (fabs(ds->v - in) < 0.001) {
+				strlcpy(s, ds->name, 64);
+				break;
+			}
+		}
+	}
+	return (s);
 }
 
 static double
@@ -106,7 +142,9 @@ nearest_fractional(double inches)
 	if (inches == 1.0) {
 		return strdup("1");
 	}
-	s = malloc(64);
+	if ((s = malloc(64)) == NULL) {
+		return (NULL);
+	}
 	s[0] = '\0';
 	for (ths = 2; ths <= maxFrac; ths *= 2) {
 		for (i = 1; i < ths; i++) {
@@ -132,6 +170,28 @@ nearest_fractional(double inches)
 	return (s);
 }
 
+static double
+parse_inches(const char *in)
+{
+	char *s, *ep;
+	double v;
+
+	if ((s = strchr(in, '/')) != NULL) {
+		int num = atoi(in);
+		int den = atoi(s+1);
+
+		if (s == '\0' || den == 0)
+			errx(1, "-i: invalid fraction");
+
+		v = (double)num/(double)den;
+	} else {
+		v = strtod(in, &ep);
+		if (in[0] == '\0' || *ep != '\0')
+			errx(1, "-i: invalid value");
+	}
+	return (v);
+}
+
 int
 main(int argc, char *argv[])
 {
@@ -140,8 +200,17 @@ main(int argc, char *argv[])
 	char *letter = NULL, *wireno = NULL;
 	int pt, i;
 
-	while ((ch = getopt(argc, argv, "Rp:i:l:m:w:?h")) != -1) {
+	while ((ch = getopt(argc, argv, "ouRp:i:l:m:w:?h")) != -1) {
 		switch (ch) {
+		case 'u':
+			undersize = 1;
+			break;
+		case 'o':
+			if (undersize) {
+				errx(1, "-u and -o are mutually exclusive");
+			}
+			oversize = 1;
+			break;
 		case 'R':
 			Rflag = 1;
 			break;
@@ -151,16 +220,7 @@ main(int argc, char *argv[])
 			if (err != NULL) { errx(1, "-p: %s", err); }
 			break;
 		case 'i':
-			if ((s = strchr(optarg, '/')) != NULL) {
-				int num = atoi(optarg);
-				int den = atoi(s+1);
-
-				if (s == '\0' || den == 0) { errx(1, "-i: invalid fraction"); }
-				inches = (double)num/den;
-			} else {
-				inches = strtod(optarg, &ep);
-				if (optarg[0] == '\0' || *ep != '\0') { errx(1, "-i: invalid value"); }
-			}
+			inches = parse_inches(optarg);
 			break;
 		case 'l':
 			if ((c = optarg[0]) != '\0' && optarg[1] == '\0' &&
@@ -183,6 +243,10 @@ main(int argc, char *argv[])
 			printusage();
 		}
 	}
+	argc -= optind;
+	argv += optind;
+	if (argc > 0)
+		inches = parse_inches(argv[0]);
 
 	if (wireno) {
 		inches = lookup_wireno(wireno);
