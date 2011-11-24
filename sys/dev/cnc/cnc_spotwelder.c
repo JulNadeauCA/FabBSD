@@ -159,7 +159,7 @@ spotwelder_select(struct spotwelder_softc *sc)
 int
 spotwelder_weld(struct spotwelder_softc *sc, int ncycles)
 {
-	int ph, i, s;
+	int s, i;
 
 #if 0
 	s = splhigh();
@@ -173,14 +173,11 @@ spotwelder_weld(struct spotwelder_softc *sc, int ncycles)
 #endif
 
 	s = splhigh();
-	ph = gpio_pin_read(sc->sc_gpio, &sc->sc_map, SPOTWELDER_PIN_PHASE);
 	for (;;) {
-		/* Wait for start of AC cycle. */
-		/* TODO: timeout */
-		if ((gpio_pin_read(sc->sc_gpio, &sc->sc_map,
-		    SPOTWELDER_PIN_PHASE)) == ph) {
-			continue;
-		}
+		/* Wait for AC cycle start. */
+		while ((gpio_pin_read(sc->sc_gpio, &sc->sc_map,
+		    SPOTWELDER_PIN_PHASE)) == 0)
+			;;
 
 		/* Welder ON */
 		gpio_pin_write(sc->sc_gpio, &sc->sc_map, SPOTWELDER_PIN_RELAY,
@@ -188,10 +185,12 @@ spotwelder_weld(struct spotwelder_softc *sc, int ncycles)
 
 		/* Wait for specified number of AC cycles. */
 		for (i = 0; i < ncycles; i++) {
-			while (gpio_pin_read(sc->sc_gpio, &sc->sc_map,
-			    SPOTWELDER_PIN_PHASE) == ph)
+			while ((gpio_pin_read(sc->sc_gpio, &sc->sc_map,
+			    SPOTWELDER_PIN_PHASE)) == 1)
 				;;
-			ph = !ph;
+			while ((gpio_pin_read(sc->sc_gpio, &sc->sc_map,
+			    SPOTWELDER_PIN_PHASE)) == 0)
+				;;
 		}
 
 		/* Welder OFF */
