@@ -788,5 +788,7 @@ struct sysent sysent[] = {
 	    sys_cncspotweldtrig },		/* 321 = cncspotweldtrig */
 	{ 1, s(struct sys_cncspotweldselect_args), 0,
 	    sys_cncspotweldselect },		/* 322 = cncspotweldselect */
+	{ 2, s(struct sys_valvectl_args), 0,
+	    sys_valvectl },			/* 323 = valvectl */
 };
 

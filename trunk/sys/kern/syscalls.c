@@ -417,4 +417,5 @@ char *syscallnames[] = {
 	"cncspotweld",			/* 320 = cncspotweld */
 	"cncspotweldtrig",			/* 321 = cncspotweldtrig */
 	"cncspotweldselect",			/* 322 = cncspotweldselect */
+	"valvectl",			/* 323 = valvectl */
 };
