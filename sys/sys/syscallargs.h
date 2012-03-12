@@ -967,6 +967,11 @@ struct sys_cncspotweldselect_args {
 	syscallarg(int) welder;
 };
 
+struct sys_valvectl_args {
+	syscallarg(int) valve;
+	syscallarg(int) enable;
+};
+
 /*
  * System call prototypes.
  */
@@ -1219,3 +1224,4 @@ int	sys_cncpos(struct proc *, void *, register_t *);
 int	sys_cncspotweld(struct proc *, void *, register_t *);
 int	sys_cncspotweldtrig(struct proc *, void *, register_t *);
 int	sys_cncspotweldselect(struct proc *, void *, register_t *);
+int	sys_valvectl(struct proc *, void *, register_t *);

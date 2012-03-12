@@ -656,4 +656,7 @@
 /* syscall: "cncspotweldselect" ret: "int" args: "int" */
 #define	SYS_cncspotweldselect	322
 
-#define	SYS_MAXSYSCALL	323
+/* syscall: "valvectl" ret: "int" args: "int" "int" */
+#define	SYS_valvectl	323
+
+#define	SYS_MAXSYSCALL	324

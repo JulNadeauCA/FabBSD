@@ -479,4 +479,5 @@
 320	STD		{ int sys_cncspotweld(int welder, int cycles); }
 321	STD		{ int sys_cncspotweldtrig(int welder); }
 322	STD		{ int sys_cncspotweldselect(int welder); }
+323	STD		{ int sys_valvectl(int valve, int enable); }
 
